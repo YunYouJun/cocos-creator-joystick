@@ -8,9 +8,11 @@ Online Address: <https://yunyoujun.github.io/cocos-creator-joystick/>
 
 ## Usage
 
-Just Import it.
+Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/cocos-creator-joystick/master/dist/joystick-demo.zip)) or paste code.
 
-Type
+> 文件 -> 资源导入...
+
+You can replace image for your demand.
 
 ## Function
 
@@ -32,3 +34,13 @@ Type
 | stopSpeed | cc.Integer | 0 | 停止时速度 | x |
 | normalSpeed | cc.Integer | 100 | 正常速度 | x |
 | fastSpeed | cc.Integer | 200 | 加快时速度 | x |
+
+## Dev
+
+Issue or PR is welcome.
+
+### Deploy
+
+```sh
+npm run deploy
+```
