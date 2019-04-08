@@ -24,9 +24,9 @@ cc.Class({
       tooltip: '操控角色',
     },
 
-    touchType: {
-      default: JoystickCommon.TouchType.DEFAULT,
-      type: JoystickCommon.TouchType,
+    joystickType: {
+      default: JoystickCommon.JoystickType.FIXED,
+      type: JoystickCommon.JoystickType,
       displayName: 'Touch Type',
       tooltip: '触摸类型',
     },
@@ -53,7 +53,7 @@ cc.Class({
     this._radius = this.ring.width / 2;
     this._initTouchEvent();
     // hide joystick when follow
-    if (this.touchType == JoystickCommon.TouchType.FOLLOW) {
+    if (this.joystickType == JoystickCommon.JoystickType.FOLLOW) {
       this.node.opacity = 0;
     }
   },
@@ -70,7 +70,7 @@ cc.Class({
   _touchStartEvent(event) {
     const touchPos = this.node.convertToNodeSpaceAR(event.getLocation());
 
-    if (this.touchType === JoystickCommon.TouchType.DEFAULT) {
+    if (this.joystickType === JoystickCommon.JoystickType.FIXED) {
       this._stickPos = this.ring.getPosition();
 
       // 触摸点与圆圈中心的距离
@@ -81,7 +81,7 @@ cc.Class({
         this.dot.setPosition(touchPos);
       }
 
-    } else if (this.touchType === JoystickCommon.TouchType.FOLLOW) {
+    } else if (this.joystickType === JoystickCommon.JoystickType.FOLLOW) {
 
       // 记录摇杆位置，给 touch move 使用
       this._stickPos = touchPos;
@@ -95,7 +95,7 @@ cc.Class({
   },
 
   _touchMoveEvent(event) {
-    if (this.touchType === JoystickCommon.TouchType.FOLLOW) {
+    if (this.joystickType === JoystickCommon.JoystickType.FOLLOW) {
       // 如果 touch start 位置和 touch move 相同，禁止移动
       if (this._touchLocation === event.getLocation()) {
         return false;
@@ -112,7 +112,6 @@ cc.Class({
 
     // 归一化
     const p = cc.v2(posX, posY).sub(this.ring.getPosition()).normalize();
-    const r = Math.atan2(p.y, p.x);
 
     if (this._radius > distance) {
       this.dot.setPosition(cc.v2(posX, posY));
@@ -120,8 +119,8 @@ cc.Class({
       this.player._speedType = JoystickCommon.SpeedType.NORMAL;
     } else {
       // 控杆永远保持在圈内，并在圈内跟随触摸更新角度
-      const x = this._stickPos.x + Math.cos(r) * this._radius;
-      const y = this._stickPos.y + Math.sin(r) * this._radius;
+      const x = this._stickPos.x + p.x * this._radius;
+      const y = this._stickPos.y + p.y * this._radius;
       this.dot.setPosition(cc.v2(x, y));
 
       this.player._speedType = JoystickCommon.SpeedType.FAST;
@@ -129,12 +128,11 @@ cc.Class({
 
     this.player = this.player.getComponent('Player');
     this.player.moveDir = p;
-    
   },
 
   _touchEndEvent() {
     this.dot.setPosition(this.ring.getPosition());
-    if (this.touchType == JoystickCommon.TouchType.FOLLOW) {
+    if (this.joystickType == JoystickCommon.JoystickType.FOLLOW) {
       this.node.opacity = 0;
     }
     this.player._speedType = JoystickCommon.SpeedType.STOP;
@@ -144,7 +142,7 @@ cc.Class({
 
   setPlayerSpeed() {
     this.player = this.player.getComponent('Player');
-    this.player.moveDir = p
+    this.player.moveDir = p;
     this.player.speedType = JoystickCommon.SpeedType.NORMAL;
   },
 });

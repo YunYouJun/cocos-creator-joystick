@@ -18,7 +18,6 @@
     "DragonBones",
     "RichText",
     "MotionStreak",
-    "Button",
     "ProgressBar",
     "ScrollBar",
     "ScrollView",
@@ -26,7 +25,6 @@
     "PageView",
     "PageViewIndicator",
     "Slider",
-    "Layout",
     "EditBox",
     "VideoPlayer",
     "WebView",
@@ -63,6 +61,5 @@
     "width": 960
   },
   "use-customize-simulator": true,
-  "use-project-simulator-setting": false,
-  "start-scene": "current"
+  "use-project-simulator-setting": false
 }

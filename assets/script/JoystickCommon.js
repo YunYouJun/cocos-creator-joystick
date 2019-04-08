@@ -1,6 +1,6 @@
 export default {
-  TouchType: cc.Enum({
-    DEFAULT: 0,
+  JoystickType: cc.Enum({
+    FIXED: 0,
     FOLLOW: 1,
   }),
 
