@@ -985,12 +985,12 @@
     "./CCGame": 4,
     "./CCScheduler": 8,
     "./component-scheduler": 29,
-    "./event-manager": 46,
-    "./event/event-target": 48,
-    "./load-pipeline/auto-release-utils": 58,
-    "./node-activator": 74,
-    "./platform/CCObject": 83,
-    "./renderer": 115
+    "./event-manager": 48,
+    "./event/event-target": 50,
+    "./load-pipeline/auto-release-utils": 60,
+    "./node-activator": 76,
+    "./platform/CCObject": 85,
+    "./renderer": 117
   } ],
   4: [ (function(require, module, exports) {
     var EventTarget = require("./event/event-target");
@@ -1342,10 +1342,10 @@
     "../audio/CCAudioEngine": void 0,
     "../core/renderer/utils/dynamic-atlas/manager": void 0,
     "./CCDebug": 2,
-    "./event/event-target": 48,
-    "./platform/BKInputManager": 75,
-    "./platform/CCInputManager": 81,
-    "./renderer/index.js": 115
+    "./event/event-target": 50,
+    "./platform/BKInputManager": 77,
+    "./platform/CCInputManager": 83,
+    "./renderer/index.js": 117
   } ],
   5: [ (function(require, module, exports) {
     "use strict";
@@ -2703,18 +2703,18 @@
     misc.propertyDefine(Node, SameNameGetSets);
     cc.Node = module.exports = Node;
   }), {
-    "./event-manager": 46,
-    "./event/event": 49,
-    "./event/event-target": 48,
-    "./platform/CCMacro": 82,
-    "./platform/js": 97,
-    "./renderer/render-engine": 116,
-    "./renderer/render-flow": 117,
-    "./utils/affine-transform": 141,
-    "./utils/base-node": 142,
-    "./utils/math-pools": 146,
-    "./utils/misc": 147,
-    "./utils/prefab-helper": 150
+    "./event-manager": 48,
+    "./event/event": 51,
+    "./event/event-target": 50,
+    "./platform/CCMacro": 84,
+    "./platform/js": 99,
+    "./renderer/render-engine": 118,
+    "./renderer/render-flow": 119,
+    "./utils/affine-transform": 143,
+    "./utils/base-node": 144,
+    "./utils/math-pools": 148,
+    "./utils/misc": 149,
+    "./utils/prefab-helper": 152
   } ],
   6: [ (function(require, module, exports) {
     "use strict";
@@ -2811,8 +2811,8 @@
     cc.PrivateNode = module.exports = PrivateNode;
   }), {
     "./CCNode": 5,
-    "./renderer/render-engine": 116,
-    "./renderer/render-flow": 117
+    "./renderer/render-engine": 118,
+    "./renderer/render-flow": 119
   } ],
   7: [ (function(require, module, exports) {
     var NIL = function() {};
@@ -3379,8 +3379,8 @@
     cc.Scheduler.PRIORITY_NON_SYSTEM = cc.Scheduler.PRIORITY_SYSTEM + 1;
     module.exports = cc.Scheduler;
   }), {
-    "./platform/id-generater": 93,
-    "./platform/js": 97
+    "./platform/id-generater": 95,
+    "./platform/js": 99
   } ],
   9: [ (function(require, module, exports) {
     var RawAsset = require("./CCRawAsset");
@@ -3483,7 +3483,7 @@
     cc.AudioClip = AudioClip;
     module.exports = AudioClip;
   }), {
-    "../event/event-target": 48,
+    "../event/event-target": 50,
     "./CCAsset": 9
   } ],
   11: [ (function(require, module, exports) {
@@ -3605,7 +3605,7 @@
     cc.Prefab = module.exports = Prefab;
     cc.js.obsolete(cc, "cc._Prefab", "Prefab");
   }), {
-    "../platform/instantiate-jit": 95
+    "../platform/instantiate-jit": 97
   } ],
   17: [ (function(require, module, exports) {
     var CCObject = require("../platform/CCObject");
@@ -3628,8 +3628,8 @@
     }));
     module.exports = cc.RawAsset;
   }), {
-    "../platform/CCObject": 83,
-    "../platform/js": 97
+    "../platform/CCObject": 85,
+    "../platform/js": 99
   } ],
   18: [ (function(require, module, exports) {
     var renderer = require("../renderer");
@@ -3703,8 +3703,8 @@
     });
     cc.RenderTexture = module.exports = RenderTexture;
   }), {
-    "../renderer": 115,
-    "../renderer/render-engine": 116,
+    "../renderer": 117,
+    "../renderer/render-engine": 118,
     "./CCTexture2D": 25
   } ],
   19: [ (function(require, module, exports) {
@@ -4113,8 +4113,8 @@
     module.exports = SpriteFrame;
   }), {
     "../assets/CCAsset": 9,
-    "../event/event-target": 48,
-    "../utils/texture-util": 155
+    "../event/event-target": 50,
+    "../utils/texture-util": 157
   } ],
   23: [ (function(require, module, exports) {
     var Font = require("./CCFont");
@@ -4472,11 +4472,11 @@
     cc.Texture2D = module.exports = Texture2D;
   }), {
     "../assets/CCAsset": 9,
-    "../event/event-target": 48,
-    "../platform/CCClass": 77,
-    "../platform/id-generater": 93,
-    "../renderer": 115,
-    "../renderer/render-engine": 116
+    "../event/event-target": 50,
+    "../platform/CCClass": 79,
+    "../platform/id-generater": 95,
+    "../renderer": 117,
+    "../renderer/render-engine": 118
   } ],
   26: [ (function(require, module, exports) {
     require("./CCRawAsset");
@@ -5032,10 +5032,10 @@
     module.exports = cc.Camera = Camera;
   }), {
     "../CCGame": 4,
-    "../renderer/index": 115,
-    "../renderer/render-engine": 116,
-    "../renderer/render-flow": 117,
-    "../utils/affine-transform": 141
+    "../renderer/index": 117,
+    "../renderer/render-engine": 118,
+    "../renderer/render-flow": 119,
+    "../utils/affine-transform": 143
   } ],
   29: [ (function(require, module, exports) {
     require("./platform/CCClass");
@@ -5270,10 +5270,10 @@
     });
     module.exports = ComponentScheduler;
   }), {
-    "./platform/CCClass": 77,
-    "./platform/CCObject": 83,
-    "./platform/js": 97,
-    "./utils/misc": 147
+    "./platform/CCClass": 79,
+    "./platform/CCObject": 85,
+    "./platform/js": 99,
+    "./utils/misc": 149
   } ],
   30: [ (function(require, module, exports) {
     var BlockEvents = [ "touchstart", "touchmove", "touchend", "mousedown", "mousemove", "mouseup", "mouseenter", "mouseleave", "mousewheel" ];
@@ -5297,9 +5297,470 @@
     });
     cc.BlockInputEvents = module.exports = BlockInputEvents;
   }), {
-    "./CCComponent": 32
+    "./CCComponent": 33
   } ],
   31: [ (function(require, module, exports) {
+    var Component = require("./CCComponent");
+    var Transition = cc.Enum({
+      NONE: 0,
+      COLOR: 1,
+      SPRITE: 2,
+      SCALE: 3
+    });
+    var State = cc.Enum({
+      NORMAL: 0,
+      HOVER: 1,
+      PRESSED: 2,
+      DISABLED: 3
+    });
+    var Button = cc.Class({
+      name: "cc.Button",
+      extends: Component,
+      ctor: function() {
+        this._pressed = false;
+        this._hovered = false;
+        this._fromColor = null;
+        this._toColor = null;
+        this._time = 0;
+        this._transitionFinished = true;
+        this._fromScale = cc.Vec2.ZERO;
+        this._toScale = cc.Vec2.ZERO;
+        this._originalScale = null;
+        this._sprite = null;
+      },
+      editor: false,
+      properties: {
+        interactable: {
+          default: true,
+          tooltip: false,
+          notify: function() {
+            this._updateState();
+            this.interactable || this._resetState();
+          },
+          animatable: false
+        },
+        _resizeToTarget: {
+          animatable: false,
+          set: function(value) {
+            value && this._resizeNodeToTargetNode();
+          }
+        },
+        enableAutoGrayEffect: {
+          default: false,
+          tooltip: false,
+          notify: function() {
+            this._updateDisabledState();
+          }
+        },
+        transition: {
+          default: Transition.NONE,
+          tooltip: false,
+          type: Transition,
+          animatable: false,
+          notify: function(oldValue) {
+            this._updateTransition(oldValue);
+          },
+          formerlySerializedAs: "transition"
+        },
+        normalColor: {
+          default: cc.color(214, 214, 214),
+          displayName: "Normal",
+          tooltip: false,
+          notify: function() {
+            this.transition === Transition.Color && this._getButtonState() === State.NORMAL && (this._getTarget().opacity = this.normalColor.a);
+            this._updateState();
+          }
+        },
+        pressedColor: {
+          default: cc.color(211, 211, 211),
+          displayName: "Pressed",
+          tooltip: false,
+          notify: function() {
+            this.transition === Transition.Color && this._getButtonState() === State.PRESSED && (this._getTarget().opacity = this.pressedColor.a);
+            this._updateState();
+          },
+          formerlySerializedAs: "pressedColor"
+        },
+        hoverColor: {
+          default: cc.Color.WHITE,
+          displayName: "Hover",
+          tooltip: false,
+          notify: function() {
+            this.transition === Transition.Color && this._getButtonState() === State.HOVER && (this._getTarget().opacity = this.hoverColor.a);
+            this._updateState();
+          },
+          formerlySerializedAs: "hoverColor"
+        },
+        disabledColor: {
+          default: cc.color(124, 124, 124),
+          displayName: "Disabled",
+          tooltip: false,
+          notify: function() {
+            this.transition === Transition.Color && this._getButtonState() === State.DISABLED && (this._getTarget().opacity = this.disabledColor.a);
+            this._updateState();
+          }
+        },
+        duration: {
+          default: .1,
+          range: [ 0, 10 ],
+          tooltip: false
+        },
+        zoomScale: {
+          default: 1.2,
+          tooltip: false
+        },
+        normalSprite: {
+          default: null,
+          type: cc.SpriteFrame,
+          displayName: "Normal",
+          tooltip: false,
+          notify: function() {
+            this._updateState();
+          }
+        },
+        pressedSprite: {
+          default: null,
+          type: cc.SpriteFrame,
+          displayName: "Pressed",
+          tooltip: false,
+          formerlySerializedAs: "pressedSprite",
+          notify: function() {
+            this._updateState();
+          }
+        },
+        hoverSprite: {
+          default: null,
+          type: cc.SpriteFrame,
+          displayName: "Hover",
+          tooltip: false,
+          formerlySerializedAs: "hoverSprite",
+          notify: function() {
+            this._updateState();
+          }
+        },
+        disabledSprite: {
+          default: null,
+          type: cc.SpriteFrame,
+          displayName: "Disabled",
+          tooltip: false,
+          notify: function() {
+            this._updateState();
+          }
+        },
+        target: {
+          default: null,
+          type: cc.Node,
+          tooltip: false,
+          notify: function(oldValue) {
+            this._applyTarget();
+            this.target !== oldValue && this._unregisterTargetEvent(oldValue);
+          }
+        },
+        clickEvents: {
+          default: [],
+          type: cc.Component.EventHandler,
+          tooltip: false
+        }
+      },
+      statics: {
+        Transition: Transition
+      },
+      __preload: function() {
+        this._applyTarget();
+        this._updateState();
+      },
+      _resetState: function() {
+        this._pressed = false;
+        this._hovered = false;
+        var target = this._getTarget();
+        var transition = this.transition;
+        var originalScale = this._originalScale;
+        transition === Transition.COLOR && this.interactable ? this._setTargetColor(this.normalColor) : transition === Transition.SCALE && originalScale && target.setScale(originalScale.x, originalScale.y);
+        this._transitionFinished = true;
+      },
+      onEnable: function() {
+        this.normalSprite && this.normalSprite.ensureLoadTexture();
+        this.hoverSprite && this.hoverSprite.ensureLoadTexture();
+        this.pressedSprite && this.pressedSprite.ensureLoadTexture();
+        this.disabledSprite && this.disabledSprite.ensureLoadTexture();
+        true;
+        this._registerNodeEvent();
+      },
+      onDisable: function() {
+        this._resetState();
+        true;
+        this._unregisterNodeEvent();
+      },
+      _getTarget: function() {
+        return this.target ? this.target : this.node;
+      },
+      _onTargetSpriteFrameChanged: function(comp) {
+        this.transition === Transition.SPRITE && this._setCurrentStateSprite(comp.spriteFrame);
+      },
+      _onTargetColorChanged: function(color) {
+        this.transition === Transition.COLOR && this._setCurrentStateColor(color);
+      },
+      _onTargetScaleChanged: function() {
+        var target = this._getTarget();
+        if (this._originalScale && (this.transition !== Transition.SCALE || this._transitionFinished)) {
+          this._originalScale.x = target.scaleX;
+          this._originalScale.y = target.scaleY;
+        }
+      },
+      _setTargetColor: function(color) {
+        var target = this._getTarget();
+        target.color = color;
+        target.opacity = color.a;
+      },
+      _getStateColor: function(state) {
+        switch (state) {
+         case State.NORMAL:
+          return this.normalColor;
+
+         case State.HOVER:
+          return this.hoverColor;
+
+         case State.PRESSED:
+          return this.pressedColor;
+
+         case State.DISABLED:
+          return this.disabledColor;
+        }
+      },
+      _getStateSprite: function(state) {
+        switch (state) {
+         case State.NORMAL:
+          return this.normalSprite;
+
+         case State.HOVER:
+          return this.hoverSprite;
+
+         case State.PRESSED:
+          return this.pressedSprite;
+
+         case State.DISABLED:
+          return this.disabledSprite;
+        }
+      },
+      _setCurrentStateColor: function(color) {
+        switch (this._getButtonState()) {
+         case State.NORMAL:
+          this.normalColor = color;
+          break;
+
+         case State.HOVER:
+          this.hoverColor = color;
+          break;
+
+         case State.PRESSED:
+          this.pressedColor = color;
+          break;
+
+         case State.DISABLED:
+          this.disabledColor = color;
+        }
+      },
+      _setCurrentStateSprite: function(spriteFrame) {
+        switch (this._getButtonState()) {
+         case State.NORMAL:
+          this.normalSprite = spriteFrame;
+          break;
+
+         case State.HOVER:
+          this.hoverSprite = spriteFrame;
+          break;
+
+         case State.PRESSED:
+          this.pressedSprite = spriteFrame;
+          break;
+
+         case State.DISABLED:
+          this.disabledSprite = spriteFrame;
+        }
+      },
+      update: function(dt) {
+        var target = this._getTarget();
+        if (this._transitionFinished) return;
+        if (this.transition !== Transition.COLOR && this.transition !== Transition.SCALE) return;
+        this.time += dt;
+        var ratio = 1;
+        this.duration > 0 && (ratio = this.time / this.duration);
+        ratio >= 1 && (ratio = 1);
+        if (this.transition === Transition.COLOR) {
+          var color = this._fromColor.lerp(this._toColor, ratio);
+          this._setTargetColor(color);
+        } else this.transition === Transition.SCALE && this._originalScale && (target.scale = this._fromScale.lerp(this._toScale, ratio));
+        1 === ratio && (this._transitionFinished = true);
+      },
+      _registerNodeEvent: function() {
+        this.node.on(cc.Node.EventType.TOUCH_START, this._onTouchBegan, this);
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, this._onTouchMove, this);
+        this.node.on(cc.Node.EventType.TOUCH_END, this._onTouchEnded, this);
+        this.node.on(cc.Node.EventType.TOUCH_CANCEL, this._onTouchCancel, this);
+        this.node.on(cc.Node.EventType.MOUSE_ENTER, this._onMouseMoveIn, this);
+        this.node.on(cc.Node.EventType.MOUSE_LEAVE, this._onMouseMoveOut, this);
+      },
+      _unregisterNodeEvent: function() {
+        this.node.off(cc.Node.EventType.TOUCH_START, this._onTouchBegan, this);
+        this.node.off(cc.Node.EventType.TOUCH_MOVE, this._onTouchMove, this);
+        this.node.off(cc.Node.EventType.TOUCH_END, this._onTouchEnded, this);
+        this.node.off(cc.Node.EventType.TOUCH_CANCEL, this._onTouchCancel, this);
+        this.node.off(cc.Node.EventType.MOUSE_ENTER, this._onMouseMoveIn, this);
+        this.node.off(cc.Node.EventType.MOUSE_LEAVE, this._onMouseMoveOut, this);
+      },
+      _registerTargetEvent: function(target) {
+        false;
+        target.on(cc.Node.EventType.SCALE_CHANGED, this._onTargetScaleChanged, this);
+      },
+      _unregisterTargetEvent: function(target) {
+        false;
+        target.off(cc.Node.EventType.SCALE_CHANGED, this._onTargetScaleChanged, this);
+      },
+      _getTargetSprite: function(target) {
+        var sprite = null;
+        target && (sprite = target.getComponent(cc.Sprite));
+        return sprite;
+      },
+      _applyTarget: function() {
+        var target = this._getTarget();
+        this._sprite = this._getTargetSprite(target);
+        this._originalScale || (this._originalScale = cc.Vec2.ZERO);
+        this._originalScale.x = target.scaleX;
+        this._originalScale.y = target.scaleY;
+        this._registerTargetEvent(target);
+      },
+      _onTouchBegan: function(event) {
+        if (!this.interactable || !this.enabledInHierarchy) return;
+        this._pressed = true;
+        this._updateState();
+        event.stopPropagation();
+      },
+      _onTouchMove: function(event) {
+        if (!this.interactable || !this.enabledInHierarchy || !this._pressed) return;
+        var touch = event.touch;
+        var hit = this.node._hitTest(touch.getLocation());
+        var target = this._getTarget();
+        var originalScale = this._originalScale;
+        if (this.transition === Transition.SCALE && originalScale) if (hit) {
+          this._fromScale.x = originalScale.x;
+          this._fromScale.y = originalScale.y;
+          this._toScale.x = originalScale.x * this.zoomScale;
+          this._toScale.y = originalScale.y * this.zoomScale;
+          this._transitionFinished = false;
+        } else {
+          this.time = 0;
+          this._transitionFinished = true;
+          target.setScale(originalScale.x, originalScale.y);
+        } else {
+          var state = void 0;
+          state = hit ? State.PRESSED : State.NORMAL;
+          this._applyTransition(state);
+        }
+        event.stopPropagation();
+      },
+      _onTouchEnded: function(event) {
+        if (!this.interactable || !this.enabledInHierarchy) return;
+        if (this._pressed) {
+          cc.Component.EventHandler.emitEvents(this.clickEvents, event);
+          this.node.emit("click", this);
+        }
+        this._pressed = false;
+        this._updateState();
+        event.stopPropagation();
+      },
+      _onTouchCancel: function() {
+        if (!this.interactable || !this.enabledInHierarchy) return;
+        this._pressed = false;
+        this._updateState();
+      },
+      _onMouseMoveIn: function() {
+        if (this._pressed || !this.interactable || !this.enabledInHierarchy) return;
+        if (this.transition === Transition.SPRITE && !this.hoverSprite) return;
+        if (!this._hovered) {
+          this._hovered = true;
+          this._updateState();
+        }
+      },
+      _onMouseMoveOut: function() {
+        if (this._hovered) {
+          this._hovered = false;
+          this._updateState();
+        }
+      },
+      _updateState: function() {
+        var state = this._getButtonState();
+        this._applyTransition(state);
+        this._updateDisabledState();
+      },
+      _getButtonState: function() {
+        var state = void 0;
+        state = this.interactable ? this._pressed ? State.PRESSED : this._hovered ? State.HOVER : State.NORMAL : State.DISABLED;
+        return state;
+      },
+      _updateColorTransitionImmediately: function(state) {
+        var color = this._getStateColor(state);
+        this._setTargetColor(color);
+      },
+      _updateColorTransition: function(state) {
+        if (false, state === State.DISABLED) this._updateColorTransitionImmediately(state); else {
+          var target = this._getTarget();
+          var color = this._getStateColor(state);
+          this._fromColor = target.color.clone();
+          this._toColor = color;
+          this.time = 0;
+          this._transitionFinished = false;
+        }
+      },
+      _updateSpriteTransition: function(state) {
+        var sprite = this._getStateSprite(state);
+        this._sprite && sprite && (this._sprite.spriteFrame = sprite);
+      },
+      _updateScaleTransition: function(state) {
+        state === State.PRESSED ? this._zoomUp() : this._zoomBack();
+      },
+      _zoomUp: function() {
+        if (!this._originalScale) return;
+        this._fromScale.x = this._originalScale.x;
+        this._fromScale.y = this._originalScale.y;
+        this._toScale.x = this._originalScale.x * this.zoomScale;
+        this._toScale.y = this._originalScale.y * this.zoomScale;
+        this.time = 0;
+        this._transitionFinished = false;
+      },
+      _zoomBack: function() {
+        if (!this._originalScale) return;
+        var target = this._getTarget();
+        this._fromScale.x = target.scaleX;
+        this._fromScale.y = target.scaleY;
+        this._toScale.x = this._originalScale.x;
+        this._toScale.y = this._originalScale.y;
+        this.time = 0;
+        this._transitionFinished = false;
+      },
+      _updateTransition: function(oldTransition) {
+        oldTransition === Transition.COLOR ? this._updateColorTransitionImmediately(State.NORMAL) : oldTransition === Transition.SPRITE && this._updateSpriteTransition(State.NORMAL);
+        this._updateState();
+      },
+      _applyTransition: function(state) {
+        var transition = this.transition;
+        transition === Transition.COLOR ? this._updateColorTransition(state) : transition === Transition.SPRITE ? this._updateSpriteTransition(state) : transition === Transition.SCALE && this._updateScaleTransition(state);
+      },
+      _resizeNodeToTargetNode: false,
+      _updateDisabledState: function() {
+        if (this._sprite) {
+          if (this.enableAutoGrayEffect && !(this.transition === Transition.SPRITE && this.disabledSprite) && !this.interactable) {
+            this._sprite.setState(cc.Sprite.State.GRAY);
+            return;
+          }
+          this._sprite.setState(cc.Sprite.State.NORMAL);
+        }
+      }
+    });
+    cc.Button = module.exports = Button;
+  }), {
+    "./CCComponent": 33
+  } ],
+  32: [ (function(require, module, exports) {
     var Camera = require("../camera/CCCamera");
     var Component = require("./CCComponent");
     var Canvas = cc.Class({
@@ -5413,9 +5874,9 @@
     cc.Canvas = module.exports = Canvas;
   }), {
     "../camera/CCCamera": 28,
-    "./CCComponent": 32
+    "./CCComponent": 33
   } ],
-  32: [ (function(require, module, exports) {
+  33: [ (function(require, module, exports) {
     var CCObject = require("../platform/CCObject");
     var js = require("../platform/js");
     var idGenerater = new (require("../platform/id-generater"))("Comp");
@@ -5570,11 +6031,11 @@
     Component.prototype.__scriptUuid = "";
     cc.Component = module.exports = Component;
   }), {
-    "../platform/CCObject": 83,
-    "../platform/id-generater": 93,
-    "../platform/js": 97
+    "../platform/CCObject": 85,
+    "../platform/id-generater": 95,
+    "../platform/js": 99
   } ],
-  33: [ (function(require, module, exports) {
+  34: [ (function(require, module, exports) {
     cc.Component.EventHandler = cc.Class({
       name: "cc.ClickEvent",
       properties: {
@@ -5646,7 +6107,7 @@
       }
     });
   }), {} ],
-  34: [ (function(require, module, exports) {
+  35: [ (function(require, module, exports) {
     var macro = require("../platform/CCMacro");
     var RenderComponent = require("./CCRenderComponent");
     var renderEngine = require("../renderer/render-engine");
@@ -6015,14 +6476,583 @@
     });
     cc.Label = module.exports = Label;
   }), {
-    "../platform/CCMacro": 82,
-    "../renderer/render-engine": 116,
-    "../renderer/render-flow": 117,
+    "../platform/CCMacro": 84,
+    "../renderer/render-engine": 118,
+    "../renderer/render-flow": 119,
     "../renderer/utils/dynamic-atlas/manager": void 0,
-    "../renderer/utils/label/label-frame": 119,
-    "./CCRenderComponent": 35
+    "../renderer/utils/label/label-frame": 121,
+    "./CCRenderComponent": 37
   } ],
-  35: [ (function(require, module, exports) {
+  36: [ (function(require, module, exports) {
+    var NodeEvent = require("../CCNode").EventType;
+    var Type = cc.Enum({
+      NONE: 0,
+      HORIZONTAL: 1,
+      VERTICAL: 2,
+      GRID: 3
+    });
+    var ResizeMode = cc.Enum({
+      NONE: 0,
+      CONTAINER: 1,
+      CHILDREN: 2
+    });
+    var AxisDirection = cc.Enum({
+      HORIZONTAL: 0,
+      VERTICAL: 1
+    });
+    var VerticalDirection = cc.Enum({
+      BOTTOM_TO_TOP: 0,
+      TOP_TO_BOTTOM: 1
+    });
+    var HorizontalDirection = cc.Enum({
+      LEFT_TO_RIGHT: 0,
+      RIGHT_TO_LEFT: 1
+    });
+    var Layout = cc.Class({
+      name: "cc.Layout",
+      extends: require("./CCComponent"),
+      editor: false,
+      properties: {
+        _layoutSize: cc.size(300, 200),
+        _layoutDirty: {
+          default: true,
+          serializable: false
+        },
+        _resize: ResizeMode.NONE,
+        _N$layoutType: Type.NONE,
+        type: {
+          type: Type,
+          get: function() {
+            return this._N$layoutType;
+          },
+          set: function(value) {
+            this._N$layoutType = value;
+            var reLayouted;
+            false;
+            this._doLayoutDirty();
+          },
+          tooltip: false,
+          animatable: false
+        },
+        resizeMode: {
+          type: ResizeMode,
+          tooltip: false,
+          animatable: false,
+          get: function() {
+            return this._resize;
+          },
+          set: function(value) {
+            if (this.type === Type.NONE && value === ResizeMode.CHILDREN) return;
+            this._resize = value;
+            var reLayouted;
+            false;
+            this._doLayoutDirty();
+          }
+        },
+        cellSize: {
+          default: cc.size(40, 40),
+          tooltip: false,
+          type: cc.Size,
+          notify: function() {
+            this._doLayoutDirty();
+          }
+        },
+        startAxis: {
+          default: AxisDirection.HORIZONTAL,
+          tooltip: false,
+          type: AxisDirection,
+          notify: function() {
+            var reLayouted;
+            false;
+            this._doLayoutDirty();
+          },
+          animatable: false
+        },
+        _N$padding: {
+          default: 0
+        },
+        paddingLeft: {
+          default: 0,
+          tooltip: false,
+          notify: function() {
+            this._doLayoutDirty();
+          }
+        },
+        paddingRight: {
+          default: 0,
+          tooltip: false,
+          notify: function() {
+            this._doLayoutDirty();
+          }
+        },
+        paddingTop: {
+          default: 0,
+          tooltip: false,
+          notify: function() {
+            this._doLayoutDirty();
+          }
+        },
+        paddingBottom: {
+          default: 0,
+          tooltip: false,
+          notify: function() {
+            this._doLayoutDirty();
+          }
+        },
+        spacingX: {
+          default: 0,
+          notify: function() {
+            this._doLayoutDirty();
+          },
+          tooltip: false
+        },
+        spacingY: {
+          default: 0,
+          notify: function() {
+            this._doLayoutDirty();
+          },
+          tooltip: false
+        },
+        verticalDirection: {
+          default: VerticalDirection.TOP_TO_BOTTOM,
+          type: VerticalDirection,
+          notify: function() {
+            this._doLayoutDirty();
+          },
+          tooltip: false,
+          animatable: false
+        },
+        horizontalDirection: {
+          default: HorizontalDirection.LEFT_TO_RIGHT,
+          type: HorizontalDirection,
+          notify: function() {
+            this._doLayoutDirty();
+          },
+          tooltip: false,
+          animatable: false
+        },
+        affectedByScale: {
+          default: false,
+          notify: function() {
+            this._doLayoutDirty();
+          },
+          animatable: false,
+          tooltip: false
+        }
+      },
+      statics: {
+        Type: Type,
+        VerticalDirection: VerticalDirection,
+        HorizontalDirection: HorizontalDirection,
+        ResizeMode: ResizeMode,
+        AxisDirection: AxisDirection
+      },
+      _migratePaddingData: function() {
+        this.paddingLeft = this._N$padding;
+        this.paddingRight = this._N$padding;
+        this.paddingTop = this._N$padding;
+        this.paddingBottom = this._N$padding;
+        this._N$padding = 0;
+      },
+      onEnable: function() {
+        this._addEventListeners();
+        this.node.getContentSize().equals(cc.size(0, 0)) && this.node.setContentSize(this._layoutSize);
+        0 !== this._N$padding && this._migratePaddingData();
+        this._doLayoutDirty();
+      },
+      onDisable: function() {
+        this._removeEventListeners();
+      },
+      _doLayoutDirty: function() {
+        this._layoutDirty = true;
+      },
+      _doScaleDirty: function() {
+        this._layoutDirty = this._layoutDirty || this.affectedByScale;
+      },
+      _addEventListeners: function() {
+        cc.director.on(cc.Director.EVENT_AFTER_UPDATE, this.updateLayout, this);
+        this.node.on(NodeEvent.SIZE_CHANGED, this._resized, this);
+        this.node.on(NodeEvent.ANCHOR_CHANGED, this._doLayoutDirty, this);
+        this.node.on(NodeEvent.CHILD_ADDED, this._childAdded, this);
+        this.node.on(NodeEvent.CHILD_REMOVED, this._childRemoved, this);
+        this.node.on(NodeEvent.CHILD_REORDER, this._doLayoutDirty, this);
+        this._addChildrenEventListeners();
+      },
+      _removeEventListeners: function() {
+        cc.director.off(cc.Director.EVENT_AFTER_UPDATE, this.updateLayout, this);
+        this.node.off(NodeEvent.SIZE_CHANGED, this._resized, this);
+        this.node.off(NodeEvent.ANCHOR_CHANGED, this._doLayoutDirty, this);
+        this.node.off(NodeEvent.CHILD_ADDED, this._childAdded, this);
+        this.node.off(NodeEvent.CHILD_REMOVED, this._childRemoved, this);
+        this.node.off(NodeEvent.CHILD_REORDER, this._doLayoutDirty, this);
+        this._removeChildrenEventListeners();
+      },
+      _addChildrenEventListeners: function() {
+        var children = this.node.children;
+        for (var i = 0; i < children.length; ++i) {
+          var child = children[i];
+          child.on(NodeEvent.SCALE_CHANGED, this._doScaleDirty, this);
+          child.on(NodeEvent.SIZE_CHANGED, this._doLayoutDirty, this);
+          child.on(NodeEvent.POSITION_CHANGED, this._doLayoutDirty, this);
+          child.on(NodeEvent.ANCHOR_CHANGED, this._doLayoutDirty, this);
+          child.on("active-in-hierarchy-changed", this._doLayoutDirty, this);
+        }
+      },
+      _removeChildrenEventListeners: function() {
+        var children = this.node.children;
+        for (var i = 0; i < children.length; ++i) {
+          var child = children[i];
+          child.off(NodeEvent.SCALE_CHANGED, this._doScaleDirty, this);
+          child.off(NodeEvent.SIZE_CHANGED, this._doLayoutDirty, this);
+          child.off(NodeEvent.POSITION_CHANGED, this._doLayoutDirty, this);
+          child.off(NodeEvent.ANCHOR_CHANGED, this._doLayoutDirty, this);
+          child.off("active-in-hierarchy-changed", this._doLayoutDirty, this);
+        }
+      },
+      _childAdded: function(child) {
+        child.on(NodeEvent.SCALE_CHANGED, this._doScaleDirty, this);
+        child.on(NodeEvent.SIZE_CHANGED, this._doLayoutDirty, this);
+        child.on(NodeEvent.POSITION_CHANGED, this._doLayoutDirty, this);
+        child.on(NodeEvent.ANCHOR_CHANGED, this._doLayoutDirty, this);
+        child.on("active-in-hierarchy-changed", this._doLayoutDirty, this);
+        this._doLayoutDirty();
+      },
+      _childRemoved: function(child) {
+        child.off(NodeEvent.SCALE_CHANGED, this._doScaleDirty, this);
+        child.off(NodeEvent.SIZE_CHANGED, this._doLayoutDirty, this);
+        child.off(NodeEvent.POSITION_CHANGED, this._doLayoutDirty, this);
+        child.off(NodeEvent.ANCHOR_CHANGED, this._doLayoutDirty, this);
+        child.off("active-in-hierarchy-changed", this._doLayoutDirty, this);
+        this._doLayoutDirty();
+      },
+      _resized: function() {
+        this._layoutSize = this.node.getContentSize();
+        this._doLayoutDirty();
+      },
+      _doLayoutHorizontally: function(baseWidth, rowBreak, fnPositionY, applyChildren) {
+        var layoutAnchor = this.node.getAnchorPoint();
+        var children = this.node.children;
+        var sign = 1;
+        var paddingX = this.paddingLeft;
+        var leftBoundaryOfLayout = -layoutAnchor.x * baseWidth;
+        if (this.horizontalDirection === HorizontalDirection.RIGHT_TO_LEFT) {
+          sign = -1;
+          leftBoundaryOfLayout = (1 - layoutAnchor.x) * baseWidth;
+          paddingX = this.paddingRight;
+        }
+        var nextX = leftBoundaryOfLayout + sign * paddingX - sign * this.spacingX;
+        var rowMaxHeight = 0;
+        var tempMaxHeight = 0;
+        var secondMaxHeight = 0;
+        var row = 0;
+        var containerResizeBoundary = 0;
+        var maxHeightChildAnchorY = 0;
+        var activeChildCount = 0;
+        for (var i = 0; i < children.length; ++i) {
+          var child = children[i];
+          child.activeInHierarchy && activeChildCount++;
+        }
+        var newChildWidth = this.cellSize.width;
+        this.type !== Type.GRID && this.resizeMode === ResizeMode.CHILDREN && (newChildWidth = (baseWidth - (this.paddingLeft + this.paddingRight) - (activeChildCount - 1) * this.spacingX) / activeChildCount);
+        for (var i = 0; i < children.length; ++i) {
+          var child = children[i];
+          var childScaleX = this._getUsedScaleValue(child.scaleX);
+          var childScaleY = this._getUsedScaleValue(child.scaleY);
+          if (!child.activeInHierarchy) continue;
+          if (this._resize === ResizeMode.CHILDREN) {
+            child.width = newChildWidth / childScaleX;
+            this.type === Type.GRID && (child.height = this.cellSize.height / childScaleY);
+          }
+          var anchorX = child.anchorX;
+          var childBoundingBoxWidth = child.width * childScaleX;
+          var childBoundingBoxHeight = child.height * childScaleY;
+          secondMaxHeight > tempMaxHeight && (tempMaxHeight = secondMaxHeight);
+          if (childBoundingBoxHeight >= tempMaxHeight) {
+            secondMaxHeight = tempMaxHeight;
+            tempMaxHeight = childBoundingBoxHeight;
+            maxHeightChildAnchorY = child.getAnchorPoint().y;
+          }
+          this.horizontalDirection === HorizontalDirection.RIGHT_TO_LEFT && (anchorX = 1 - child.anchorX);
+          nextX = nextX + sign * anchorX * childBoundingBoxWidth + sign * this.spacingX;
+          var rightBoundaryOfChild = sign * (1 - anchorX) * childBoundingBoxWidth;
+          if (rowBreak) {
+            var rowBreakBoundary = nextX + rightBoundaryOfChild + sign * (sign > 0 ? this.paddingRight : this.paddingLeft);
+            var leftToRightRowBreak = this.horizontalDirection === HorizontalDirection.LEFT_TO_RIGHT && rowBreakBoundary > (1 - layoutAnchor.x) * baseWidth;
+            var rightToLeftRowBreak = this.horizontalDirection === HorizontalDirection.RIGHT_TO_LEFT && rowBreakBoundary < -layoutAnchor.x * baseWidth;
+            if (leftToRightRowBreak || rightToLeftRowBreak) {
+              if (childBoundingBoxHeight >= tempMaxHeight) {
+                0 === secondMaxHeight && (secondMaxHeight = tempMaxHeight);
+                rowMaxHeight += secondMaxHeight;
+                secondMaxHeight = tempMaxHeight;
+              } else {
+                rowMaxHeight += tempMaxHeight;
+                secondMaxHeight = childBoundingBoxHeight;
+                tempMaxHeight = 0;
+              }
+              nextX = leftBoundaryOfLayout + sign * (paddingX + anchorX * childBoundingBoxWidth);
+              row++;
+            }
+          }
+          var finalPositionY = fnPositionY(child, rowMaxHeight, row);
+          baseWidth >= childBoundingBoxWidth + this.paddingLeft + this.paddingRight && applyChildren && child.setPosition(cc.v2(nextX, finalPositionY));
+          var signX = 1;
+          var tempFinalPositionY;
+          var topMarign = 0 === tempMaxHeight ? childBoundingBoxHeight : tempMaxHeight;
+          if (this.verticalDirection === VerticalDirection.TOP_TO_BOTTOM) {
+            containerResizeBoundary = containerResizeBoundary || this.node._contentSize.height;
+            signX = -1;
+            tempFinalPositionY = finalPositionY + signX * (topMarign * maxHeightChildAnchorY + this.paddingBottom);
+            tempFinalPositionY < containerResizeBoundary && (containerResizeBoundary = tempFinalPositionY);
+          } else {
+            containerResizeBoundary = containerResizeBoundary || -this.node._contentSize.height;
+            tempFinalPositionY = finalPositionY + signX * (topMarign * maxHeightChildAnchorY + this.paddingTop);
+            tempFinalPositionY > containerResizeBoundary && (containerResizeBoundary = tempFinalPositionY);
+          }
+          nextX += rightBoundaryOfChild;
+        }
+        return containerResizeBoundary;
+      },
+      _getVerticalBaseHeight: function(children) {
+        var newHeight = 0;
+        var activeChildCount = 0;
+        if (this.resizeMode === ResizeMode.CONTAINER) {
+          for (var i = 0; i < children.length; ++i) {
+            var child = children[i];
+            if (child.activeInHierarchy) {
+              activeChildCount++;
+              newHeight += child.height * this._getUsedScaleValue(child.scaleY);
+            }
+          }
+          newHeight += (activeChildCount - 1) * this.spacingY + this.paddingBottom + this.paddingTop;
+        } else newHeight = this.node.getContentSize().height;
+        return newHeight;
+      },
+      _doLayoutVertically: function(baseHeight, columnBreak, fnPositionX, applyChildren) {
+        var layoutAnchor = this.node.getAnchorPoint();
+        var children = this.node.children;
+        var sign = 1;
+        var paddingY = this.paddingBottom;
+        var bottomBoundaryOfLayout = -layoutAnchor.y * baseHeight;
+        if (this.verticalDirection === VerticalDirection.TOP_TO_BOTTOM) {
+          sign = -1;
+          bottomBoundaryOfLayout = (1 - layoutAnchor.y) * baseHeight;
+          paddingY = this.paddingTop;
+        }
+        var nextY = bottomBoundaryOfLayout + sign * paddingY - sign * this.spacingY;
+        var columnMaxWidth = 0;
+        var tempMaxWidth = 0;
+        var secondMaxWidth = 0;
+        var column = 0;
+        var containerResizeBoundary = 0;
+        var maxWidthChildAnchorX = 0;
+        var activeChildCount = 0;
+        for (var i = 0; i < children.length; ++i) {
+          var child = children[i];
+          child.activeInHierarchy && activeChildCount++;
+        }
+        var newChildHeight = this.cellSize.height;
+        this.type !== Type.GRID && this.resizeMode === ResizeMode.CHILDREN && (newChildHeight = (baseHeight - (this.paddingTop + this.paddingBottom) - (activeChildCount - 1) * this.spacingY) / activeChildCount);
+        for (var i = 0; i < children.length; ++i) {
+          var child = children[i];
+          var childScaleX = this._getUsedScaleValue(child.scaleX);
+          var childScaleY = this._getUsedScaleValue(child.scaleY);
+          if (!child.activeInHierarchy) continue;
+          if (this.resizeMode === ResizeMode.CHILDREN) {
+            child.height = newChildHeight / childScaleY;
+            this.type === Type.GRID && (child.width = this.cellSize.width / childScaleX);
+          }
+          var anchorY = child.anchorY;
+          var childBoundingBoxWidth = child.width * childScaleX;
+          var childBoundingBoxHeight = child.height * childScaleY;
+          secondMaxWidth > tempMaxWidth && (tempMaxWidth = secondMaxWidth);
+          if (childBoundingBoxWidth >= tempMaxWidth) {
+            secondMaxWidth = tempMaxWidth;
+            tempMaxWidth = childBoundingBoxWidth;
+            maxWidthChildAnchorX = child.getAnchorPoint().x;
+          }
+          this.verticalDirection === VerticalDirection.TOP_TO_BOTTOM && (anchorY = 1 - child.anchorY);
+          nextY = nextY + sign * anchorY * childBoundingBoxHeight + sign * this.spacingY;
+          var topBoundaryOfChild = sign * (1 - anchorY) * childBoundingBoxHeight;
+          if (columnBreak) {
+            var columnBreakBoundary = nextY + topBoundaryOfChild + sign * (sign > 0 ? this.paddingTop : this.paddingBottom);
+            var bottomToTopColumnBreak = this.verticalDirection === VerticalDirection.BOTTOM_TO_TOP && columnBreakBoundary > (1 - layoutAnchor.y) * baseHeight;
+            var topToBottomColumnBreak = this.verticalDirection === VerticalDirection.TOP_TO_BOTTOM && columnBreakBoundary < -layoutAnchor.y * baseHeight;
+            if (bottomToTopColumnBreak || topToBottomColumnBreak) {
+              if (childBoundingBoxWidth >= tempMaxWidth) {
+                0 === secondMaxWidth && (secondMaxWidth = tempMaxWidth);
+                columnMaxWidth += secondMaxWidth;
+                secondMaxWidth = tempMaxWidth;
+              } else {
+                columnMaxWidth += tempMaxWidth;
+                secondMaxWidth = childBoundingBoxWidth;
+                tempMaxWidth = 0;
+              }
+              nextY = bottomBoundaryOfLayout + sign * (paddingY + anchorY * childBoundingBoxHeight);
+              column++;
+            }
+          }
+          var finalPositionX = fnPositionX(child, columnMaxWidth, column);
+          baseHeight >= childBoundingBoxHeight + (this.paddingTop + this.paddingBottom) && applyChildren && child.setPosition(cc.v2(finalPositionX, nextY));
+          var signX = 1;
+          var tempFinalPositionX;
+          var rightMarign = 0 === tempMaxWidth ? childBoundingBoxWidth : tempMaxWidth;
+          if (this.horizontalDirection === HorizontalDirection.RIGHT_TO_LEFT) {
+            signX = -1;
+            containerResizeBoundary = containerResizeBoundary || this.node._contentSize.width;
+            tempFinalPositionX = finalPositionX + signX * (rightMarign * maxWidthChildAnchorX + this.paddingLeft);
+            tempFinalPositionX < containerResizeBoundary && (containerResizeBoundary = tempFinalPositionX);
+          } else {
+            containerResizeBoundary = containerResizeBoundary || -this.node._contentSize.width;
+            tempFinalPositionX = finalPositionX + signX * (rightMarign * maxWidthChildAnchorX + this.paddingRight);
+            tempFinalPositionX > containerResizeBoundary && (containerResizeBoundary = tempFinalPositionX);
+          }
+          nextY += topBoundaryOfChild;
+        }
+        return containerResizeBoundary;
+      },
+      _doLayoutBasic: function() {
+        var children = this.node.children;
+        var allChildrenBoundingBox = null;
+        for (var i = 0; i < children.length; ++i) {
+          var child = children[i];
+          child.activeInHierarchy && (allChildrenBoundingBox ? allChildrenBoundingBox.union(allChildrenBoundingBox, child.getBoundingBoxToWorld()) : allChildrenBoundingBox = child.getBoundingBoxToWorld());
+        }
+        if (allChildrenBoundingBox) {
+          var leftBottomInParentSpace = this.node.parent.convertToNodeSpaceAR(cc.v2(allChildrenBoundingBox.x, allChildrenBoundingBox.y));
+          leftBottomInParentSpace = cc.v2(leftBottomInParentSpace.x - this.paddingLeft, leftBottomInParentSpace.y - this.paddingBottom);
+          var rightTopInParentSpace = this.node.parent.convertToNodeSpaceAR(cc.v2(allChildrenBoundingBox.x + allChildrenBoundingBox.width, allChildrenBoundingBox.y + allChildrenBoundingBox.height));
+          rightTopInParentSpace = cc.v2(rightTopInParentSpace.x + this.paddingRight, rightTopInParentSpace.y + this.paddingTop);
+          var newSize = cc.size(parseFloat((rightTopInParentSpace.x - leftBottomInParentSpace.x).toFixed(2)), parseFloat((rightTopInParentSpace.y - leftBottomInParentSpace.y).toFixed(2)));
+          var layoutPosition = this.node.getPosition();
+          if (0 !== newSize.width) {
+            var newAnchorX = (layoutPosition.x - leftBottomInParentSpace.x) / newSize.width;
+            this.node.anchorX = parseFloat(newAnchorX.toFixed(2));
+          }
+          if (0 !== newSize.height) {
+            var newAnchorY = (layoutPosition.y - leftBottomInParentSpace.y) / newSize.height;
+            this.node.anchorY = parseFloat(newAnchorY.toFixed(2));
+          }
+          this.node.setContentSize(newSize);
+        }
+      },
+      _doLayoutGridAxisHorizontal: function(layoutAnchor, layoutSize) {
+        var baseWidth = layoutSize.width;
+        var sign = 1;
+        var bottomBoundaryOfLayout = -layoutAnchor.y * layoutSize.height;
+        var paddingY = this.paddingBottom;
+        if (this.verticalDirection === VerticalDirection.TOP_TO_BOTTOM) {
+          sign = -1;
+          bottomBoundaryOfLayout = (1 - layoutAnchor.y) * layoutSize.height;
+          paddingY = this.paddingTop;
+        }
+        var fnPositionY = function(child, topOffset, row) {
+          return bottomBoundaryOfLayout + sign * (topOffset + child.anchorY * child.height * this._getUsedScaleValue(child.scaleY) + paddingY + row * this.spacingY);
+        }.bind(this);
+        var newHeight = 0;
+        if (this.resizeMode === ResizeMode.CONTAINER) {
+          var boundary = this._doLayoutHorizontally(baseWidth, true, fnPositionY, false);
+          newHeight = bottomBoundaryOfLayout - boundary;
+          newHeight < 0 && (newHeight *= -1);
+          bottomBoundaryOfLayout = -layoutAnchor.y * newHeight;
+          if (this.verticalDirection === VerticalDirection.TOP_TO_BOTTOM) {
+            sign = -1;
+            bottomBoundaryOfLayout = (1 - layoutAnchor.y) * newHeight;
+          }
+        }
+        this._doLayoutHorizontally(baseWidth, true, fnPositionY, true);
+        this.resizeMode === ResizeMode.CONTAINER && this.node.setContentSize(baseWidth, newHeight);
+      },
+      _doLayoutGridAxisVertical: function(layoutAnchor, layoutSize) {
+        var baseHeight = layoutSize.height;
+        var sign = 1;
+        var leftBoundaryOfLayout = -layoutAnchor.x * layoutSize.width;
+        var paddingX = this.paddingLeft;
+        if (this.horizontalDirection === HorizontalDirection.RIGHT_TO_LEFT) {
+          sign = -1;
+          leftBoundaryOfLayout = (1 - layoutAnchor.x) * layoutSize.width;
+          paddingX = this.paddingRight;
+        }
+        var fnPositionX = function(child, leftOffset, column) {
+          return leftBoundaryOfLayout + sign * (leftOffset + child.anchorX * child.width * this._getUsedScaleValue(child.scaleX) + paddingX + column * this.spacingX);
+        }.bind(this);
+        var newWidth = 0;
+        if (this.resizeMode === ResizeMode.CONTAINER) {
+          var boundary = this._doLayoutVertically(baseHeight, true, fnPositionX, false);
+          newWidth = leftBoundaryOfLayout - boundary;
+          newWidth < 0 && (newWidth *= -1);
+          leftBoundaryOfLayout = -layoutAnchor.x * newWidth;
+          if (this.horizontalDirection === HorizontalDirection.RIGHT_TO_LEFT) {
+            sign = -1;
+            leftBoundaryOfLayout = (1 - layoutAnchor.x) * newWidth;
+          }
+        }
+        this._doLayoutVertically(baseHeight, true, fnPositionX, true);
+        this.resizeMode === ResizeMode.CONTAINER && this.node.setContentSize(newWidth, baseHeight);
+      },
+      _doLayoutGrid: function() {
+        var layoutAnchor = this.node.getAnchorPoint();
+        var layoutSize = this.node.getContentSize();
+        this.startAxis === AxisDirection.HORIZONTAL ? this._doLayoutGridAxisHorizontal(layoutAnchor, layoutSize) : this.startAxis === AxisDirection.VERTICAL && this._doLayoutGridAxisVertical(layoutAnchor, layoutSize);
+      },
+      _getHorizontalBaseWidth: function(children) {
+        var newWidth = 0;
+        var activeChildCount = 0;
+        if (this.resizeMode === ResizeMode.CONTAINER) {
+          for (var i = 0; i < children.length; ++i) {
+            var child = children[i];
+            if (child.activeInHierarchy) {
+              activeChildCount++;
+              newWidth += child.width * this._getUsedScaleValue(child.scaleX);
+            }
+          }
+          newWidth += (activeChildCount - 1) * this.spacingX + this.paddingLeft + this.paddingRight;
+        } else newWidth = this.node.getContentSize().width;
+        return newWidth;
+      },
+      _doLayout: function() {
+        if (this.type === Type.HORIZONTAL) {
+          var newWidth = this._getHorizontalBaseWidth(this.node.children);
+          var fnPositionY = function(child) {
+            return child.y;
+          };
+          this._doLayoutHorizontally(newWidth, false, fnPositionY, true);
+          this.node.width = newWidth;
+        } else if (this.type === Type.VERTICAL) {
+          var newHeight = this._getVerticalBaseHeight(this.node.children);
+          var fnPositionX = function(child) {
+            return child.x;
+          };
+          this._doLayoutVertically(newHeight, false, fnPositionX, true);
+          this.node.height = newHeight;
+        } else this.type === Type.NONE ? this.resizeMode === ResizeMode.CONTAINER && this._doLayoutBasic() : this.type === Type.GRID && this._doLayoutGrid();
+      },
+      _getUsedScaleValue: function(value) {
+        return this.affectedByScale ? Math.abs(value) : 1;
+      },
+      updateLayout: function() {
+        if (this._layoutDirty && this.node.children.length > 0) {
+          this._doLayout();
+          this._layoutDirty = false;
+        }
+      }
+    });
+    Object.defineProperty(Layout.prototype, "padding", {
+      get: function() {
+        cc.warnID(4100);
+        return this.paddingLeft;
+      },
+      set: function(value) {
+        this._N$padding = value;
+        this._migratePaddingData();
+        this._doLayoutDirty();
+      }
+    });
+    cc.Layout = module.exports = Layout;
+  }), {
+    "../CCNode": 5,
+    "./CCComponent": 33
+  } ],
+  37: [ (function(require, module, exports) {
     var Component = require("./CCComponent");
     var renderEngine = require("../renderer/render-engine");
     var RenderFlow = require("../renderer/render-flow");
@@ -6105,11 +7135,11 @@
     RenderComponent._postAssembler = null;
     cc.RenderComponent = module.exports = RenderComponent;
   }), {
-    "../renderer/render-engine": 116,
-    "../renderer/render-flow": 117,
-    "./CCComponent": 32
+    "../renderer/render-engine": 118,
+    "../renderer/render-flow": 119,
+    "./CCComponent": 33
   } ],
-  36: [ (function(require, module, exports) {
+  38: [ (function(require, module, exports) {
     var misc = require("../utils/misc");
     var NodeEvent = require("../CCNode").EventType;
     var RenderComponent = require("./CCRenderComponent");
@@ -6455,14 +7485,14 @@
     cc.Sprite = module.exports = Sprite;
   }), {
     "../CCNode": 5,
-    "../platform/CCMacro": 82,
-    "../renderer/render-engine": 116,
-    "../renderer/render-flow": 117,
+    "../platform/CCMacro": 84,
+    "../renderer/render-engine": 118,
+    "../renderer/render-flow": 119,
     "../renderer/utils/dynamic-atlas/manager": void 0,
-    "../utils/misc": 147,
-    "./CCRenderComponent": 35
+    "../utils/misc": 149,
+    "./CCRenderComponent": 37
   } ],
-  37: [ (function(require, module, exports) {
+  39: [ (function(require, module, exports) {
     var WidgetManager = require("../base-ui/CCWidgetManager");
     var AlignMode = WidgetManager.AlignMode;
     var AlignFlags = WidgetManager._AlignFlags;
@@ -6764,9 +7794,9 @@
     cc.Widget = module.exports = Widget;
   }), {
     "../base-ui/CCWidgetManager": 27,
-    "./CCComponent": 32
+    "./CCComponent": 33
   } ],
-  38: [ (function(require, module, exports) {
+  40: [ (function(require, module, exports) {
     var Component = require("./CCComponent");
     var SwanSubContextView = void 0;
     var isBaiduGame = cc.sys.platform === cc.sys.BAIDU_GAME;
@@ -6826,9 +7856,9 @@
     });
     cc.SwanSubContextView = module.exports = SwanSubContextView;
   }), {
-    "./CCComponent": 32
+    "./CCComponent": 33
   } ],
-  39: [ (function(require, module, exports) {
+  41: [ (function(require, module, exports) {
     var Component = require("./CCComponent");
     var WXSubContextView = void 0;
     true, true;
@@ -6838,9 +7868,9 @@
     });
     cc.WXSubContextView = module.exports = WXSubContextView;
   }), {
-    "./CCComponent": 32
+    "./CCComponent": 33
   } ],
-  40: [ (function(require, module, exports) {
+  42: [ (function(require, module, exports) {
     require("./CCComponent");
     require("./CCComponentEventHandler");
     require("./missing-script");
@@ -6850,13 +7880,13 @@
     "./CCAnimation": void 0,
     "./CCAudioSource": void 0,
     "./CCBlockInputEvents": 30,
-    "./CCButton": void 0,
-    "./CCCanvas": 31,
-    "./CCComponent": 32,
-    "./CCComponentEventHandler": 33,
-    "./CCLabel": 34,
+    "./CCButton": 31,
+    "./CCCanvas": 32,
+    "./CCComponent": 33,
+    "./CCComponentEventHandler": 34,
+    "./CCLabel": 35,
     "./CCLabelOutline": void 0,
-    "./CCLayout": void 0,
+    "./CCLayout": 36,
     "./CCMask": void 0,
     "./CCMotionStreak": void 0,
     "./CCPageView": void 0,
@@ -6866,17 +7896,17 @@
     "./CCScrollBar": void 0,
     "./CCScrollView": void 0,
     "./CCSlider": void 0,
-    "./CCSprite": 36,
+    "./CCSprite": 38,
     "./CCToggle": void 0,
     "./CCToggleContainer": void 0,
     "./CCToggleGroup": void 0,
-    "./CCWidget": 37,
-    "./SwanSubContextView": 38,
-    "./WXSubContextView": 39,
+    "./CCWidget": 39,
+    "./SwanSubContextView": 40,
+    "./WXSubContextView": 41,
     "./editbox/CCEditBox": void 0,
-    "./missing-script": 41
+    "./missing-script": 43
   } ],
-  41: [ (function(require, module, exports) {
+  43: [ (function(require, module, exports) {
     var js = cc.js;
     var BUILTIN_CLASSID_RE = require("../utils/misc").BUILTIN_CLASSID_RE;
     var MissingClass = cc.Class({
@@ -6927,9 +7957,9 @@
     });
     cc._MissingScript = module.exports = MissingScript;
   }), {
-    "../utils/misc": 147
+    "../utils/misc": 149
   } ],
-  42: [ (function(require, module, exports) {
+  44: [ (function(require, module, exports) {
     var js = cc.js;
     require("../event/event");
     var EventMouse = function(eventType, bubbles) {
@@ -7082,9 +8112,9 @@
     cc.Event.EventKeyboard = EventKeyboard;
     module.exports = cc.Event;
   }), {
-    "../event/event": 49
+    "../event/event": 51
   } ],
-  43: [ (function(require, module, exports) {
+  45: [ (function(require, module, exports) {
     var js = require("../platform/js");
     cc.EventListener = function(type, listenerID, callback) {
       this._onEvent = callback;
@@ -7340,9 +8370,9 @@
     };
     module.exports = cc.EventListener;
   }), {
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  44: [ (function(require, module, exports) {
+  46: [ (function(require, module, exports) {
     var js = require("../platform/js");
     require("./CCEventListener");
     var ListenerID = cc.EventListener.ListenerID;
@@ -7967,10 +8997,10 @@
     }));
     module.exports = eventManager;
   }), {
-    "../platform/js": 97,
-    "./CCEventListener": 43
+    "../platform/js": 99,
+    "./CCEventListener": 45
   } ],
-  45: [ (function(require, module, exports) {
+  47: [ (function(require, module, exports) {
     cc.Touch = function(x, y, id) {
       this._lastModified = 0;
       this.setTouchInfo(id, x, y);
@@ -8031,7 +9061,7 @@
       }
     };
   }), {} ],
-  46: [ (function(require, module, exports) {
+  48: [ (function(require, module, exports) {
     require("./CCEvent");
     require("./CCTouch");
     require("./CCEventListener");
@@ -8039,12 +9069,12 @@
     module.exports = eventManager;
     false;
   }), {
-    "./CCEvent": 42,
-    "./CCEventListener": 43,
-    "./CCEventManager": 44,
-    "./CCTouch": 45
+    "./CCEvent": 44,
+    "./CCEventListener": 45,
+    "./CCEventManager": 46,
+    "./CCTouch": 47
   } ],
-  47: [ (function(require, module, exports) {
+  49: [ (function(require, module, exports) {
     var js = cc.js;
     var CallbacksHandler = require("../platform/callbacks-invoker").CallbacksHandler;
     function EventListeners() {
@@ -8076,9 +9106,9 @@
     module.exports = EventListeners;
     false;
   }), {
-    "../platform/callbacks-invoker": 90
+    "../platform/callbacks-invoker": 92
   } ],
-  48: [ (function(require, module, exports) {
+  50: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var CallbacksInvoker = require("../platform/callbacks-invoker");
     var fastRemove = js.array.fastRemove;
@@ -8125,10 +9155,10 @@
     };
     cc.EventTarget = module.exports = EventTarget;
   }), {
-    "../platform/callbacks-invoker": 90,
-    "../platform/js": 97
+    "../platform/callbacks-invoker": 92,
+    "../platform/js": 99
   } ],
-  49: [ (function(require, module, exports) {
+  51: [ (function(require, module, exports) {
     var js = require("../platform/js");
     cc.Event = function(type, bubbles) {
       this.type = type;
@@ -8204,20 +9234,20 @@
     cc.Event.EventCustom = EventCustom;
     module.exports = cc.Event;
   }), {
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  50: [ (function(require, module, exports) {
+  52: [ (function(require, module, exports) {
     require("./event");
     require("./event-listeners");
     require("./event-target");
     require("./system-event");
   }), {
-    "./event": 49,
-    "./event-listeners": 47,
-    "./event-target": 48,
-    "./system-event": 51
+    "./event": 51,
+    "./event-listeners": 49,
+    "./event-target": 50,
+    "./system-event": 53
   } ],
-  51: [ (function(require, module, exports) {
+  53: [ (function(require, module, exports) {
     var EventTarget = require("../event/event-target");
     var eventManager = require("../event-manager");
     var inputManger = require("../platform/CCInputManager");
@@ -8284,17 +9314,17 @@
     cc.SystemEvent = module.exports = SystemEvent;
     cc.systemEvent = new cc.SystemEvent();
   }), {
-    "../event-manager": 46,
-    "../event/event-target": 48,
-    "../platform/CCInputManager": 81
+    "../event-manager": 48,
+    "../event/event-target": 50,
+    "../platform/CCInputManager": 83
   } ],
-  52: [ (function(require, module, exports) {
+  54: [ (function(require, module, exports) {
     "use strict";
     require("./graphics");
   }), {
     "./graphics": void 0
   } ],
-  53: [ (function(require, module, exports) {
+  55: [ (function(require, module, exports) {
     require("./platform");
     require("./assets");
     true;
@@ -8318,13 +9348,13 @@
     "./camera/CCCamera": 28,
     "./collider": void 0,
     "./collider/CCIntersection": void 0,
-    "./components": 40,
-    "./graphics": 52,
+    "./components": 42,
+    "./graphics": 54,
     "./physics": void 0,
-    "./platform": 94,
-    "./utils/polyfill-3d": 149
+    "./platform": 96,
+    "./utils/polyfill-3d": 151
   } ],
-  54: [ (function(require, module, exports) {
+  56: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var Pipeline = require("./pipeline");
     var LoadingItems = require("./loading-items");
@@ -8689,18 +9719,18 @@
     false;
     module.exports = cc.loader;
   }), {
-    "../platform/js": 97,
-    "../platform/utils": 101,
-    "./asset-loader": 55,
-    "./asset-table": 56,
-    "./auto-release-utils": 58,
-    "./downloader": 60,
-    "./loader": 63,
-    "./loading-items": 64,
-    "./pipeline": 67,
-    "./released-asset-checker": 68
+    "../platform/js": 99,
+    "../platform/utils": 103,
+    "./asset-loader": 57,
+    "./asset-table": 58,
+    "./auto-release-utils": 60,
+    "./downloader": 62,
+    "./loader": 65,
+    "./loading-items": 66,
+    "./pipeline": 69,
+    "./released-asset-checker": 70
   } ],
-  55: [ (function(require, module, exports) {
+  57: [ (function(require, module, exports) {
     require("../utils/CCPath");
     var debug = require("../CCDebug");
     var Pipeline = require("./pipeline");
@@ -8752,11 +9782,11 @@
     Pipeline.AssetLoader = module.exports = AssetLoader;
   }), {
     "../CCDebug": 2,
-    "../utils/CCPath": 140,
-    "./loading-items": 64,
-    "./pipeline": 67
+    "../utils/CCPath": 142,
+    "./loading-items": 66,
+    "./pipeline": 69
   } ],
-  56: [ (function(require, module, exports) {
+  58: [ (function(require, module, exports) {
     var pushToMap = require("../utils/misc").pushToMap;
     var js = require("../platform/js");
     function Entry(uuid, type) {
@@ -8850,10 +9880,10 @@
     };
     module.exports = AssetTable;
   }), {
-    "../platform/js": 97,
-    "../utils/misc": 147
+    "../platform/js": 99,
+    "../utils/misc": 149
   } ],
-  57: [ (function(require, module, exports) {
+  59: [ (function(require, module, exports) {
     var sys = require("../platform/CCSys");
     var debug = require("../CCDebug");
     var __audioSupport = sys.__audioSupport;
@@ -8919,9 +9949,9 @@
     module.exports = downloadAudio;
   }), {
     "../CCDebug": 2,
-    "../platform/CCSys": 86
+    "../platform/CCSys": 88
   } ],
-  58: [ (function(require, module, exports) {
+  60: [ (function(require, module, exports) {
     var js = require("../platform/js");
     function parseDepends(key, parsed) {
       var item = cc.loader.getItem(key);
@@ -8987,9 +10017,9 @@
       }
     };
   }), {
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  59: [ (function(require, module, exports) {
+  61: [ (function(require, module, exports) {
     function downloadBinary(item, callback) {
       var url = item.url;
       var xhr = cc.loader.getXMLHttpRequest(), errInfo = "Load binary data failed: " + url;
@@ -9021,7 +10051,7 @@
     }
     module.exports = downloadBinary;
   }), {} ],
-  60: [ (function(require, module, exports) {
+  62: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var debug = require("../CCDebug");
     require("../utils/CCPath");
@@ -9185,16 +10215,16 @@
     Pipeline.Downloader = module.exports = Downloader;
   }), {
     "../CCDebug": 2,
-    "../platform/js": 97,
-    "../utils/CCPath": 140,
-    "./audio-downloader": 57,
-    "./binary-downloader": 59,
-    "./pack-downloader": 66,
-    "./pipeline": 67,
-    "./text-downloader": 70,
-    "./utils": 72
+    "../platform/js": 99,
+    "../utils/CCPath": 142,
+    "./audio-downloader": 59,
+    "./binary-downloader": 61,
+    "./pack-downloader": 68,
+    "./pipeline": 69,
+    "./text-downloader": 72,
+    "./utils": 74
   } ],
-  61: [ (function(require, module, exports) {
+  63: [ (function(require, module, exports) {
     var textUtils = require("../utils/text-utils");
     var _canvasContext = null;
     var _testString = "BES bswy:->@123\u4e01\u3041\u1101";
@@ -9317,22 +10347,22 @@
     };
     module.exports = fontLoader;
   }), {
-    "../utils/text-utils": 154
+    "../utils/text-utils": 156
   } ],
-  62: [ (function(require, module, exports) {
+  64: [ (function(require, module, exports) {
     require("./downloader");
     require("./loader");
     require("./loading-items");
     require("./pipeline");
     require("./CCLoader");
   }), {
-    "./CCLoader": 54,
-    "./downloader": 60,
-    "./loader": 63,
-    "./loading-items": 64,
-    "./pipeline": 67
+    "./CCLoader": 56,
+    "./downloader": 62,
+    "./loader": 65,
+    "./loading-items": 66,
+    "./pipeline": 69
   } ],
-  63: [ (function(require, module, exports) {
+  65: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var plistParser = require("../platform/CCSAXParser").plistParser;
     var Pipeline = require("./pipeline");
@@ -9429,13 +10459,13 @@
     Pipeline.Loader = module.exports = Loader;
   }), {
     "../assets/CCTexture2D": 25,
-    "../platform/CCSAXParser": 84,
-    "../platform/js": 97,
-    "./font-loader": 61,
-    "./pipeline": 67,
-    "./uuid-loader": 73
+    "../platform/CCSAXParser": 86,
+    "../platform/js": 99,
+    "./font-loader": 63,
+    "./pipeline": 69,
+    "./uuid-loader": 75
   } ],
-  64: [ (function(require, module, exports) {
+  66: [ (function(require, module, exports) {
     var CallbacksInvoker = require("../platform/callbacks-invoker");
     require("../utils/CCPath");
     var js = require("../platform/js");
@@ -9720,11 +10750,11 @@
     };
     cc.LoadingItems = module.exports = LoadingItems;
   }), {
-    "../platform/callbacks-invoker": 90,
-    "../platform/js": 97,
-    "../utils/CCPath": 140
+    "../platform/callbacks-invoker": 92,
+    "../platform/js": 99,
+    "../utils/CCPath": 142
   } ],
-  65: [ (function(require, module, exports) {
+  67: [ (function(require, module, exports) {
     var Pipeline = require("./pipeline");
     var ID = "MD5Pipe";
     var ExtnameRegex = /(\.[^.\n\\/]*)$/;
@@ -9780,9 +10810,9 @@
     };
     Pipeline.MD5Pipe = module.exports = MD5Pipe;
   }), {
-    "./pipeline": 67
+    "./pipeline": 69
   } ],
-  66: [ (function(require, module, exports) {
+  68: [ (function(require, module, exports) {
     var Unpackers = require("./unpackers");
     var pushToMap = require("../utils/misc").pushToMap;
     var PackState = {
@@ -9889,10 +10919,10 @@
     };
     false;
   }), {
-    "../utils/misc": 147,
-    "./unpackers": 71
+    "../utils/misc": 149,
+    "./unpackers": 73
   } ],
-  67: [ (function(require, module, exports) {
+  69: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var LoadingItems = require("./loading-items");
     var ItemState = LoadingItems.ItemState;
@@ -10023,10 +11053,10 @@
     };
     cc.Pipeline = module.exports = Pipeline;
   }), {
-    "../platform/js": 97,
-    "./loading-items": 64
+    "../platform/js": 99,
+    "./loading-items": 66
   } ],
-  68: [ (function(require, module, exports) {
+  70: [ (function(require, module, exports) {
     true;
     var js;
     var tmpInfo;
@@ -10080,9 +11110,9 @@
       module.exports = ReleasedAssetChecker;
     })();
   }), {
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  69: [ (function(require, module, exports) {
+  71: [ (function(require, module, exports) {
     var Pipeline = require("./pipeline");
     var ID = "SubPackPipe";
     var UuidRegex = /.*[/\\][0-9a-fA-F]{2}[/\\]([0-9a-fA-F-]{8,})/;
@@ -10118,9 +11148,9 @@
     };
     Pipeline.SubPackPipe = module.exports = SubPackPipe;
   }), {
-    "./pipeline": 67
+    "./pipeline": 69
   } ],
-  70: [ (function(require, module, exports) {
+  72: [ (function(require, module, exports) {
     var urlAppendTimestamp = require("./utils").urlAppendTimestamp;
     module.exports = function(item, callback) {
       var url = item.url;
@@ -10152,9 +11182,9 @@
       xhr.send(null);
     };
   }), {
-    "./utils": 72
+    "./utils": 74
   } ],
-  71: [ (function(require, module, exports) {
+  73: [ (function(require, module, exports) {
     var Texture2D = require("../assets/CCTexture2D");
     var js = require("../platform/js");
     function JsonUnpacker() {
@@ -10194,9 +11224,9 @@
     };
   }), {
     "../assets/CCTexture2D": 25,
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  72: [ (function(require, module, exports) {
+  74: [ (function(require, module, exports) {
     var _noCacheRex = /\?/;
     module.exports = {
       urlAppendTimestamp: function(url) {
@@ -10205,7 +11235,7 @@
       }
     };
   }), {} ],
-  73: [ (function(require, module, exports) {
+  75: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var debug = require("../CCDebug");
     require("../platform/deserialize");
@@ -10356,11 +11386,11 @@
     loadUuid.isSceneObj = isSceneObj;
   }), {
     "../CCDebug": 2,
-    "../platform/deserialize": 92,
-    "../platform/js": 97,
-    "./loading-items": 64
+    "../platform/deserialize": 94,
+    "../platform/js": 99,
+    "./loading-items": 66
   } ],
-  74: [ (function(require, module, exports) {
+  76: [ (function(require, module, exports) {
     var CompScheduler = require("./component-scheduler");
     var Flags = require("./platform/CCObject").Flags;
     var js = require("./platform/js");
@@ -10531,11 +11561,11 @@
     module.exports = NodeActivator;
   }), {
     "./component-scheduler": 29,
-    "./platform/CCObject": 83,
-    "./platform/js": 97,
-    "./utils/misc": 147
+    "./platform/CCObject": 85,
+    "./platform/js": 99,
+    "./utils/misc": 149
   } ],
-  75: [ (function(require, module, exports) {
+  77: [ (function(require, module, exports) {
     var js;
     var macro;
     var sys;
@@ -10544,12 +11574,12 @@
     var bkInputManager;
     false;
   }), {
-    "../event-manager": 46,
-    "../platform/js": 97,
-    "./CCMacro": 82,
-    "./CCSys": 86
+    "../event-manager": 48,
+    "../platform/js": 99,
+    "./CCMacro": 84,
+    "./CCSys": 88
   } ],
-  76: [ (function(require, module, exports) {
+  78: [ (function(require, module, exports) {
     var Asset = require("../assets/CCAsset");
     var callInNextTick = require("./utils").callInNextTick;
     var Loader = require("../load-pipeline/CCLoader");
@@ -10720,16 +11750,16 @@
     module.exports = cc.AssetLibrary = AssetLibrary;
   }), {
     "../assets/CCAsset": 9,
-    "../load-pipeline/CCLoader": 54,
-    "../load-pipeline/auto-release-utils": 58,
-    "../load-pipeline/md5-pipe": 65,
-    "../load-pipeline/pack-downloader": 66,
-    "../load-pipeline/subpackage-pipe": 69,
-    "../utils/decode-uuid": 143,
-    "./js": 97,
-    "./utils": 101
+    "../load-pipeline/CCLoader": 56,
+    "../load-pipeline/auto-release-utils": 60,
+    "../load-pipeline/md5-pipe": 67,
+    "../load-pipeline/pack-downloader": 68,
+    "../load-pipeline/subpackage-pipe": 71,
+    "../utils/decode-uuid": 145,
+    "./js": 99,
+    "./utils": 103
   } ],
-  77: [ (function(require, module, exports) {
+  79: [ (function(require, module, exports) {
     var js = require("./js");
     var Enum = require("./CCEnum");
     var utils = require("./utils");
@@ -11237,14 +12267,14 @@
     };
     false;
   }), {
-    "./CCEnum": 79,
-    "./attribute": 89,
-    "./js": 97,
-    "./preprocess-class": 98,
-    "./requiring-frame": 99,
-    "./utils": 101
+    "./CCEnum": 81,
+    "./attribute": 91,
+    "./js": 99,
+    "./preprocess-class": 100,
+    "./requiring-frame": 101,
+    "./utils": 103
   } ],
-  78: [ (function(require, module, exports) {
+  80: [ (function(require, module, exports) {
     require("./CCClass");
     var Preprocess = require("./preprocess-class");
     var js = require("./js");
@@ -11421,12 +12451,12 @@
       mixins: mixins
     };
   }), {
-    "./CCClass": 77,
-    "./js": 97,
-    "./preprocess-class": 98,
-    "./utils": 101
+    "./CCClass": 79,
+    "./js": 99,
+    "./preprocess-class": 100,
+    "./utils": 103
   } ],
-  79: [ (function(require, module, exports) {
+  81: [ (function(require, module, exports) {
     var js = require("./js");
     function Enum(obj) {
       if ("__enums__" in obj) return obj;
@@ -11473,9 +12503,9 @@
     false;
     module.exports = cc.Enum = Enum;
   }), {
-    "./js": 97
+    "./js": 99
   } ],
-  80: [ (function(require, module, exports) {
+  82: [ (function(require, module, exports) {
     var eventManager = require("../event-manager");
     var inputManager = require("./CCInputManager");
     var PORTRAIT = 0;
@@ -11581,10 +12611,10 @@
       }
     };
   }), {
-    "../event-manager": 46,
-    "./CCInputManager": 81
+    "../event-manager": 48,
+    "./CCInputManager": 83
   } ],
-  81: [ (function(require, module, exports) {
+  83: [ (function(require, module, exports) {
     var macro = require("./CCMacro");
     var sys = require("./CCSys");
     var eventManager = require("../event-manager");
@@ -11971,11 +13001,11 @@
     };
     module.exports = _cc.inputManager = inputManager;
   }), {
-    "../event-manager": 46,
-    "./CCMacro": 82,
-    "./CCSys": 86
+    "../event-manager": 48,
+    "./CCMacro": 84,
+    "./CCSys": 88
   } ],
-  82: [ (function(require, module, exports) {
+  84: [ (function(require, module, exports) {
     var js = require("./js");
     cc.macro = {
       RAD: Math.PI / 180,
@@ -12171,9 +13201,9 @@
     });
     module.exports = cc.macro;
   }), {
-    "./js": 97
+    "./js": 99
   } ],
-  83: [ (function(require, module, exports) {
+  85: [ (function(require, module, exports) {
     var js = require("./js");
     var CCClass = require("./CCClass");
     var Destroyed = 1;
@@ -12342,10 +13372,10 @@
     false, false;
     cc.Object = module.exports = CCObject;
   }), {
-    "./CCClass": 77,
-    "./js": 97
+    "./CCClass": 79,
+    "./js": 99
   } ],
-  84: [ (function(require, module, exports) {
+  86: [ (function(require, module, exports) {
     var js = require("../platform/js");
     cc.SAXParser = function() {
       if (true, window.DOMParser) {
@@ -12426,9 +13456,9 @@
       plistParser: cc.plistParser
     };
   }), {
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  85: [ (function(require, module, exports) {
+  87: [ (function(require, module, exports) {
     cc.screen = {
       _supportsFullScreen: false,
       _preOnFullScreenChange: null,
@@ -12493,7 +13523,7 @@
     };
     cc.screen.init();
   }), {} ],
-  86: [ (function(require, module, exports) {
+  88: [ (function(require, module, exports) {
     var settingPlatform = void 0;
     true;
     settingPlatform = window._CCSettings ? _CCSettings.platform : void 0;
@@ -12827,7 +13857,7 @@
     var sys = cc && cc.sys ? cc.sys : initSys();
     module.exports = sys;
   }), {} ],
-  87: [ (function(require, module, exports) {
+  89: [ (function(require, module, exports) {
     var EventTarget = require("../event/event-target");
     var js = require("../platform/js");
     var renderer = require("../renderer");
@@ -13478,12 +14508,12 @@
     cc.winSize = cc.v2();
     module.exports = cc.view;
   }), {
-    "../event/event-target": 48,
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "../renderer": 115
+    "../event/event-target": 50,
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "../renderer": 117
   } ],
-  88: [ (function(require, module, exports) {
+  90: [ (function(require, module, exports) {
     cc.visibleRect = {
       topLeft: cc.v2(0, 0),
       topRight: cc.v2(0, 0),
@@ -13521,7 +14551,7 @@
       }
     };
   }), {} ],
-  89: [ (function(require, module, exports) {
+  91: [ (function(require, module, exports) {
     var js = require("./js");
     var isPlainEmptyObj = require("./utils").isPlainEmptyObj_DEV;
     var DELIMETER = "$_$";
@@ -13609,11 +14639,11 @@
       ScriptUuid: {}
     };
   }), {
-    "./CCClass": 77,
-    "./js": 97,
-    "./utils": 101
+    "./CCClass": 79,
+    "./js": 99,
+    "./utils": 103
   } ],
-  90: [ (function(require, module, exports) {
+  92: [ (function(require, module, exports) {
     var js = require("./js");
     var fastRemoveAt = js.array.fastRemoveAt;
     function CallbackList() {
@@ -13740,9 +14770,9 @@
     CallbacksInvoker.CallbacksHandler = CallbacksHandler;
     module.exports = CallbacksInvoker;
   }), {
-    "./js": 97
+    "./js": 99
   } ],
-  91: [ (function(require, module, exports) {
+  93: [ (function(require, module, exports) {
     function deepFlatten(strList, array) {
       for (var i = 0; i < array.length; i++) {
         var item = array[i];
@@ -13759,7 +14789,7 @@
       flattenCodeArray: flattenCodeArray
     };
   }), {} ],
-  92: [ (function(require, module, exports) {
+  94: [ (function(require, module, exports) {
     var js = require("./js");
     var Attr = require("./attribute");
     var CCClass = require("./CCClass");
@@ -14081,12 +15111,12 @@
       cc.warnID(5302, id);
     };
   }), {
-    "../utils/misc": 147,
-    "./CCClass": 77,
-    "./attribute": 89,
-    "./js": 97
+    "../utils/misc": 149,
+    "./CCClass": 79,
+    "./attribute": 91,
+    "./js": 99
   } ],
-  93: [ (function(require, module, exports) {
+  95: [ (function(require, module, exports) {
     var NonUuidMark = ".";
     function IdGenerater(category) {
       this.id = 0 | 998 * Math.random();
@@ -14098,7 +15128,7 @@
     IdGenerater.global = new IdGenerater("global");
     module.exports = IdGenerater;
   }), {} ],
-  94: [ (function(require, module, exports) {
+  96: [ (function(require, module, exports) {
     require("./js");
     require("./CCClass");
     require("./CCClassDecorator");
@@ -14116,23 +15146,23 @@
     require("./CCAssetLibrary");
     require("./CCVisibleRect");
   }), {
-    "./CCAssetLibrary": 76,
-    "./CCClass": 77,
-    "./CCClassDecorator": 78,
-    "./CCEnum": 79,
-    "./CCMacro": 82,
-    "./CCObject": 83,
-    "./CCSys": 86,
-    "./CCVisibleRect": 88,
-    "./callbacks-invoker": 90,
-    "./deserialize": 92,
-    "./instantiate": 96,
-    "./instantiate-jit": 95,
-    "./js": 97,
-    "./requiring-frame": 99,
-    "./url": 100
+    "./CCAssetLibrary": 78,
+    "./CCClass": 79,
+    "./CCClassDecorator": 80,
+    "./CCEnum": 81,
+    "./CCMacro": 84,
+    "./CCObject": 85,
+    "./CCSys": 88,
+    "./CCVisibleRect": 90,
+    "./callbacks-invoker": 92,
+    "./deserialize": 94,
+    "./instantiate": 98,
+    "./instantiate-jit": 97,
+    "./js": 99,
+    "./requiring-frame": 101,
+    "./url": 102
   } ],
-  95: [ (function(require, module, exports) {
+  97: [ (function(require, module, exports) {
     var CCObject = require("./CCObject");
     var Destroyed = CCObject.Flags.Destroyed;
     var PersistentMask = CCObject.Flags.PersistentMask;
@@ -14402,13 +15432,13 @@
     };
     false;
   }), {
-    "./CCClass": 77,
-    "./CCObject": 83,
-    "./attribute": 89,
-    "./compiler": 91,
-    "./js": 97
+    "./CCClass": 79,
+    "./CCObject": 85,
+    "./attribute": 91,
+    "./compiler": 93,
+    "./js": 99
   } ],
-  96: [ (function(require, module, exports) {
+  98: [ (function(require, module, exports) {
     var CCObject = require("./CCObject");
     var CCValueType = require("../value-types/value-type");
     var Destroyed = CCObject.Flags.Destroyed;
@@ -14529,12 +15559,12 @@
     cc.instantiate = instantiate;
     module.exports = instantiate;
   }), {
-    "../value-types/value-type": 162,
-    "./CCObject": 83,
-    "./js": 97,
-    "./utils": 101
+    "../value-types/value-type": 164,
+    "./CCObject": 85,
+    "./js": 99,
+    "./utils": 103
   } ],
-  97: [ (function(require, module, exports) {
+  99: [ (function(require, module, exports) {
     var tempCIDGenerater = new (require("./id-generater"))("TmpCId.");
     function _getPropertyDescriptor(obj, name) {
       while (obj) {
@@ -14916,10 +15946,10 @@
     cc.js = js;
     module.exports = js;
   }), {
-    "../utils/mutable-forward-iterator": 148,
-    "./id-generater": 93
+    "../utils/mutable-forward-iterator": 150,
+    "./id-generater": 95
   } ],
-  98: [ (function(require, module, exports) {
+  100: [ (function(require, module, exports) {
     var js = require("./js");
     var SerializableAttrs = {
       url: {
@@ -15055,10 +16085,10 @@
       return true;
     };
   }), {
-    "./CCClass": 77,
-    "./js": 97
+    "./CCClass": 79,
+    "./js": 99
   } ],
-  99: [ (function(require, module, exports) {
+  101: [ (function(require, module, exports) {
     var requiringFrames = [];
     cc._RF = {
       push: function(module, uuid, script) {
@@ -15089,7 +16119,7 @@
     };
     false;
   }), {} ],
-  100: [ (function(require, module, exports) {
+  102: [ (function(require, module, exports) {
     cc.url = {
       _rawAssets: "",
       normalize: function(url) {
@@ -15111,7 +16141,7 @@
     };
     module.exports = cc.url;
   }), {} ],
-  101: [ (function(require, module, exports) {
+  103: [ (function(require, module, exports) {
     var js = require("./js");
     module.exports = {
       contains: function(refNode, otherNode) {
@@ -15138,9 +16168,9 @@
     false;
     false;
   }), {
-    "./js": 97
+    "./js": 99
   } ],
-  102: [ (function(require, module, exports) {
+  104: [ (function(require, module, exports) {
     require("./platform/js");
     require("./value-types");
     require("./utils");
@@ -15160,21 +16190,21 @@
   }), {
     "./CCDirector": 3,
     "./CCScheduler": 8,
-    "./event": 50,
-    "./event-manager": 46,
-    "./load-pipeline": 62,
-    "./platform/CCInputExtension": 80,
-    "./platform/CCInputManager": 81,
-    "./platform/CCMacro": 82,
-    "./platform/CCScreen": 85,
-    "./platform/CCSys": 86,
-    "./platform/CCView": 87,
-    "./platform/js": 97,
-    "./renderer": 115,
-    "./utils": 145,
-    "./value-types": 157
+    "./event": 52,
+    "./event-manager": 48,
+    "./load-pipeline": 64,
+    "./platform/CCInputExtension": 82,
+    "./platform/CCInputManager": 83,
+    "./platform/CCMacro": 84,
+    "./platform/CCScreen": 87,
+    "./platform/CCSys": 88,
+    "./platform/CCView": 89,
+    "./platform/js": 99,
+    "./renderer": 117,
+    "./utils": 147,
+    "./value-types": 159
   } ],
-  103: [ (function(require, module, exports) {
+  105: [ (function(require, module, exports) {
     var ForwardRenderer = function() {};
     ForwardRenderer.prototype = {
       constructor: ForwardRenderer,
@@ -15183,18 +16213,18 @@
     };
     module.exports = ForwardRenderer;
   }), {} ],
-  104: [ (function(require, module, exports) {
+  106: [ (function(require, module, exports) {
     module.exports = {
       ForwardRenderer: require("./forward-renderer"),
       RenderComponentHandle: require("./render-component-handle"),
       _renderers: require("./renderers")
     };
   }), {
-    "./forward-renderer": 103,
-    "./render-component-handle": 105,
-    "./renderers": 106
+    "./forward-renderer": 105,
+    "./render-component-handle": 107,
+    "./renderers": 108
   } ],
-  105: [ (function(require, module, exports) {
+  107: [ (function(require, module, exports) {
     require("./renderers");
     var RenderComponentHandle = function(device, defaultCamera) {
       this._device = device;
@@ -15230,9 +16260,9 @@
     };
     module.exports = RenderComponentHandle;
   }), {
-    "./renderers": 106
+    "./renderers": 108
   } ],
-  106: [ (function(require, module, exports) {
+  108: [ (function(require, module, exports) {
     var js = require("../../../platform/js");
     var Sprite = require("../../../components/CCSprite");
     var Label = require("../../../components/CCLabel");
@@ -15261,17 +16291,17 @@
       addRenderer: addRenderer
     };
   }), {
-    "../../../components/CCLabel": 34,
+    "../../../components/CCLabel": 35,
     "../../../components/CCMask": void 0,
-    "../../../components/CCSprite": 36,
+    "../../../components/CCSprite": 38,
     "../../../graphics/graphics": void 0,
-    "../../../platform/js": 97,
+    "../../../platform/js": 99,
     "./graphics": void 0,
-    "./label": 108,
+    "./label": 110,
     "./mask": void 0,
-    "./sprite": 110
+    "./sprite": 112
   } ],
-  107: [ (function(require, module, exports) {
+  109: [ (function(require, module, exports) {
     var bmfontUtils = require("../../../utils/label/bmfont");
     var js = require("../../../../platform/js");
     var utils = require("../utils");
@@ -15335,11 +16365,11 @@
       }
     }, bmfontUtils);
   }), {
-    "../../../../platform/js": 97,
-    "../../../utils/label/bmfont": 118,
-    "../utils": 114
+    "../../../../platform/js": 99,
+    "../../../utils/label/bmfont": 120,
+    "../utils": 116
   } ],
-  108: [ (function(require, module, exports) {
+  110: [ (function(require, module, exports) {
     var Label = require("../../../../components/CCLabel");
     var ttf = require("./ttf");
     var bmfont = require("./bmfont");
@@ -15381,11 +16411,11 @@
       }
     };
   }), {
-    "../../../../components/CCLabel": 34,
-    "./bmfont": 107,
-    "./ttf": 109
+    "../../../../components/CCLabel": 35,
+    "./bmfont": 109,
+    "./ttf": 111
   } ],
-  109: [ (function(require, module, exports) {
+  111: [ (function(require, module, exports) {
     var ttfUtils = require("../../../utils/label/ttf");
     var js = require("../../../../platform/js");
     var utils = require("../utils");
@@ -15428,11 +16458,11 @@
       }
     }, ttfUtils);
   }), {
-    "../../../../platform/js": 97,
-    "../../../utils/label/ttf": 121,
-    "../utils": 114
+    "../../../../platform/js": 99,
+    "../../../utils/label/ttf": 123,
+    "../utils": 116
   } ],
-  110: [ (function(require, module, exports) {
+  112: [ (function(require, module, exports) {
     var Sprite = require("../../../../components/CCSprite");
     var SpriteType = Sprite.Type;
     var FillType = Sprite.FillType;
@@ -15461,13 +16491,13 @@
       }
     };
   }), {
-    "../../../../components/CCSprite": 36,
-    "../../../webgl/assemblers/sprite/index.js": 128,
-    "./simple": 111,
-    "./sliced": 112,
-    "./tiled": 113
+    "../../../../components/CCSprite": 38,
+    "../../../webgl/assemblers/sprite/index.js": 130,
+    "./simple": 113,
+    "./sliced": 114,
+    "./tiled": 115
   } ],
-  111: [ (function(require, module, exports) {
+  113: [ (function(require, module, exports) {
     var utils = require("../utils");
     var renderer = {
       createData: function(sprite) {
@@ -15556,9 +16586,9 @@
     };
     module.exports = renderer;
   }), {
-    "../utils": 114
+    "../utils": 116
   } ],
-  112: [ (function(require, module, exports) {
+  114: [ (function(require, module, exports) {
     var utils = require("../utils");
     var simple = require("./simple");
     var renderer = {
@@ -15664,10 +16694,10 @@
     };
     module.exports = renderer;
   }), {
-    "../utils": 114,
-    "./simple": 111
+    "../utils": 116,
+    "./simple": 113
   } ],
-  113: [ (function(require, module, exports) {
+  115: [ (function(require, module, exports) {
     var utils = require("../utils");
     var simple = require("./simple");
     var renderer = {
@@ -15703,10 +16733,10 @@
     };
     module.exports = renderer;
   }), {
-    "../utils": 114,
-    "./simple": 111
+    "../utils": 116,
+    "./simple": 113
   } ],
-  114: [ (function(require, module, exports) {
+  116: [ (function(require, module, exports) {
     var WHITE = 16777215;
     var MAX_CANVAS_COUNT = 32;
     function colorizedFrame(canvas, texture, color, sx, sy, sw, sh) {
@@ -15806,7 +16836,7 @@
       }
     };
   }), {} ],
-  115: [ (function(require, module, exports) {
+  117: [ (function(require, module, exports) {
     var renderEngine = require("./render-engine");
     var RenderFlow = require("./render-flow");
     var vec3 = cc.vmath.vec3;
@@ -15906,13 +16936,13 @@
       }
     };
   }), {
-    "./canvas": 104,
-    "./render-engine": 116,
-    "./render-flow": 117,
-    "./webgl/assemblers": 122,
-    "./webgl/model-batcher": 135
+    "./canvas": 106,
+    "./render-engine": 118,
+    "./render-flow": 119,
+    "./webgl/assemblers": 124,
+    "./webgl/model-batcher": 137
   } ],
-  116: [ (function(require, module, exports) {
+  118: [ (function(require, module, exports) {
     "use strict";
     var _d2r = Math.PI / 180;
     var _r2d = 180 / Math.PI;
@@ -23875,7 +24905,7 @@
     };
     module.exports = renderEngine;
   }), {} ],
-  117: [ (function(require, module, exports) {
+  119: [ (function(require, module, exports) {
     var DONOTHING = 0;
     var LOCAL_TRANSFORM = 1;
     var WORLD_TRANSFORM = 2;
@@ -24093,7 +25123,7 @@
     RenderFlow.FLAG_FINAL = FINAL;
     module.exports = cc.RenderFlow = RenderFlow;
   }), {} ],
-  118: [ (function(require, module, exports) {
+  120: [ (function(require, module, exports) {
     var macro = require("../../../platform/CCMacro");
     var Label = require("../../../components/CCLabel");
     var Overflow = Label.Overflow;
@@ -24569,11 +25599,11 @@
       }
     };
   }), {
-    "../../../components/CCLabel": 34,
-    "../../../platform/CCMacro": 82,
-    "../../../utils/text-utils": 154
+    "../../../components/CCLabel": 35,
+    "../../../platform/CCMacro": 84,
+    "../../../utils/text-utils": 156
   } ],
-  119: [ (function(require, module, exports) {
+  121: [ (function(require, module, exports) {
     function LabelFrame() {
       this._rect = null;
       this.uv = [];
@@ -24632,7 +25662,7 @@
     };
     module.exports = LabelFrame;
   }), {} ],
-  120: [ (function(require, module, exports) {
+  122: [ (function(require, module, exports) {
     var macro = require("../../../platform/CCMacro");
     var Label = require("../../../components/CCLabel");
     var LabelOutline = require("../../../components/CCLabelOutline");
@@ -25239,13 +26269,13 @@
     };
   }), {
     "../../../assets/CCRenderTexture": 18,
-    "../../../components/CCComponent": 32,
-    "../../../components/CCLabel": 34,
+    "../../../components/CCComponent": 33,
+    "../../../components/CCLabel": 35,
     "../../../components/CCLabelOutline": void 0,
-    "../../../platform/CCMacro": 82,
-    "../../../utils/text-utils": 154
+    "../../../platform/CCMacro": 84,
+    "../../../utils/text-utils": 156
   } ],
-  121: [ (function(require, module, exports) {
+  123: [ (function(require, module, exports) {
     var macro = require("../../../platform/CCMacro");
     var textUtils = require("../../../utils/text-utils");
     var Component = require("../../../components/CCComponent");
@@ -25530,13 +26560,13 @@
       }
     };
   }), {
-    "../../../components/CCComponent": 32,
-    "../../../components/CCLabel": 34,
+    "../../../components/CCComponent": 33,
+    "../../../components/CCLabel": 35,
     "../../../components/CCLabelOutline": void 0,
-    "../../../platform/CCMacro": 82,
-    "../../../utils/text-utils": 154
+    "../../../platform/CCMacro": 84,
+    "../../../utils/text-utils": 156
   } ],
-  122: [ (function(require, module, exports) {
+  124: [ (function(require, module, exports) {
     require("./sprite");
     require("./mask-assembler");
     require("./graphics");
@@ -25544,12 +26574,12 @@
     require("./motion-streak");
   }), {
     "./graphics": void 0,
-    "./label": 124,
+    "./label": 126,
     "./mask-assembler": void 0,
     "./motion-streak": void 0,
-    "./sprite": 128
+    "./sprite": 130
   } ],
-  123: [ (function(require, module, exports) {
+  125: [ (function(require, module, exports) {
     var js = require("../../../../platform/js");
     var bmfontUtls = require("../../../utils/label/bmfont");
     module.exports = js.addon({
@@ -25628,10 +26658,10 @@
       }
     }, bmfontUtls);
   }), {
-    "../../../../platform/js": 97,
-    "../../../utils/label/bmfont": 118
+    "../../../../platform/js": 99,
+    "../../../utils/label/bmfont": 120
   } ],
-  124: [ (function(require, module, exports) {
+  126: [ (function(require, module, exports) {
     var Label = require("../../../../components/CCLabel");
     var ttfAssembler = require("./ttf");
     var bmfontAssembler = require("./bmfont");
@@ -25669,12 +26699,12 @@
     Label._canvasPool = canvasPool;
     module.exports = labelAssembler;
   }), {
-    "../../../../components/CCLabel": 34,
-    "./bmfont": 123,
-    "./letter-font": 125,
-    "./ttf": 126
+    "../../../../components/CCLabel": 35,
+    "./bmfont": 125,
+    "./letter-font": 127,
+    "./ttf": 128
   } ],
-  125: [ (function(require, module, exports) {
+  127: [ (function(require, module, exports) {
     var js = require("../../../../platform/js");
     var fontUtils = require("../../../utils/label/letter-font");
     var WHITE = cc.color(255, 255, 255, 255);
@@ -25756,10 +26786,10 @@
       }
     }, fontUtils);
   }), {
-    "../../../../platform/js": 97,
-    "../../../utils/label/letter-font": 120
+    "../../../../platform/js": 99,
+    "../../../utils/label/letter-font": 122
   } ],
-  126: [ (function(require, module, exports) {
+  128: [ (function(require, module, exports) {
     var js = require("../../../../platform/js");
     var ttfUtls = require("../../../utils/label/ttf");
     var WHITE = cc.color(255, 255, 255, 255);
@@ -25817,10 +26847,10 @@
       }
     }, ttfUtls);
   }), {
-    "../../../../platform/js": 97,
-    "../../../utils/label/ttf": 121
+    "../../../../platform/js": 99,
+    "../../../utils/label/ttf": 123
   } ],
-  127: [ (function(require, module, exports) {
+  129: [ (function(require, module, exports) {
     var Sprite = require("../../../../components/CCSprite");
     var FillType = Sprite.FillType;
     module.exports = {
@@ -25981,9 +27011,9 @@
       }
     };
   }), {
-    "../../../../components/CCSprite": 36
+    "../../../../components/CCSprite": 38
   } ],
-  128: [ (function(require, module, exports) {
+  130: [ (function(require, module, exports) {
     var Sprite = require("../../../../components/CCSprite");
     var SpriteType = Sprite.Type;
     var FillType = Sprite.FillType;
@@ -26021,15 +27051,15 @@
     Sprite._assembler = spriteAssembler;
     module.exports = spriteAssembler;
   }), {
-    "../../../../components/CCSprite": 36,
-    "./bar-filled": 127,
-    "./mesh": 129,
-    "./radial-filled": 130,
-    "./simple": 131,
-    "./sliced": 132,
-    "./tiled": 133
+    "../../../../components/CCSprite": 38,
+    "./bar-filled": 129,
+    "./mesh": 131,
+    "./radial-filled": 132,
+    "./simple": 133,
+    "./sliced": 134,
+    "./tiled": 135
   } ],
-  129: [ (function(require, module, exports) {
+  131: [ (function(require, module, exports) {
     module.exports = {
       useModel: false,
       createData: function(sprite) {
@@ -26120,7 +27150,7 @@
       }
     };
   }), {} ],
-  130: [ (function(require, module, exports) {
+  132: [ (function(require, module, exports) {
     var PI_2 = 2 * Math.PI;
     module.exports = {
       useModel: false,
@@ -26335,7 +27365,7 @@
       }
     };
   }), {} ],
-  131: [ (function(require, module, exports) {
+  133: [ (function(require, module, exports) {
     module.exports = {
       useModel: false,
       updateRenderData: function(sprite) {
@@ -26412,7 +27442,7 @@
       }
     };
   }), {} ],
-  132: [ (function(require, module, exports) {
+  134: [ (function(require, module, exports) {
     module.exports = {
       useModel: false,
       createData: function(sprite) {
@@ -26500,7 +27530,7 @@
       }
     };
   }), {} ],
-  133: [ (function(require, module, exports) {
+  135: [ (function(require, module, exports) {
     module.exports = {
       useModel: false,
       createData: function(sprite) {
@@ -26595,7 +27625,7 @@
       }
     };
   }), {} ],
-  134: [ (function(require, module, exports) {
+  136: [ (function(require, module, exports) {
     var renderEngine = require("../render-engine");
     var gfx = renderEngine.gfx;
     var MeshBuffer = cc.Class({
@@ -26746,9 +27776,9 @@
     });
     cc.MeshBuffer = module.exports = MeshBuffer;
   }), {
-    "../render-engine": 116
+    "../render-engine": 118
   } ],
-  135: [ (function(require, module, exports) {
+  137: [ (function(require, module, exports) {
     var renderEngine = require("../render-engine");
     var defaultVertexFormat = require("./vertex-format").vfmtPosUvColor;
     var StencilManager = require("./stencil-manager");
@@ -26886,15 +27916,15 @@
     };
     module.exports = ModelBatcher;
   }), {
-    "../../platform/id-generater": 93,
-    "../render-engine": 116,
-    "./mesh-buffer": 134,
-    "./quad-buffer": 136,
-    "./spine-buffer": 137,
-    "./stencil-manager": 138,
-    "./vertex-format": 139
+    "../../platform/id-generater": 95,
+    "../render-engine": 118,
+    "./mesh-buffer": 136,
+    "./quad-buffer": 138,
+    "./spine-buffer": 139,
+    "./stencil-manager": 140,
+    "./vertex-format": 141
   } ],
-  136: [ (function(require, module, exports) {
+  138: [ (function(require, module, exports) {
     var MeshBuffer = require("./mesh-buffer");
     var QuadBuffer = cc.Class({
       name: "cc.QuadBuffer",
@@ -26928,9 +27958,9 @@
     });
     cc.QuadBuffer = module.exports = QuadBuffer;
   }), {
-    "./mesh-buffer": 134
+    "./mesh-buffer": 136
   } ],
-  137: [ (function(require, module, exports) {
+  139: [ (function(require, module, exports) {
     var SpineBuffer = cc.Class({
       name: "cc.SpineBuffer",
       extends: require("./mesh-buffer"),
@@ -26963,9 +27993,9 @@
     });
     cc.SpineBuffer = module.exports = SpineBuffer;
   }), {
-    "./mesh-buffer": 134
+    "./mesh-buffer": 136
   } ],
-  138: [ (function(require, module, exports) {
+  140: [ (function(require, module, exports) {
     var renderEngine = require("../render-engine");
     var gfx = renderEngine.gfx;
     var Stage = cc.Enum({
@@ -27066,9 +28096,9 @@
     StencilManager.Stage = Stage;
     module.exports = cc.StencilManager = StencilManager;
   }), {
-    "../render-engine": 116
+    "../render-engine": 118
   } ],
-  139: [ (function(require, module, exports) {
+  141: [ (function(require, module, exports) {
     var renderEngine = require("../render-engine");
     var gfx = renderEngine.gfx;
     var vfmt3D = new gfx.VertexFormat([ {
@@ -27155,9 +28185,9 @@
       vfmtPosColor: vfmtPosColor
     };
   }), {
-    "../render-engine": 116
+    "../render-engine": 118
   } ],
-  140: [ (function(require, module, exports) {
+  142: [ (function(require, module, exports) {
     require("../platform/CCSys");
     var EXTNAME_RE = /(\.[^\.\/\?\\]*)(\?.*)?$/;
     var DIRNAME_RE = /((.*)(\/|\\|\\\\))?(.*?\..*$)?/;
@@ -27234,9 +28264,9 @@
     };
     module.exports = cc.path;
   }), {
-    "../platform/CCSys": 86
+    "../platform/CCSys": 88
   } ],
-  141: [ (function(require, module, exports) {
+  143: [ (function(require, module, exports) {
     var AffineTransform = function(a, b, c, d, tx, ty) {
       this.a = a;
       this.b = b;
@@ -27370,7 +28400,7 @@
     };
     cc.AffineTransform = module.exports = AffineTransform;
   }), {} ],
-  142: [ (function(require, module, exports) {
+  144: [ (function(require, module, exports) {
     var Flags = require("../platform/CCObject").Flags;
     var misc = require("./misc");
     var js = require("../platform/js");
@@ -27857,14 +28887,14 @@
     false;
     cc._BaseNode = module.exports = BaseNode;
   }), {
-    "../event-manager": 46,
-    "../platform/CCObject": 83,
-    "../platform/id-generater": 93,
-    "../platform/js": 97,
-    "../renderer/render-flow": 117,
-    "./misc": 147
+    "../event-manager": 48,
+    "../platform/CCObject": 85,
+    "../platform/id-generater": 95,
+    "../platform/js": 99,
+    "../renderer/render-flow": 119,
+    "./misc": 149
   } ],
-  143: [ (function(require, module, exports) {
+  145: [ (function(require, module, exports) {
     var Base64Values = require("./misc").BASE64_VALUES;
     var HexChars = "0123456789abcdef".split("");
     var _t = [ "", "", "", "" ];
@@ -27887,9 +28917,9 @@
     };
     false;
   }), {
-    "./misc": 147
+    "./misc": 149
   } ],
-  144: [ (function(require, module, exports) {
+  146: [ (function(require, module, exports) {
     cc.find = module.exports = function(path, referenceNode) {
       if (null == path) {
         cc.errorID(5600);
@@ -27923,19 +28953,19 @@
       return match;
     };
   }), {} ],
-  145: [ (function(require, module, exports) {
+  147: [ (function(require, module, exports) {
     require("./CCPath");
     true;
     require("./profiler/CCProfiler");
     require("./find");
     require("./mutable-forward-iterator");
   }), {
-    "./CCPath": 140,
-    "./find": 144,
-    "./mutable-forward-iterator": 148,
-    "./profiler/CCProfiler": 151
+    "./CCPath": 142,
+    "./find": 146,
+    "./mutable-forward-iterator": 150,
+    "./profiler/CCProfiler": 153
   } ],
-  146: [ (function(require, module, exports) {
+  148: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var renderEngine = require("../renderer/render-engine");
     var math = renderEngine.math;
@@ -27959,10 +28989,10 @@
       quat: quatPool
     };
   }), {
-    "../platform/js": 97,
-    "../renderer/render-engine": 116
+    "../platform/js": 99,
+    "../renderer/render-engine": 118
   } ],
-  147: [ (function(require, module, exports) {
+  149: [ (function(require, module, exports) {
     var js = require("../platform/js");
     var misc = {};
     misc.propertyDefine = function(ctor, sameNameGetSets, diffNameGetSets) {
@@ -28034,9 +29064,9 @@
     };
     cc.misc = module.exports = misc;
   }), {
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  148: [ (function(require, module, exports) {
+  150: [ (function(require, module, exports) {
     function MutableForwardIterator(array) {
       this.i = 0;
       this.array = array;
@@ -28065,7 +29095,7 @@
     };
     module.exports = MutableForwardIterator;
   }), {} ],
-  149: [ (function(require, module, exports) {
+  151: [ (function(require, module, exports) {
     var Node = require("../CCNode");
     var EventType = Node.EventType;
     var DirtyFlag = Node._LocalDirtyFlag;
@@ -28201,10 +29231,10 @@
     };
   }), {
     "../CCNode": 5,
-    "../renderer/render-engine": 116,
-    "../renderer/render-flow": 117
+    "../renderer/render-engine": 118,
+    "../renderer/render-flow": 119
   } ],
-  150: [ (function(require, module, exports) {
+  152: [ (function(require, module, exports) {
     var math = require("../renderer").renderEngine.math;
     cc._PrefabInfo = cc.Class({
       name: "cc.PrefabInfo",
@@ -28260,9 +29290,9 @@
       }
     };
   }), {
-    "../renderer": 115
+    "../renderer": 117
   } ],
-  151: [ (function(require, module, exports) {
+  153: [ (function(require, module, exports) {
     var macro = require("../../platform/CCMacro");
     var PerfCounter = require("./perf-counter");
     var _showFPS = false;
@@ -28453,10 +29483,10 @@
       }
     };
   }), {
-    "../../platform/CCMacro": 82,
-    "./perf-counter": 153
+    "../../platform/CCMacro": 84,
+    "./perf-counter": 155
   } ],
-  152: [ (function(require, module, exports) {
+  154: [ (function(require, module, exports) {
     var Counter = cc.Class({
       name: "cc.Counter",
       ctor: function(id, opts, now) {
@@ -28505,7 +29535,7 @@
     });
     module.exports = Counter;
   }), {} ],
-  153: [ (function(require, module, exports) {
+  155: [ (function(require, module, exports) {
     var Counter = require("./counter");
     var PerfCounter = cc.Class({
       name: "cc.PerfCounter",
@@ -28539,9 +29569,9 @@
     });
     module.exports = PerfCounter;
   }), {
-    "./counter": 152
+    "./counter": 154
   } ],
-  154: [ (function(require, module, exports) {
+  156: [ (function(require, module, exports) {
     var textUtils = {
       label_wordRex: /([a-zA-Z0-9\xc4\xd6\xdc\xe4\xf6\xfc\xdf\xe9\xe8\xe7\xe0\xf9\xea\xe2\xee\xf4\xfb\u0430-\u044f\u0410-\u042f\u0401\u0451]+|\S)/,
       label_symbolRex: /^[!,.:;'}\]%\?>\u3001\u2018\u201c\u300b\uff1f\u3002\uff0c\uff01]/,
@@ -28642,7 +29672,7 @@
     };
     module.exports = textUtils;
   }), {} ],
-  155: [ (function(require, module, exports) {
+  157: [ (function(require, module, exports) {
     var Texture2D = require("../assets/CCTexture2D");
     var textureUtil = {
       loadImage: function(url, cb, target) {
@@ -28710,7 +29740,7 @@
   }), {
     "../assets/CCTexture2D": 25
   } ],
-  156: [ (function(require, module, exports) {
+  158: [ (function(require, module, exports) {
     var ValueType = require("./value-type");
     var js = require("../platform/js");
     var Color = (function() {
@@ -28935,11 +29965,11 @@
     };
     module.exports = cc.Color;
   }), {
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "./value-type": 162
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "./value-type": 164
   } ],
-  157: [ (function(require, module, exports) {
+  159: [ (function(require, module, exports) {
     require("./value-type");
     require("./vec2");
     require("./vec3");
@@ -28950,17 +29980,17 @@
     require("./color");
     cc.vmath = require("../renderer/render-engine").math;
   }), {
-    "../renderer/render-engine": 116,
-    "./color": 156,
-    "./mat4": 158,
-    "./quat": 159,
-    "./rect": 160,
-    "./size": 161,
-    "./value-type": 162,
-    "./vec2": 163,
-    "./vec3": 164
+    "../renderer/render-engine": 118,
+    "./color": 158,
+    "./mat4": 160,
+    "./quat": 161,
+    "./rect": 162,
+    "./size": 163,
+    "./value-type": 164,
+    "./vec2": 165,
+    "./vec3": 166
   } ],
-  158: [ (function(require, module, exports) {
+  160: [ (function(require, module, exports) {
     var ValueType = require("./value-type");
     var js = require("../platform/js");
     var CCClass = require("../platform/CCClass");
@@ -29108,12 +30138,12 @@
       return new Mat4(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33);
     };
   }), {
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "../renderer/render-engine": 116,
-    "./value-type": 162
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "../renderer/render-engine": 118,
+    "./value-type": 164
   } ],
-  159: [ (function(require, module, exports) {
+  161: [ (function(require, module, exports) {
     var ValueType = require("./value-type");
     var js = require("../platform/js");
     var CCClass = require("../platform/CCClass");
@@ -29172,11 +30202,11 @@
     };
     module.exports = cc.Quat = Quat;
   }), {
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "./value-type": 162
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "./value-type": 164
   } ],
-  160: [ (function(require, module, exports) {
+  162: [ (function(require, module, exports) {
     var ValueType = require("./value-type");
     var js = require("../platform/js");
     function Rect(x, y, w, h) {
@@ -29330,11 +30360,11 @@
     };
     module.exports = cc.Rect;
   }), {
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "./value-type": 162
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "./value-type": 164
   } ],
-  161: [ (function(require, module, exports) {
+  163: [ (function(require, module, exports) {
     var ValueType = require("./value-type");
     var js = require("../platform/js");
     function Size(width, height) {
@@ -29380,11 +30410,11 @@
     };
     cc.Size = module.exports = Size;
   }), {
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "./value-type": 162
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "./value-type": 164
   } ],
-  162: [ (function(require, module, exports) {
+  164: [ (function(require, module, exports) {
     var js = require("../platform/js");
     function ValueType() {}
     js.setClassName("cc.ValueType", ValueType);
@@ -29395,9 +30425,9 @@
     };
     cc.ValueType = module.exports = ValueType;
   }), {
-    "../platform/js": 97
+    "../platform/js": 99
   } ],
-  163: [ (function(require, module, exports) {
+  165: [ (function(require, module, exports) {
     var ValueType = require("./value-type");
     var js = require("../platform/js");
     var CCClass = require("../platform/CCClass");
@@ -29598,13 +30628,13 @@
     cc.p = cc.v2;
     module.exports = cc.Vec2;
   }), {
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "../renderer/render-engine": 116,
-    "../utils/misc": 147,
-    "./value-type": 162
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "../renderer/render-engine": 118,
+    "../utils/misc": 149,
+    "./value-type": 164
   } ],
-  164: [ (function(require, module, exports) {
+  166: [ (function(require, module, exports) {
     var ValueType = require("./value-type");
     var js = require("../platform/js");
     var CCClass = require("../platform/CCClass");
@@ -29767,13 +30797,13 @@
     };
     module.exports = cc.Vec3 = Vec3;
   }), {
-    "../platform/CCClass": 77,
-    "../platform/js": 97,
-    "../renderer/render-engine": 116,
-    "../utils/misc": 147,
-    "./value-type": 162
+    "../platform/CCClass": 79,
+    "../platform/js": 99,
+    "../renderer/render-engine": 118,
+    "../utils/misc": 149,
+    "./value-type": 164
   } ],
-  165: [ (function(require, module, exports) {
+  167: [ (function(require, module, exports) {
     var js = cc.js;
     true;
     var ERR;
@@ -30175,14 +31205,14 @@
       "undefined" !== typeof dragonBones && js.obsolete(dragonBones.CCFactory, "dragonBones.CCFactory.getFactory", "getInstance");
     })();
   }), {} ],
-  166: [ (function(require, module, exports) {
+  168: [ (function(require, module, exports) {
     require("./core/CCGame");
     require("./actions");
   }), {
     "./actions": void 0,
     "./core/CCGame": 4
   } ],
-  167: [ (function(require, module, exports) {
+  169: [ (function(require, module, exports) {
     var Asset = require("../core/assets/CCAsset");
     var CCSpriteFrame = require("../core/assets/CCSpriteFrame");
     var ParticleAsset = cc.Class({
@@ -30200,7 +31230,7 @@
     "../core/assets/CCAsset": 9,
     "../core/assets/CCSpriteFrame": 22
   } ],
-  168: [ (function(require, module, exports) {
+  170: [ (function(require, module, exports) {
     var TiledMapAsset = cc.Class({
       name: "cc.TiledMapAsset",
       extends: cc.Asset,
@@ -30222,7 +31252,7 @@
     cc.TiledMapAsset = TiledMapAsset;
     module.exports = TiledMapAsset;
   }), {} ],
-  169: [ (function(require, module, exports) {
+  171: [ (function(require, module, exports) {
     require("./cocos2d/core");
     require("./cocos2d/animation");
     false;
@@ -30240,20 +31270,20 @@
   }), {
     "./cocos2d/actions": void 0,
     "./cocos2d/animation": void 0,
-    "./cocos2d/core": 53,
+    "./cocos2d/core": 55,
     "./cocos2d/core/components/CCStudioComponent": void 0,
-    "./cocos2d/deprecated": 165,
+    "./cocos2d/deprecated": 167,
     "./cocos2d/particle": void 0,
-    "./cocos2d/particle/CCParticleAsset": 167,
+    "./cocos2d/particle/CCParticleAsset": 169,
     "./cocos2d/tilemap": void 0,
-    "./cocos2d/tilemap/CCTiledMapAsset": 168,
+    "./cocos2d/tilemap/CCTiledMapAsset": 170,
     "./cocos2d/videoplayer/CCVideoPlayer": void 0,
     "./cocos2d/webview/CCWebView": void 0,
     "./extensions/ccpool/CCNodePool": void 0,
     "./extensions/dragonbones": void 0,
     "./extensions/spine": void 0
   } ],
-  170: [ (function(require, module, exports) {
+  172: [ (function(require, module, exports) {
     var _global = "undefined" === typeof window ? global : window;
     _global.cc = _global.cc || {};
     _global._cc = _global._cc || {};
@@ -30272,19 +31302,19 @@
     false;
     module.exports = _global.cc;
   }), {
-    "./cocos2d": 166,
-    "./cocos2d/core/predefine": 102,
-    "./extends": 169,
+    "./cocos2d": 168,
+    "./cocos2d/core/predefine": 104,
+    "./extends": 171,
     "./package": void 0,
-    "./polyfill/array": 172,
-    "./polyfill/array-buffer": 171,
-    "./polyfill/misc": 173,
-    "./polyfill/object": 174,
-    "./polyfill/string": 175,
-    "./polyfill/typescript": 176,
-    "./predefine": 177
+    "./polyfill/array": 174,
+    "./polyfill/array-buffer": 173,
+    "./polyfill/misc": 175,
+    "./polyfill/object": 176,
+    "./polyfill/string": 177,
+    "./polyfill/typescript": 178,
+    "./predefine": 179
   } ],
-  171: [ (function(require, module, exports) {
+  173: [ (function(require, module, exports) {
     ArrayBuffer.isView || (function() {
       var ArrayBufferView = Object.getPrototypeOf(Object.getPrototypeOf(new Uint8Array())).constructor;
       ArrayBuffer.isView = function(view) {
@@ -30292,12 +31322,12 @@
       };
     })();
   }), {} ],
-  172: [ (function(require, module, exports) {
+  174: [ (function(require, module, exports) {
     Array.isArray || (Array.isArray = function(arg) {
       return "[object Array]" === Object.prototype.toString.call(arg);
     });
   }), {} ],
-  173: [ (function(require, module, exports) {
+  175: [ (function(require, module, exports) {
     Math.sign || (Math.sign = function(x) {
       x = +x;
       if (0 === x || isNaN(x)) return x;
@@ -30319,7 +31349,7 @@
       };
     }
   }), {} ],
-  174: [ (function(require, module, exports) {
+  176: [ (function(require, module, exports) {
     Object.assign || (Object.assign = function(target, source) {
       cc.js.mixin(target, source);
     });
@@ -30333,7 +31363,7 @@
       return descriptors;
     });
   }), {} ],
-  175: [ (function(require, module, exports) {
+  177: [ (function(require, module, exports) {
     String.prototype.startsWith || (String.prototype.startsWith = function(searchString, position) {
       position = position || 0;
       return this.lastIndexOf(searchString, position) === position;
@@ -30345,7 +31375,7 @@
       return -1 !== lastIndex && lastIndex === position;
     });
   }), {} ],
-  176: [ (function(require, module, exports) {
+  178: [ (function(require, module, exports) {
     var extendStatics = Object.setPrototypeOf || {
       __proto__: []
     } instanceof Array && function(d, b) {
@@ -30595,7 +31625,7 @@
       return m ? m.call(o) : "function" === typeof __values ? __values(o) : o[Symbol.iterator]();
     };
   }), {} ],
-  177: [ (function(require, module, exports) {
+  179: [ (function(require, module, exports) {
     var _global = "undefined" === typeof window ? global : window;
     function defineMacro(name, defaultValue) {
       "undefined" === typeof _global[name] && (_global[name] = defaultValue);
@@ -30621,4 +31651,4 @@
     var engineVersion = "2.0.9";
     _global["CocosEngine"] = cc.ENGINE_VERSION = engineVersion;
   }), {} ]
-}, {}, [ 170 ]);
+}, {}, [ 172 ]);

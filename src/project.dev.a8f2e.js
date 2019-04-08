@@ -33,8 +33,8 @@ window.__require = function e(t, n, r) {
       value: true
     });
     exports.default = {
-      TouchType: cc.Enum({
-        DEFAULT: 0,
+      JoystickType: cc.Enum({
+        FIXED: 0,
         FOLLOW: 1
       }),
       DirectionType: cc.Enum({
@@ -83,9 +83,9 @@ window.__require = function e(t, n, r) {
           displayName: "Player",
           tooltip: "\u64cd\u63a7\u89d2\u8272"
         },
-        touchType: {
-          default: _JoystickCommon2.default.TouchType.DEFAULT,
-          type: _JoystickCommon2.default.TouchType,
+        joystickType: {
+          default: _JoystickCommon2.default.JoystickType.FIXED,
+          type: _JoystickCommon2.default.JoystickType,
           displayName: "Touch Type",
           tooltip: "\u89e6\u6478\u7c7b\u578b"
         },
@@ -109,7 +109,7 @@ window.__require = function e(t, n, r) {
       onLoad: function onLoad() {
         this._radius = this.ring.width / 2;
         this._initTouchEvent();
-        this.touchType == _JoystickCommon2.default.TouchType.FOLLOW && (this.node.opacity = 0);
+        this.joystickType == _JoystickCommon2.default.JoystickType.FOLLOW && (this.node.opacity = 0);
       },
       _initTouchEvent: function _initTouchEvent() {
         var self = this;
@@ -120,11 +120,11 @@ window.__require = function e(t, n, r) {
       },
       _touchStartEvent: function _touchStartEvent(event) {
         var touchPos = this.node.convertToNodeSpaceAR(event.getLocation());
-        if (this.touchType === _JoystickCommon2.default.TouchType.DEFAULT) {
+        if (this.joystickType === _JoystickCommon2.default.JoystickType.FIXED) {
           this._stickPos = this.ring.getPosition();
           var distance = touchPos.sub(this.ring.getPosition()).mag();
           this._radius > distance && this.dot.setPosition(touchPos);
-        } else if (this.touchType === _JoystickCommon2.default.TouchType.FOLLOW) {
+        } else if (this.joystickType === _JoystickCommon2.default.JoystickType.FOLLOW) {
           this._stickPos = touchPos;
           this.node.opacity = 255;
           this._touchLocation = event.getLocation();
@@ -133,19 +133,18 @@ window.__require = function e(t, n, r) {
         }
       },
       _touchMoveEvent: function _touchMoveEvent(event) {
-        if (this.touchType === _JoystickCommon2.default.TouchType.FOLLOW && this._touchLocation === event.getLocation()) return false;
+        if (this.joystickType === _JoystickCommon2.default.JoystickType.FOLLOW && this._touchLocation === event.getLocation()) return false;
         var touchPos = this.ring.convertToNodeSpaceAR(event.getLocation());
         var distance = touchPos.mag();
         var posX = this._stickPos.x + touchPos.x;
         var posY = this._stickPos.y + touchPos.y;
         var p = cc.v2(posX, posY).sub(this.ring.getPosition()).normalize();
-        var r = Math.atan2(p.y, p.x);
         if (this._radius > distance) {
           this.dot.setPosition(cc.v2(posX, posY));
           this.player._speedType = _JoystickCommon2.default.SpeedType.NORMAL;
         } else {
-          var x = this._stickPos.x + Math.cos(r) * this._radius;
-          var y = this._stickPos.y + Math.sin(r) * this._radius;
+          var x = this._stickPos.x + p.x * this._radius;
+          var y = this._stickPos.y + p.y * this._radius;
           this.dot.setPosition(cc.v2(x, y));
           this.player._speedType = _JoystickCommon2.default.SpeedType.FAST;
         }
@@ -154,7 +153,7 @@ window.__require = function e(t, n, r) {
       },
       _touchEndEvent: function _touchEndEvent() {
         this.dot.setPosition(this.ring.getPosition());
-        this.touchType == _JoystickCommon2.default.TouchType.FOLLOW && (this.node.opacity = 0);
+        this.joystickType == _JoystickCommon2.default.JoystickType.FOLLOW && (this.node.opacity = 0);
         this.player._speedType = _JoystickCommon2.default.SpeedType.STOP;
       },
       setPlayerSpeed: function setPlayerSpeed() {
@@ -231,5 +230,31 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     JoystickCommon: "JoystickCommon"
+  } ],
+  UI: [ function(require, module, exports) {
+    "use strict";
+    cc._RF.push(module, "b578d4RwmNB97QPmxn2E0ls", "UI");
+    "use strict";
+    var _JoystickCommon = require("JoystickCommon");
+    cc.Class({
+      extends: cc.Component,
+      properties: {
+        joystick: cc.Node
+      },
+      onLoad: function onLoad() {
+        this.joystick = this.joystick.getComponent("Joystick");
+      },
+      useFixedType: function useFixedType() {
+        this.joystick.joystickType = _JoystickCommon.JoystickType.FIXED;
+        this.joystick.node.opacity = 255;
+      },
+      useFollowType: function useFollowType() {
+        this.joystick.joystickType = _JoystickCommon.JoystickType.FOLLOW;
+        this.joystick.node.opacity = 0;
+      }
+    });
+    cc._RF.pop();
+  }, {
+    JoystickCommon: "JoystickCommon"
   } ]
-}, {}, [ "Joystick", "JoystickCommon", "Player" ]);
+}, {}, [ "Joystick", "JoystickCommon", "Player", "UI" ]);
