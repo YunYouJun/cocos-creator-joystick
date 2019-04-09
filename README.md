@@ -48,7 +48,7 @@ Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/
 > assets/script
 
 | Filename | Description | Function |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- |
 | Joystick.js | 虚拟摇杆脚本文件 | 存储 Joystick 主逻辑 |
 | JoystickCommon.js | 公用变量文件 | 存储公用类型定义 |
 | Player.js | 玩家脚本文件 | 挂载于玩家节点上，包含玩家必要属性。（可根据需要自行修改） |
@@ -57,6 +57,12 @@ Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/
 ## Dev
 
 Issue or PR is welcome.
+
+### Build
+
+```sh
+npm run build
+```
 
 ### Deploy
 
