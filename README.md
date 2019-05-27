@@ -6,9 +6,21 @@ Online Address: <https://yunyoujun.github.io/cocos-creator-joystick/>
 
 ## Usage
 
-Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/cocos-creator-joystick/master/dist/joystick-demo.zip)) or paste code.
+### Import
+
+Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/cocos-creator-joystick/master/dist/joystick-demo.zip)).
 
 > 文件 -> 资源导入...
+
+### Git clone
+
+```sh
+git clone https://github.com/YunYouJun/cocos-creator-joystick.git
+```
+
+Open with Cocos Creator 2.x.
+
+You can see it in `demo.fire` scene.
 
 ## Function
 
