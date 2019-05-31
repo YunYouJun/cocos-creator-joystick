@@ -15,7 +15,7 @@ Online Address: <https://yunyoujun.github.io/cocos-creator-joystick/>
 
 ### By import
 
-Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/cocos-creator-joystick/master/dist/joystick-demo.zip)).
+Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/cocos-creator-joystick/master/dist/joystick-demo.zip)) by `Cocos Creator`.
 
 > Cocos Creator 2.x -> File -> Import assets ...
 
@@ -73,9 +73,11 @@ You can see it in `demo.fire` scene.
 | Player.js | Player Script | mount on the player node, include required attribute of player (You can customize it.) |
 | UI.js | UI | provide switch joystick type function for online preview（You can delete it directly if you don't need it.） |
 
-## Dev
+## Other
 
-[`Issues`](https://github.com/YunYouJun/cocos-creator-joystick/issues) and `Pull requests` are welcome.
+Star, [`Issues`](https://github.com/YunYouJun/cocos-creator-joystick/issues) and `Pull requests` are welcome.
+
+## Dev
 
 ### Build
 
