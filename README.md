@@ -39,8 +39,8 @@ git clone https://github.com/YunYouJun/cocos-creator-joystick.git
   - [x] 移动
 - 触摸感应位置
   - [x] 全屏感应
-  - [ ] 半屏
-  - [ ] 只感应 Joystick 所在范围
+  - [x] 半屏
+  - [x] 只感应 Joystick 所在范围
 
 ### 虚拟摇杆
 
@@ -69,8 +69,10 @@ git clone https://github.com/YunYouJun/cocos-creator-joystick.git
 | 文件名 | 描述 | 功能 |
 | --- | --- | --- |
 | Joystick.js | 虚拟摇杆脚本文件 | 存储 Joystick 主逻辑 |
-| JoystickCommon.js | 公用变量文件 | 存储公用类型定义 |
-| Player.js | 玩家脚本文件 | 挂载于玩家节点上，包含玩家必要属性。（可根据需要自行修改） |
+| JoystickEnum.js | 虚拟摇杆枚举文件 | 存储摇杆类型定义、事件定义 |
+| JoystickEvent.js | 虚拟摇杆事件类 | 存储摇杆事件管理器 |
+| Player.js | 玩家脚本文件 | 可根据需求通过JoystickEvent监听JoystickEnum.JoystickEventType。（可根据需要自行修改） |
+| PlayerPhysics.js | 玩家脚本文件 | 可根据需求通过JoystickEvent监听JoystickEnum.JoystickEventType。（可根据需要自行修改） |
 | UI.js | UI | 提供在线预览页面，玩家切换摇杆类型功能。（不需要可直接删除） |
 
 ## 其他

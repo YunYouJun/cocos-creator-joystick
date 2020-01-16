@@ -1,4 +1,3 @@
-
 let JoystickEvent = cc.Class({
 
     properties: {
@@ -17,6 +16,11 @@ let JoystickEvent = cc.Class({
         this._event.off(eventType, callFunc, target);
     },
 
+    /**
+     *
+     * @param eventType JoystickEnum.JoystickEventType
+     * @param arg
+     */
     emit(eventType, ...arg) {
         this._event.emit(eventType, ...arg)
     }
