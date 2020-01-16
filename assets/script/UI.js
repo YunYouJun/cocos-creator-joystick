@@ -1,23 +1,24 @@
-import { JoystickType } from 'JoystickCommon'
+import JoystickEnum from "./joystick/JoystickEnum";
+
+let JoystickEvent = require("JoystickEvent");
 
 cc.Class({
 	extends: cc.Component,
 
 	properties: {
-		joystick: cc.Node
+
 	},
 
 	onLoad () {
-		this.joystick = this.joystick.getComponent('Joystick')
-	},
+
+    },
 
 	useFixedType () {
-		this.joystick.joystickType = JoystickType.FIXED;
-		this.joystick.node.opacity = 255;
-	},
+        JoystickEvent.getInstance().emit(JoystickEnum.JoystickEventType.CHANGE_JOYSTICK_TYPE, JoystickEnum.JoystickType.FIXED);
+    },
 
 	useFollowType () {
-		this.joystick.joystickType = JoystickType.FOLLOW;
-		this.joystick.node.opacity = 0;
-	}
+        JoystickEvent.getInstance().emit(JoystickEnum.JoystickEventType.CHANGE_JOYSTICK_TYPE, JoystickEnum.JoystickType.FOLLOW);
+    },
+
 });
