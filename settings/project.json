@@ -10,7 +10,6 @@
   "excluded-modules": [
     "Audio",
     "AudioSource",
-    "Collider",
     "Dynamic Atlas",
     "DragonBones",
     "EditBox",
@@ -22,7 +21,6 @@
     "MotionStreak",
     "NodePool",
     "Native Socket",
-    "Physics",
     "PageView",
     "PageViewIndicator",
     "ProgressBar",

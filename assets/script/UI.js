@@ -1,5 +1,5 @@
 import JoystickEnum from "./joystick/JoystickEnum";
-import JoystickEvent from "./joystick/JoystickEnum";
+import JoystickEvent from "./joystick/JoystickEvent";
 
 cc.Class({
   extends: cc.Component,
