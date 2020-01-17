@@ -1,5 +1,4 @@
 import JoystickEnum from 'JoystickEnum'
-import {JoystickType} from "./JoystickEnum";
 let JoystickEvent = require("JoystickEvent");
 
 cc.Class({

@@ -65,9 +65,9 @@ cc.Class({
 
     // methods
     move() {
-        this.node.rotation = 90 - cc.misc.radiansToDegrees(
+        this.node.angle = cc.misc.radiansToDegrees(
             Math.atan2(this.moveDir.y, this.moveDir.x)
-        );
+        ) - 90;
         let newPos = this.node.position.add(this.moveDir.mul(this._moveSpeed / 120));
         this.node.setPosition(newPos);
     },

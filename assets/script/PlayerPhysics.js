@@ -1,6 +1,5 @@
 import JoystickEnum from "./joystick/JoystickEnum";
-
-let JoystickEvent = require("JoystickEvent");
+import JoystickEvent from "./joystick/JoystickEvent";
 
 cc.Class({
     extends: cc.Component,
@@ -71,9 +70,9 @@ cc.Class({
 
     // methods
     move() {
-        this.node.rotation = 90 - cc.misc.radiansToDegrees(
+        this.node.angle = cc.misc.radiansToDegrees(
             Math.atan2(this.moveDir.y, this.moveDir.x)
-        );
+        ) - 90;
         this._body.applyForceToCenter(cc.v2(this.moveDir.x * 200, this.moveDir.y * 200), true);
     },
 

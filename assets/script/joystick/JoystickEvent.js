@@ -34,4 +34,4 @@ JoystickEvent.getInstance = function () {
     return _instance;
 };
 
-module.extends = JoystickEvent;
+export default JoystickEvent;
