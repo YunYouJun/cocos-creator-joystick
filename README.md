@@ -104,3 +104,9 @@ npm run build
 ```sh
 npm run deploy
 ```
+
+### Todo
+
+- [ ] Write with TypeScript
+- [ ] Keep half screen layout (now is fixed width)
+- [ ] How about set dot as a child of ring?
