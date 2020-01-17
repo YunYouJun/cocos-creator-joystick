@@ -40,11 +40,17 @@ cc.Class({
             default: 200,
             type: cc.Integer,
             tooltip: '最快速度'
-        }
+        },
+
+        _body: cc.RigidBody
 
     },
 
     onLoad() {
+        cc.director.getPhysicsManager().enabled = true;
+
+        this._body = this.node.getComponent(cc.RigidBody);
+
         JoystickEvent.getInstance().on(JoystickEnum.JoystickEventType.TOUCH_START, this.onTouchStart, this);
         JoystickEvent.getInstance().on(JoystickEnum.JoystickEventType.TOUCH_MOVE, this.onTouchMove, this);
         JoystickEvent.getInstance().on(JoystickEnum.JoystickEventType.TOUCH_END, this.onTouchEnd, this);
@@ -68,13 +74,13 @@ cc.Class({
         this.node.rotation = 90 - cc.misc.radiansToDegrees(
             Math.atan2(this.moveDir.y, this.moveDir.x)
         );
-        let newPos = this.node.position.add(this.moveDir.mul(this._moveSpeed / 120));
-        this.node.setPosition(newPos);
+        this._body.applyForceToCenter(cc.v2(this.moveDir.x * 200, this.moveDir.y * 200), true);
     },
 
     update(dt) {
         switch (this._speedType) {
             case JoystickEnum.SpeedType.STOP:
+                this._body.linearVelocity = cc.v2(0, 0);
                 this._moveSpeed = this.stopSpeed;
                 break;
             case JoystickEnum.SpeedType.NORMAL:
@@ -86,6 +92,6 @@ cc.Class({
             default:
                 break;
         }
-        this.move();
+        this._speedType !== JoystickEnum.SpeedType.STOP && this.move();
     },
 });
