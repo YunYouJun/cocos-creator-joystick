@@ -404,6 +404,8 @@ window.__require = function e(t, n, r) {
     "use strict";
     var _JoystickEnum = require("./joystick/JoystickEnum");
     var _JoystickEnum2 = _interopRequireDefault(_JoystickEnum);
+    var _JoystickEvent = require("./joystick/JoystickEvent");
+    var _JoystickEvent2 = _interopRequireDefault(_JoystickEvent);
     function _interopRequireDefault(obj) {
       return obj && obj.__esModule ? obj : {
         default: obj
@@ -414,14 +416,15 @@ window.__require = function e(t, n, r) {
       properties: {},
       onLoad: function onLoad() {},
       useFixedType: function useFixedType() {
-        _JoystickEnum2.default.getInstance().emit(_JoystickEnum2.default.JoystickEventType.CHANGE_JOYSTICK_TYPE, _JoystickEnum2.default.JoystickType.FIXED);
+        _JoystickEvent2.default.getInstance().emit(_JoystickEnum2.default.JoystickEventType.CHANGE_JOYSTICK_TYPE, _JoystickEnum2.default.JoystickType.FIXED);
       },
       useFollowType: function useFollowType() {
-        _JoystickEnum2.default.getInstance().emit(_JoystickEnum2.default.JoystickEventType.CHANGE_JOYSTICK_TYPE, _JoystickEnum2.default.JoystickType.FOLLOW);
+        _JoystickEvent2.default.getInstance().emit(_JoystickEnum2.default.JoystickEventType.CHANGE_JOYSTICK_TYPE, _JoystickEnum2.default.JoystickType.FOLLOW);
       }
     });
     cc._RF.pop();
   }, {
-    "./joystick/JoystickEnum": "JoystickEnum"
+    "./joystick/JoystickEnum": "JoystickEnum",
+    "./joystick/JoystickEvent": "JoystickEvent"
   } ]
 }, {}, [ "Player", "PlayerPhysics", "UI", "Joystick", "JoystickEnum", "JoystickEvent" ]);
