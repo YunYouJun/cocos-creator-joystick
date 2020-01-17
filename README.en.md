@@ -13,11 +13,14 @@ Online Address: <https://yunyoujun.github.io/cocos-creator-joystick/>
 
 ## Usage
 
+### Downoload
+
+[Releases](https://github.com/YunYouJun/cocos-creator-joystick/releases)
+
 ### By import
 
-Just import it ([joystick-demo.zip](https://raw.githubusercontent.com/YunYouJun/cocos-creator-joystick/master/dist/joystick-demo.zip)) by `Cocos Creator`.
-
-> Cocos Creator 2.x -> File -> Import assets ...
+> Cocos Creator v2.x -> File -> Export assets ... -> Choose -> assets/demo.fire
+> Cocos Creator v2.x -> File -> Import assets ...
 
 ### By git
 
@@ -37,10 +40,9 @@ You can see it in `demo.fire` scene.
 - Player
   - [x] rotation
   - [x] move
-- Touch Place
+- Touch Place (custom Joystick width and height)
   - [x] Full Screen
-  - [ ] Half Screen
-  - [ ] Only Joystick
+  - [x] Half Screen
 
 ### Joystick
 
@@ -69,13 +71,17 @@ You can see it in `demo.fire` scene.
 | Filename | Description | Function |
 | --- | --- | --- |
 | Joystick.js | Joystick Script | store joystick main logic |
-| JoystickCommon.js | Common Variable Script | store common variable |
-| Player.js | Player Script | mount on the player node, include required attribute of player (You can customize it.) |
+| JoystickEnum.js | Joystick Enum Script | store joystick type and event |
+| JoystickEvent.js | Joystick Event Class | store joystick event |
+| Player.js | Player Script | use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.) |
+| PlayerPhysics.js | Physics Player Script |  use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.) |
 | UI.js | UI | provide switch joystick type function for online preview（You can delete it directly if you don't need it.） |
 
 ## Other
 
 Star, [`Issues`](https://github.com/YunYouJun/cocos-creator-joystick/issues) and `Pull requests` are welcome.
+
+[Recommended coding standards](https://docs.cocos.com/creator/manual/en/scripting/reference/coding-standards.html)
 
 ## Dev
 
