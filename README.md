@@ -4,7 +4,7 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/YunYouJun/cocos-creator-joystick.svg?style=social)
 [![Cocos Creator version](https://img.shields.io/badge/Cocos_Creator-v2.4.x-blue.svg?style=social)](https://www.cocos.com/creator)
-![GitHub top language](https://img.shields.io/github/languages/top/YunYouJun/cocos-creator-joystick.svg?style=social&logo=javascript)
+![GitHub top language](https://img.shields.io/github/languages/top/YunYouJun/cocos-creator-joystick.svg?style=social&logo=typescript)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/YunYouJun/cocos-creator-joystick.svg?style=social&logo=visual-studio-code)
 
 中文文档 | [English Docs](./README.en.md)
