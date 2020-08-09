@@ -120,6 +120,13 @@
           "node": {
             "__id__": 2
           }
+        },
+        {
+          "__type__": "cc.Widget",
+          "node": {
+            "__id__": 2
+          },
+          "_alignFlags": 45
         }
       ],
       "_contentSize": {
@@ -167,7 +174,7 @@
         "array": [
           0,
           0,
-          407.8979651824706,
+          360.2579999908796,
           0,
           0,
           0,
@@ -201,7 +208,7 @@
           "_sizeMode": 0
         },
         {
-          "__type__": "8dd32uLvGJJ6b6GLXsJqGwx",
+          "__type__": "ba452nnVcJMPYIauwJ4Favx",
           "node": {
             "__id__": 4
           }
@@ -289,7 +296,7 @@
           ]
         },
         {
-          "__type__": "f20adps2YtC7JOk73yL40dO",
+          "__type__": "7d4c0PcHhpH74n/NBlzr5Rz",
           "node": {
             "__id__": 5
           }
@@ -325,7 +332,7 @@
     },
     {
       "__type__": "cc.Node",
-      "_name": "Joystick",
+      "_name": "joystick",
       "_parent": {
         "__id__": 2
       },
@@ -342,19 +349,6 @@
       ],
       "_components": [
         {
-          "__type__": "965d6+vAp1OAajGemdUBWK+",
-          "node": {
-            "__id__": 6
-          },
-          "dot": {
-            "__id__": 9
-          },
-          "ring": {
-            "__id__": 8
-          },
-          "directionType": 4
-        },
-        {
           "__type__": "cc.Widget",
           "node": {
             "__id__": 6
@@ -363,6 +357,18 @@
           "_right": 479,
           "_top": 640,
           "_originalWidth": 481
+        },
+        {
+          "__type__": "73162lxt5BLxbtr/vpxLfXd",
+          "node": {
+            "__id__": 6
+          },
+          "dot": {
+            "__id__": 9
+          },
+          "ring": {
+            "__id__": 8
+          }
         }
       ],
       "_contentSize": {
@@ -572,7 +578,7 @@
     },
     {
       "__type__": "cc.Node",
-      "_name": "UI",
+      "_name": "ui",
       "_parent": {
         "__id__": 2
       },
@@ -600,7 +606,7 @@
           "_N$spacingY": 20
         },
         {
-          "__type__": "b578d4RwmNB97QPmxn2E0ls",
+          "__type__": "df968oG9ClOtaKssOzeyetw",
           "node": {
             "__id__": 10
           }
@@ -630,7 +636,7 @@
     },
     {
       "__type__": "cc.Node",
-      "_name": "Type",
+      "_name": "type",
       "_parent": {
         "__id__": 10
       },
@@ -676,7 +682,7 @@
     },
     {
       "__type__": "cc.Node",
-      "_name": "Button",
+      "_name": "buttons",
       "_parent": {
         "__id__": 10
       },
@@ -728,7 +734,7 @@
     },
     {
       "__type__": "cc.Node",
-      "_name": "Fixed",
+      "_name": "fixed",
       "_parent": {
         "__id__": 12
       },
@@ -948,7 +954,7 @@
     },
     {
       "__type__": "cc.Node",
-      "_name": "Follow",
+      "_name": "follow",
       "_parent": {
         "__id__": 12
       },
