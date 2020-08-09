@@ -2,7 +2,8 @@
   "name": "cocos-creator-joystick",
   "version": "0.0.2",
   "description": "Cocos Creator Joystick Demo.",
-  "main": "index.js",
+  "author": "YunYouJun",
+  "main": "main.js",
   "scripts": {
     "build": "npm run build:mac || npm run build:win",
     "build:mac": "/Applications/CocosCreator.app/Contents/MacOS/CocosCreator --path ./ --build 'platform=web-mobile;debug=true'",
@@ -15,10 +16,11 @@
     "url": "git+https://github.com/YunYouJun/cocos-creator-joystick.git"
   },
   "keywords": [
+    "demo",
     "Joystick",
-    "Cocos"
+    "Cocos",
+    "Creator"
   ],
-  "author": "YunYouJun",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/YunYouJun/cocos-creator-joystick/issues"

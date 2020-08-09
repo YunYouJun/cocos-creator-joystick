@@ -88,6 +88,9 @@
     "_components": [
       {
         "__id__": 49
+      },
+      {
+        "__id__": 50
       }
     ],
     "_prefab": null,
@@ -177,7 +180,7 @@
       "array": [
         0,
         0,
-        407.8979651824706,
+        360.2579999908796,
         0,
         0,
         0,
@@ -334,7 +337,7 @@
     "_id": "c68Tf5xK1F2LoxrkfCtlU/"
   },
   {
-    "__type__": "8dd32uLvGJJ6b6GLXsJqGwx",
+    "__type__": "ba452nnVcJMPYIauwJ4Favx",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -342,16 +345,17 @@
     },
     "_enabled": true,
     "moveDir": {
-      "__type__": "cc.Vec2",
+      "__type__": "cc.Vec3",
       "x": 0,
-      "y": 1
+      "y": 1,
+      "z": 0
     },
     "_speedType": 0,
     "_moveSpeed": 0,
     "stopSpeed": 0,
     "normalSpeed": 100,
     "fastSpeed": 200,
-    "_id": "7eLbbAPYFHqK5WF2pZ8+fU"
+    "_id": "33TJWrVd9AQ4YzrhioEI0N"
   },
   {
     "__type__": "cc.Node",
@@ -520,7 +524,7 @@
     "_id": "1fhuyDG7tEKrwDxP5C6Rro"
   },
   {
-    "__type__": "f20adps2YtC7JOk73yL40dO",
+    "__type__": "7d4c0PcHhpH74n/NBlzr5Rz",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -528,21 +532,21 @@
     },
     "_enabled": true,
     "moveDir": {
-      "__type__": "cc.Vec2",
+      "__type__": "cc.Vec3",
       "x": 0,
-      "y": 1
+      "y": 1,
+      "z": 0
     },
     "_speedType": 0,
     "_moveSpeed": 0,
     "stopSpeed": 0,
     "normalSpeed": 100,
     "fastSpeed": 200,
-    "_body": null,
-    "_id": "fco+YD+ONIxr8C+6T+7V5C"
+    "_id": "d0OKFzitZNJbVMPussSzt7"
   },
   {
     "__type__": "cc.Node",
-    "_name": "Joystick",
+    "_name": "joystick",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -757,7 +761,6 @@
     },
     "_resize": 0,
     "_N$layoutType": 1,
-    "_N$padding": 0,
     "_N$cellSize": {
       "__type__": "cc.Size",
       "width": 40,
@@ -1024,26 +1027,6 @@
     "_id": "34UvIn3vVGHLmy7PGZSSgJ"
   },
   {
-    "__type__": "965d6+vAp1OAajGemdUBWK+",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 13
-    },
-    "_enabled": true,
-    "dot": {
-      "__id__": 21
-    },
-    "ring": {
-      "__id__": 18
-    },
-    "joystickType": 0,
-    "directionType": 4,
-    "_stickPos": null,
-    "_touchLocation": null,
-    "_id": "29UH3XQDBC3q01RgdKzsrJ"
-  },
-  {
     "__type__": "cc.Widget",
     "_name": "",
     "_objFlags": 0,
@@ -1071,8 +1054,29 @@
     "_id": "82gB0E/pBDoq1cqPHXeKw2"
   },
   {
+    "__type__": "73162lxt5BLxbtr/vpxLfXd",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 13
+    },
+    "_enabled": true,
+    "dot": {
+      "__id__": 21
+    },
+    "ring": {
+      "__id__": 18
+    },
+    "joystickType": 0,
+    "directionType": 2,
+    "_stickPos": null,
+    "_touchLocation": null,
+    "_radius": 0,
+    "_id": "26CnpsMOBOMLlYNXktuTdc"
+  },
+  {
     "__type__": "cc.Node",
-    "_name": "UI",
+    "_name": "ui",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -1144,7 +1148,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Type",
+    "_name": "type",
     "_objFlags": 0,
     "_parent": {
       "__id__": 26
@@ -1217,6 +1221,8 @@
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_useOriginalSize": false,
     "_string": "Joystick Type",
     "_N$string": "Joystick Type",
@@ -1227,6 +1233,8 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -1236,7 +1244,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Button",
+    "_name": "buttons",
     "_objFlags": 0,
     "_parent": {
       "__id__": 26
@@ -1305,7 +1313,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Fixed",
+    "_name": "fixed",
     "_objFlags": 0,
     "_parent": {
       "__id__": 29
@@ -1513,6 +1521,8 @@
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_useOriginalSize": false,
     "_string": "Fixed",
     "_N$string": "Fixed",
@@ -1523,6 +1533,8 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -1687,7 +1699,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Follow",
+    "_name": "follow",
     "_objFlags": 0,
     "_parent": {
       "__id__": 29
@@ -1895,6 +1907,8 @@
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_useOriginalSize": false,
     "_string": "Follow",
     "_N$string": "Follow",
@@ -1905,6 +1919,8 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -2082,7 +2098,6 @@
     },
     "_resize": 1,
     "_N$layoutType": 1,
-    "_N$padding": 0,
     "_N$cellSize": {
       "__type__": "cc.Size",
       "width": 40,
@@ -2115,7 +2130,6 @@
     },
     "_resize": 1,
     "_N$layoutType": 2,
-    "_N$padding": 0,
     "_N$cellSize": {
       "__type__": "cc.Size",
       "width": 40,
@@ -2134,14 +2148,14 @@
     "_id": "2aLiih0VFK+rr6lPiJU/Gu"
   },
   {
-    "__type__": "b578d4RwmNB97QPmxn2E0ls",
+    "__type__": "df968oG9ClOtaKssOzeyetw",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 26
     },
     "_enabled": true,
-    "_id": "d1piIAUUxKjqsiflBugteX"
+    "_id": "29qNvI3GJEpL99bThFveG9"
   },
   {
     "__type__": "cc.Canvas",
@@ -2159,5 +2173,32 @@
     "_fitWidth": false,
     "_fitHeight": true,
     "_id": "64dSuBOlhDp4WcLPK6ihms"
+  },
+  {
+    "__type__": "cc.Widget",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "alignMode": 1,
+    "_target": null,
+    "_alignFlags": 45,
+    "_left": 0,
+    "_right": 0,
+    "_top": 0,
+    "_bottom": 0,
+    "_verticalCenter": 0,
+    "_horizontalCenter": 0,
+    "_isAbsLeft": true,
+    "_isAbsRight": true,
+    "_isAbsTop": true,
+    "_isAbsBottom": true,
+    "_isAbsHorizontalCenter": true,
+    "_isAbsVerticalCenter": true,
+    "_originalWidth": 0,
+    "_originalHeight": 0,
+    "_id": "c5VX+1cptGEqGKOmvQRGa4"
   }
 ]

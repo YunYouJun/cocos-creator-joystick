@@ -28,9 +28,11 @@
 git clone https://github.com/YunYouJun/cocos-creator-joystick.git
 ```
 
-将其作为项目，通过 `Cocos Creator v2.2.x` 打开。
+将其作为项目，通过 `Cocos Creator v2.4.x` 打开。
 
 你可以在 `demo` 场景中查看样例。
+
+> 主菜单：开发者 -> VS Code 工作流 -> 更新 VS Code 智能提示数据 来更新已有项目的 `creator.d.ts` 文件。
 
 ## 功能
 
@@ -46,44 +48,44 @@ git clone https://github.com/YunYouJun/cocos-creator-joystick.git
 
 ### 虚拟摇杆
 
-| 属性 | 类型 | 默认值 | 描述 | 可自定义 |
-| --- | --- | --- | --- | --- |
-| joystickType | JoystickType.FIXED / JoystickType.FOLLOW | JoystickType.FIXED | 虚拟摇杆类型 | √ |
-| player | cc.Node | - | 挂载要控制的玩家节点 | √ |
-| playerPhysics | cc.Node | - | 挂载要控制的玩家物理节点 | √ |
-| area | cc.Node | - | 摇杆触摸激活区域参考 | √ |
-| ring | cc.Node | - | 摇杆背景节点 | √ |
-| dot | cc.Node | - | 摇杆操纵点 | √ |
+| 属性          | 类型                                     | 默认值             | 描述                     | 可自定义 |
+| ------------- | ---------------------------------------- | ------------------ | ------------------------ | -------- |
+| joystickType  | JoystickType.FIXED / JoystickType.FOLLOW | JoystickType.FIXED | 虚拟摇杆类型             | √        |
+| player        | cc.Node                                  | -                  | 挂载要控制的玩家节点     | √        |
+| playerPhysics | cc.Node                                  | -                  | 挂载要控制的玩家物理节点 | √        |
+| area          | cc.Node                                  | -                  | 摇杆触摸激活区域参考     | √        |
+| ring          | cc.Node                                  | -                  | 摇杆背景节点             | √        |
+| dot           | cc.Node                                  | -                  | 摇杆操纵点               | √        |
 
 ### 玩家
 
-| 属性 | 类型 | 默认值 | 描述 | 由虚拟摇杆控制 | 可自定义 |
-| --- | --- | --- | --- | --- | --- |
-| moveDir | Vec2 | cc.v2(0, 1) // 竖直向上 | 初始移动方向 | √ | √ |
-| _speedType | SpeedType.STOP / SpeedType.NORMAL / SpeedType.FAST | SpeedType.NORMAL | 速度类型 | √ | × |
-| _moveSpeed | cc.Integer | 0 | 移动速度 | × | × |
-| stopSpeed | cc.Integer | 0 | 停止时速度 | × | √ |
-| normalSpeed | cc.Integer | 100 | 正常速度 | × | √ |
-| fastSpeed | cc.Integer | 200 | 加快时速度 | × | √ |
+| 属性        | 类型                                               | 默认值                  | 描述         | 由虚拟摇杆控制 | 可自定义 |
+| ----------- | -------------------------------------------------- | ----------------------- | ------------ | -------------- | -------- |
+| moveDir     | Vec2                                               | cc.v2(0, 1) // 竖直向上 | 初始移动方向 | √              | √        |
+| \_speedType | SpeedType.STOP / SpeedType.NORMAL / SpeedType.FAST | SpeedType.NORMAL        | 速度类型     | √              | ×        |
+| \_moveSpeed | cc.Integer                                         | 0                       | 移动速度     | ×              | ×        |
+| stopSpeed   | cc.Integer                                         | 0                       | 停止时速度   | ×              | √        |
+| normalSpeed | cc.Integer                                         | 100                     | 正常速度     | ×              | √        |
+| fastSpeed   | cc.Integer                                         | 200                     | 加快时速度   | ×              | √        |
 
 ## 项目结构
 
 > 逻辑文件均位于 `assets/script` 目录下
 
-| 文件名 | 描述 | 功能 |
-| --- | --- | --- |
-| Joystick.js | 虚拟摇杆脚本文件 | 存储 Joystick 主逻辑 |
-| JoystickEnum.js | 虚拟摇杆枚举文件 | 存储摇杆类型定义、事件定义 |
-| JoystickEvent.js | 虚拟摇杆事件类 | 存储摇杆事件管理器 |
-| Player.js | 玩家脚本文件 | 可根据需求通过 JoystickEvent 监听 JoystickEnum.JoystickEventType。（可根据需要自行修改删除） |
-| PlayerPhysics.js | 玩家脚本文件 | 可根据需求通过 JoystickEvent 监听 JoystickEnum.JoystickEventType。（可根据需要自行修改删除） |
-| UI.js | UI | 提供在线预览页面，玩家切换摇杆类型功能。（不需要可直接删除） |
+| 文件名           | 描述             | 功能                                                                                         |
+| ---------------- | ---------------- | -------------------------------------------------------------------------------------------- |
+| Joystick.js      | 虚拟摇杆脚本文件 | 存储 Joystick 主逻辑                                                                         |
+| JoystickEnum.js  | 虚拟摇杆枚举文件 | 存储摇杆类型定义、事件定义                                                                   |
+| JoystickEvent.js | 虚拟摇杆事件类   | 存储摇杆事件管理器                                                                           |
+| Player.js        | 玩家脚本文件     | 可根据需求通过 JoystickEvent 监听 JoystickEnum.JoystickEventType。（可根据需要自行修改删除） |
+| PlayerPhysics.js | 玩家脚本文件     | 可根据需求通过 JoystickEvent 监听 JoystickEnum.JoystickEventType。（可根据需要自行修改删除） |
+| UI.js            | UI               | 提供在线预览页面，玩家切换摇杆类型功能。（不需要可直接删除）                                 |
 
 ## 新特性
 
 - 节点间解耦
-通过 `JoystickEvent.js` 的观察者模式管理摇杆动作，需要知道摇杆操作动作的只需要监听事件，不需要暴露自己的节点给 `Joystick.js`。
-`Joystick.js` 只需要处理摇杆逻辑，假设有多个 player 需要知道摇杆的 touchStart，那么只需要监听 JoystickEnum.JoystickEventType.TOUCH_START 事件即可。
+  通过 `JoystickEvent.js` 的观察者模式管理摇杆动作，需要知道摇杆操作动作的只需要监听事件，不需要暴露自己的节点给 `Joystick.js`。
+  `Joystick.js` 只需要处理摇杆逻辑，假设有多个 player 需要知道摇杆的 touchStart，那么只需要监听 JoystickEnum.JoystickEventType.TOUCH_START 事件即可。
 
 ## 其他
 

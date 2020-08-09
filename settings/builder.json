@@ -1,28 +1,5 @@
 {
-  "android-instant": {
-    "REMOTE_SERVER_ROOT": "",
-    "host": "",
-    "pathPattern": "",
-    "recordPath": "",
-    "scheme": "https",
-    "skipRecord": false
-  },
-  "appBundle": false,
-  "baidugame": {
-    "REMOTE_SERVER_ROOT": "",
-    "appid": "testappid",
-    "orientation": "portrait",
-    "subContext": ""
-  },
-  "encryptJs": true,
   "excludeScenes": [],
-  "fb-instant-games": {},
-  "includeSDKBox": false,
-  "inlineSpriteFrames": true,
-  "inlineSpriteFrames_native": true,
-  "md5Cache": true,
-  "mergeStartScene": false,
-  "optimizeHotUpdate": false,
   "orientation": {
     "landscapeLeft": true,
     "landscapeRight": true,
@@ -30,20 +7,7 @@
     "upsideDown": false
   },
   "packageName": "org.cocos2d.cocos-creator-joystick",
-  "qqplay": {
-    "REMOTE_SERVER_ROOT": "",
-    "orientation": "portrait",
-    "zip": false
-  },
   "startScene": "aa615ac1-768c-480c-ae46-530cb1cd78d9",
   "title": "cocos-creator-joystick",
-  "webOrientation": "landscape",
-  "wechatgame": {
-    "REMOTE_SERVER_ROOT": "",
-    "appid": "wx6ac3f5090a6b99c5",
-    "orientation": "portrait",
-    "subContext": ""
-  },
-  "xxteaKey": "4200ef72-055c-4e",
-  "zipCompressJs": true
+  "webOrientation": "auto"
 }

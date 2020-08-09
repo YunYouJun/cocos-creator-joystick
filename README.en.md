@@ -32,6 +32,8 @@ Open with `Cocos Creator 2.x`.
 
 You can see it in `demo.fire` scene.
 
+> Go through the main menu Developer -> VS Code Workflow -> Update VS Code API Source to complete the update about `creator.d.ts`.
+
 ## Function
 
 - Joystick Type
@@ -46,36 +48,36 @@ You can see it in `demo.fire` scene.
 
 ### Joystick
 
-| Argument | Type | Default | Description | Customizable |
-| --- | --- | --- | --- | --- |
-| joystickType | JoystickType.FIXED / JoystickType.FOLLOW | JoystickType.FIXED | types of joystick | √ |
-| player | cc.Node | - | mount the player node to control | √ |
-| ring | cc.Node | - | joystick background node | √ |
-| dot | cc.Node | - | joystick control node | √ |
+| Argument     | Type                                     | Default            | Description                      | Customizable |
+| ------------ | ---------------------------------------- | ------------------ | -------------------------------- | ------------ |
+| joystickType | JoystickType.FIXED / JoystickType.FOLLOW | JoystickType.FIXED | types of joystick                | √            |
+| player       | cc.Node                                  | -                  | mount the player node to control | √            |
+| ring         | cc.Node                                  | -                  | joystick background node         | √            |
+| dot          | cc.Node                                  | -                  | joystick control node            | √            |
 
 ### Player
 
-| Argument | Type | Default | Description | Controled by Joystick | Customizable |
-| --- | --- | --- | --- | --- | --- |
-| moveDir | Vec2 | cc.v2(0, 1) // straight up | initial direction of movement | √ | √ |
-| _speedType | SpeedType.STOP / SpeedType.NORMAL / SpeedType.FAST | SpeedType.NORMAL | speed type | √ | × |
-| _moveSpeed | cc.Integer | 0 | speed of movement  | × | × |
-| stopSpeed | cc.Integer | 0 | speed when stop | × | √ |
-| normalSpeed | cc.Integer | 100 | normal speed | × | √ |
-| fastSpeed | cc.Integer | 200 | fast speed | × | √ |
+| Argument    | Type                                               | Default                    | Description                   | Controled by Joystick | Customizable |
+| ----------- | -------------------------------------------------- | -------------------------- | ----------------------------- | --------------------- | ------------ |
+| moveDir     | Vec2                                               | cc.v2(0, 1) // straight up | initial direction of movement | √                     | √            |
+| \_speedType | SpeedType.STOP / SpeedType.NORMAL / SpeedType.FAST | SpeedType.NORMAL           | speed type                    | √                     | ×            |
+| \_moveSpeed | cc.Integer                                         | 0                          | speed of movement             | ×                     | ×            |
+| stopSpeed   | cc.Integer                                         | 0                          | speed when stop               | ×                     | √            |
+| normalSpeed | cc.Integer                                         | 100                        | normal speed                  | ×                     | √            |
+| fastSpeed   | cc.Integer                                         | 200                        | fast speed                    | ×                     | √            |
 
 ## Structure
 
 > assets/script
 
-| Filename | Description | Function |
-| --- | --- | --- |
-| Joystick.js | Joystick Script | store joystick main logic |
-| JoystickEnum.js | Joystick Enum Script | store joystick type and event |
-| JoystickEvent.js | Joystick Event Class | store joystick event |
-| Player.js | Player Script | use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.) |
-| PlayerPhysics.js | Physics Player Script |  use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.) |
-| UI.js | UI | provide switch joystick type function for online preview（You can delete it directly if you don't need it.） |
+| Filename         | Description           | Function                                                                                                     |
+| ---------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Joystick.js      | Joystick Script       | store joystick main logic                                                                                    |
+| JoystickEnum.js  | Joystick Enum Script  | store joystick type and event                                                                                |
+| JoystickEvent.js | Joystick Event Class  | store joystick event                                                                                         |
+| Player.js        | Player Script         | use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.)                     |
+| PlayerPhysics.js | Physics Player Script | use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.)                     |
+| UI.js            | UI                    | provide switch joystick type function for online preview（You can delete it directly if you don't need it.） |
 
 ## Other
 

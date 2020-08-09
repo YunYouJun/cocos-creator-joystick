@@ -35,7 +35,11 @@
     "VideoPlayer",
     "WebView",
     "3D",
-    "3D Primitive"
+    "3D Primitive",
+    "3D Physics/cannon.js",
+    "3D Physics/Builtin",
+    "3D Particle",
+    "SafeArea"
   ],
   "last-module-event-record-time": 0,
   "design-resolution-width": 960,
