@@ -174,7 +174,7 @@
         "array": [
           0,
           0,
-          360.2579999908796,
+          362.8646441856798,
           0,
           0,
           0,
@@ -296,10 +296,11 @@
           ]
         },
         {
-          "__type__": "7d4c0PcHhpH74n/NBlzr5Rz",
+          "__type__": "ba452nnVcJMPYIauwJ4Favx",
           "node": {
             "__id__": 5
-          }
+          },
+          "rigidbody": true
         }
       ],
       "_color": {
@@ -755,7 +756,7 @@
               "target": {
                 "__id__": 10
               },
-              "_componentId": "b578d4RwmNB97QPmxn2E0ls",
+              "_componentId": "df968oG9ClOtaKssOzeyetw",
               "handler": "useFixedType"
             }
           ],
@@ -975,7 +976,7 @@
               "target": {
                 "__id__": 10
               },
-              "_componentId": "b578d4RwmNB97QPmxn2E0ls",
+              "_componentId": "df968oG9ClOtaKssOzeyetw",
               "handler": "useFollowType"
             }
           ],

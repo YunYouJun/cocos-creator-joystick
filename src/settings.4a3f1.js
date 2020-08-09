@@ -18,6 +18,6 @@ window._CCSettings = {
     jsList: [],
     bundleVers: {
         internal: "d3402",
-        main: "d0d82"
+        main: "558c2"
     }
 };

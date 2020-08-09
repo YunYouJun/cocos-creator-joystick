@@ -430,2993 +430,6 @@
   }), {} ],
   2: [ (function(require, module, exports) {
     "use strict";
-    require("../core/platform/CCClass");
-    var misc = require("../core/utils/misc");
-    cc.Action = cc.Class({
-      name: "cc.Action",
-      ctor: function ctor() {
-        this.originalTarget = null;
-        this.target = null;
-        this.tag = cc.Action.TAG_INVALID;
-      },
-      clone: function clone() {
-        var action = new cc.Action();
-        action.originalTarget = null;
-        action.target = null;
-        action.tag = this.tag;
-        return action;
-      },
-      isDone: function isDone() {
-        return true;
-      },
-      startWithTarget: function startWithTarget(target) {
-        this.originalTarget = target;
-        this.target = target;
-      },
-      stop: function stop() {
-        this.target = null;
-      },
-      step: function step(dt) {
-        cc.logID(1006);
-      },
-      update: function update(dt) {
-        cc.logID(1007);
-      },
-      getTarget: function getTarget() {
-        return this.target;
-      },
-      setTarget: function setTarget(target) {
-        this.target = target;
-      },
-      getOriginalTarget: function getOriginalTarget() {
-        return this.originalTarget;
-      },
-      setOriginalTarget: function setOriginalTarget(originalTarget) {
-        this.originalTarget = originalTarget;
-      },
-      getTag: function getTag() {
-        return this.tag;
-      },
-      setTag: function setTag(tag) {
-        this.tag = tag;
-      },
-      retain: function retain() {},
-      release: function release() {}
-    });
-    cc.Action.TAG_INVALID = -1;
-    cc.FiniteTimeAction = cc.Class({
-      name: "cc.FiniteTimeAction",
-      extends: cc.Action,
-      ctor: function ctor() {
-        this._duration = 0;
-      },
-      getDuration: function getDuration() {
-        return this._duration * (this._timesForRepeat || 1);
-      },
-      setDuration: function setDuration(duration) {
-        this._duration = duration;
-      },
-      reverse: function reverse() {
-        cc.logID(1008);
-        return null;
-      },
-      clone: function clone() {
-        return new cc.FiniteTimeAction();
-      }
-    });
-    cc.Speed = cc.Class({
-      name: "cc.Speed",
-      extends: cc.Action,
-      ctor: function ctor(action, speed) {
-        this._speed = 0;
-        this._innerAction = null;
-        action && this.initWithAction(action, speed);
-      },
-      getSpeed: function getSpeed() {
-        return this._speed;
-      },
-      setSpeed: function setSpeed(speed) {
-        this._speed = speed;
-      },
-      initWithAction: function initWithAction(action, speed) {
-        if (!action) {
-          cc.errorID(1021);
-          return false;
-        }
-        this._innerAction = action;
-        this._speed = speed;
-        return true;
-      },
-      clone: function clone() {
-        var action = new cc.Speed();
-        action.initWithAction(this._innerAction.clone(), this._speed);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.Action.prototype.startWithTarget.call(this, target);
-        this._innerAction.startWithTarget(target);
-      },
-      stop: function stop() {
-        this._innerAction.stop();
-        cc.Action.prototype.stop.call(this);
-      },
-      step: function step(dt) {
-        this._innerAction.step(dt * this._speed);
-      },
-      isDone: function isDone() {
-        return this._innerAction.isDone();
-      },
-      reverse: function reverse() {
-        return new cc.Speed(this._innerAction.reverse(), this._speed);
-      },
-      setInnerAction: function setInnerAction(action) {
-        this._innerAction !== action && (this._innerAction = action);
-      },
-      getInnerAction: function getInnerAction() {
-        return this._innerAction;
-      }
-    });
-    cc.speed = function(action, speed) {
-      return new cc.Speed(action, speed);
-    };
-    cc.Follow = cc.Class({
-      name: "cc.Follow",
-      extends: cc.Action,
-      ctor: function ctor(followedNode, rect) {
-        this._followedNode = null;
-        this._boundarySet = false;
-        this._boundaryFullyCovered = false;
-        this._halfScreenSize = null;
-        this._fullScreenSize = null;
-        this.leftBoundary = 0;
-        this.rightBoundary = 0;
-        this.topBoundary = 0;
-        this.bottomBoundary = 0;
-        this._worldRect = cc.rect(0, 0, 0, 0);
-        followedNode && (rect ? this.initWithTarget(followedNode, rect) : this.initWithTarget(followedNode));
-      },
-      clone: function clone() {
-        var action = new cc.Follow();
-        var locRect = this._worldRect;
-        var rect = new cc.Rect(locRect.x, locRect.y, locRect.width, locRect.height);
-        action.initWithTarget(this._followedNode, rect);
-        return action;
-      },
-      isBoundarySet: function isBoundarySet() {
-        return this._boundarySet;
-      },
-      setBoudarySet: function setBoudarySet(value) {
-        this._boundarySet = value;
-      },
-      initWithTarget: function initWithTarget(followedNode, rect) {
-        if (!followedNode) {
-          cc.errorID(1022);
-          return false;
-        }
-        var _this = this;
-        rect = rect || cc.rect(0, 0, 0, 0);
-        _this._followedNode = followedNode;
-        _this._worldRect = rect;
-        _this._boundarySet = !(0 === rect.width && 0 === rect.height);
-        _this._boundaryFullyCovered = false;
-        var winSize = cc.winSize;
-        _this._fullScreenSize = cc.v2(winSize.width, winSize.height);
-        _this._halfScreenSize = _this._fullScreenSize.mul(.5);
-        if (_this._boundarySet) {
-          _this.leftBoundary = -(rect.x + rect.width - _this._fullScreenSize.x);
-          _this.rightBoundary = -rect.x;
-          _this.topBoundary = -rect.y;
-          _this.bottomBoundary = -(rect.y + rect.height - _this._fullScreenSize.y);
-          _this.rightBoundary < _this.leftBoundary && (_this.rightBoundary = _this.leftBoundary = (_this.leftBoundary + _this.rightBoundary) / 2);
-          _this.topBoundary < _this.bottomBoundary && (_this.topBoundary = _this.bottomBoundary = (_this.topBoundary + _this.bottomBoundary) / 2);
-          _this.topBoundary === _this.bottomBoundary && _this.leftBoundary === _this.rightBoundary && (_this._boundaryFullyCovered = true);
-        }
-        return true;
-      },
-      step: function step(dt) {
-        var targetWorldPos = this.target.convertToWorldSpaceAR(cc.Vec2.ZERO);
-        var followedWorldPos = this._followedNode.convertToWorldSpaceAR(cc.Vec2.ZERO);
-        var delta = targetWorldPos.sub(followedWorldPos);
-        var tempPos = this.target.parent.convertToNodeSpaceAR(delta.add(this._halfScreenSize));
-        if (this._boundarySet) {
-          if (this._boundaryFullyCovered) return;
-          this.target.setPosition(misc.clampf(tempPos.x, this.leftBoundary, this.rightBoundary), misc.clampf(tempPos.y, this.bottomBoundary, this.topBoundary));
-        } else this.target.setPosition(tempPos.x, tempPos.y);
-      },
-      isDone: function isDone() {
-        return !this._followedNode.activeInHierarchy;
-      },
-      stop: function stop() {
-        this.target = null;
-        cc.Action.prototype.stop.call(this);
-      }
-    });
-    cc.follow = function(followedNode, rect) {
-      return new cc.Follow(followedNode, rect);
-    };
-  }), {
-    "../core/platform/CCClass": 150,
-    "../core/utils/misc": 219
-  } ],
-  3: [ (function(require, module, exports) {
-    "use strict";
-    function cardinalSplineAt(p0, p1, p2, p3, tension, t) {
-      var t2 = t * t;
-      var t3 = t2 * t;
-      var s = (1 - tension) / 2;
-      var b1 = s * (2 * t2 - t3 - t);
-      var b2 = s * (-t3 + t2) + (2 * t3 - 3 * t2 + 1);
-      var b3 = s * (t3 - 2 * t2 + t) + (-2 * t3 + 3 * t2);
-      var b4 = s * (t3 - t2);
-      var x = p0.x * b1 + p1.x * b2 + p2.x * b3 + p3.x * b4;
-      var y = p0.y * b1 + p1.y * b2 + p2.y * b3 + p3.y * b4;
-      return cc.v2(x, y);
-    }
-    function getControlPointAt(controlPoints, pos) {
-      var p = Math.min(controlPoints.length - 1, Math.max(pos, 0));
-      return controlPoints[p];
-    }
-    function reverseControlPoints(controlPoints) {
-      var newArray = [];
-      for (var i = controlPoints.length - 1; i >= 0; i--) newArray.push(cc.v2(controlPoints[i].x, controlPoints[i].y));
-      return newArray;
-    }
-    function cloneControlPoints(controlPoints) {
-      var newArray = [];
-      for (var i = 0; i < controlPoints.length; i++) newArray.push(cc.v2(controlPoints[i].x, controlPoints[i].y));
-      return newArray;
-    }
-    cc.CardinalSplineTo = cc.Class({
-      name: "cc.CardinalSplineTo",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, points, tension) {
-        this._points = [];
-        this._deltaT = 0;
-        this._tension = 0;
-        this._previousPosition = null;
-        this._accumulatedDiff = null;
-        void 0 !== tension && cc.CardinalSplineTo.prototype.initWithDuration.call(this, duration, points, tension);
-      },
-      initWithDuration: function initWithDuration(duration, points, tension) {
-        if (!points || 0 === points.length) {
-          cc.errorID(1024);
-          return false;
-        }
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this.setPoints(points);
-          this._tension = tension;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.CardinalSplineTo();
-        action.initWithDuration(this._duration, cloneControlPoints(this._points), this._tension);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._deltaT = 1 / (this._points.length - 1);
-        this._previousPosition = cc.v2(this.target.x, this.target.y);
-        this._accumulatedDiff = cc.v2(0, 0);
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        var p, lt;
-        var ps = this._points;
-        if (1 === dt) {
-          p = ps.length - 1;
-          lt = 1;
-        } else {
-          var locDT = this._deltaT;
-          p = 0 | dt / locDT;
-          lt = (dt - locDT * p) / locDT;
-        }
-        var newPos = cardinalSplineAt(getControlPointAt(ps, p - 1), getControlPointAt(ps, p - 0), getControlPointAt(ps, p + 1), getControlPointAt(ps, p + 2), this._tension, lt);
-        if (cc.macro.ENABLE_STACKABLE_ACTIONS) {
-          var tempX, tempY;
-          tempX = this.target.x - this._previousPosition.x;
-          tempY = this.target.y - this._previousPosition.y;
-          if (0 !== tempX || 0 !== tempY) {
-            var locAccDiff = this._accumulatedDiff;
-            tempX = locAccDiff.x + tempX;
-            tempY = locAccDiff.y + tempY;
-            locAccDiff.x = tempX;
-            locAccDiff.y = tempY;
-            newPos.x += tempX;
-            newPos.y += tempY;
-          }
-        }
-        this.updatePosition(newPos);
-      },
-      reverse: function reverse() {
-        var reversePoints = reverseControlPoints(this._points);
-        return cc.cardinalSplineTo(this._duration, reversePoints, this._tension);
-      },
-      updatePosition: function updatePosition(newPos) {
-        this.target.setPosition(newPos);
-        this._previousPosition = newPos;
-      },
-      getPoints: function getPoints() {
-        return this._points;
-      },
-      setPoints: function setPoints(points) {
-        this._points = points;
-      }
-    });
-    cc.cardinalSplineTo = function(duration, points, tension) {
-      return new cc.CardinalSplineTo(duration, points, tension);
-    };
-    cc.CardinalSplineBy = cc.Class({
-      name: "cc.CardinalSplineBy",
-      extends: cc.CardinalSplineTo,
-      ctor: function ctor(duration, points, tension) {
-        this._startPosition = cc.v2(0, 0);
-        void 0 !== tension && this.initWithDuration(duration, points, tension);
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.CardinalSplineTo.prototype.startWithTarget.call(this, target);
-        this._startPosition.x = target.x;
-        this._startPosition.y = target.y;
-      },
-      reverse: function reverse() {
-        var copyConfig = this._points.slice();
-        var current;
-        var p = copyConfig[0];
-        for (var i = 1; i < copyConfig.length; ++i) {
-          current = copyConfig[i];
-          copyConfig[i] = current.sub(p);
-          p = current;
-        }
-        var reverseArray = reverseControlPoints(copyConfig);
-        p = reverseArray[reverseArray.length - 1];
-        reverseArray.pop();
-        p.x = -p.x;
-        p.y = -p.y;
-        reverseArray.unshift(p);
-        for (var i = 1; i < reverseArray.length; ++i) {
-          current = reverseArray[i];
-          current.x = -current.x;
-          current.y = -current.y;
-          current.x += p.x;
-          current.y += p.y;
-          reverseArray[i] = current;
-          p = current;
-        }
-        return cc.cardinalSplineBy(this._duration, reverseArray, this._tension);
-      },
-      updatePosition: function updatePosition(newPos) {
-        var pos = this._startPosition;
-        var posX = newPos.x + pos.x;
-        var posY = newPos.y + pos.y;
-        this._previousPosition.x = posX;
-        this._previousPosition.y = posY;
-        this.target.setPosition(posX, posY);
-      },
-      clone: function clone() {
-        var a = new cc.CardinalSplineBy();
-        a.initWithDuration(this._duration, cloneControlPoints(this._points), this._tension);
-        return a;
-      }
-    });
-    cc.cardinalSplineBy = function(duration, points, tension) {
-      return new cc.CardinalSplineBy(duration, points, tension);
-    };
-    cc.CatmullRomTo = cc.Class({
-      name: "cc.CatmullRomTo",
-      extends: cc.CardinalSplineTo,
-      ctor: function ctor(dt, points) {
-        points && this.initWithDuration(dt, points);
-      },
-      initWithDuration: function initWithDuration(dt, points) {
-        return cc.CardinalSplineTo.prototype.initWithDuration.call(this, dt, points, .5);
-      },
-      clone: function clone() {
-        var action = new cc.CatmullRomTo();
-        action.initWithDuration(this._duration, cloneControlPoints(this._points));
-        return action;
-      }
-    });
-    cc.catmullRomTo = function(dt, points) {
-      return new cc.CatmullRomTo(dt, points);
-    };
-    cc.CatmullRomBy = cc.Class({
-      name: "cc.CatmullRomBy",
-      extends: cc.CardinalSplineBy,
-      ctor: function ctor(dt, points) {
-        points && this.initWithDuration(dt, points);
-      },
-      initWithDuration: function initWithDuration(dt, points) {
-        return cc.CardinalSplineTo.prototype.initWithDuration.call(this, dt, points, .5);
-      },
-      clone: function clone() {
-        var action = new cc.CatmullRomBy();
-        action.initWithDuration(this._duration, cloneControlPoints(this._points));
-        return action;
-      }
-    });
-    cc.catmullRomBy = function(dt, points) {
-      return new cc.CatmullRomBy(dt, points);
-    };
-  }), {} ],
-  4: [ (function(require, module, exports) {
-    "use strict";
-    cc.easeIn = function(rate) {
-      return {
-        _rate: rate,
-        easing: function easing(dt) {
-          return Math.pow(dt, this._rate);
-        },
-        reverse: function reverse() {
-          return cc.easeIn(1 / this._rate);
-        }
-      };
-    };
-    cc.easeOut = function(rate) {
-      return {
-        _rate: rate,
-        easing: function easing(dt) {
-          return Math.pow(dt, 1 / this._rate);
-        },
-        reverse: function reverse() {
-          return cc.easeOut(1 / this._rate);
-        }
-      };
-    };
-    cc.easeInOut = function(rate) {
-      return {
-        _rate: rate,
-        easing: function easing(dt) {
-          dt *= 2;
-          return dt < 1 ? .5 * Math.pow(dt, this._rate) : 1 - .5 * Math.pow(2 - dt, this._rate);
-        },
-        reverse: function reverse() {
-          return cc.easeInOut(this._rate);
-        }
-      };
-    };
-    var _easeExponentialInObj = {
-      easing: function easing(dt) {
-        return 0 === dt ? 0 : Math.pow(2, 10 * (dt - 1));
-      },
-      reverse: function reverse() {
-        return _easeExponentialOutObj;
-      }
-    };
-    cc.easeExponentialIn = function() {
-      return _easeExponentialInObj;
-    };
-    var _easeExponentialOutObj = {
-      easing: function easing(dt) {
-        return 1 === dt ? 1 : 1 - Math.pow(2, -10 * dt);
-      },
-      reverse: function reverse() {
-        return _easeExponentialInObj;
-      }
-    };
-    cc.easeExponentialOut = function() {
-      return _easeExponentialOutObj;
-    };
-    var _easeExponentialInOutObj = {
-      easing: function easing(dt) {
-        if (1 !== dt && 0 !== dt) {
-          dt *= 2;
-          return dt < 1 ? .5 * Math.pow(2, 10 * (dt - 1)) : .5 * (2 - Math.pow(2, -10 * (dt - 1)));
-        }
-        return dt;
-      },
-      reverse: function reverse() {
-        return _easeExponentialInOutObj;
-      }
-    };
-    cc.easeExponentialInOut = function() {
-      return _easeExponentialInOutObj;
-    };
-    var _easeSineInObj = {
-      easing: function easing(dt) {
-        return 0 === dt || 1 === dt ? dt : -1 * Math.cos(dt * Math.PI / 2) + 1;
-      },
-      reverse: function reverse() {
-        return _easeSineOutObj;
-      }
-    };
-    cc.easeSineIn = function() {
-      return _easeSineInObj;
-    };
-    var _easeSineOutObj = {
-      easing: function easing(dt) {
-        return 0 === dt || 1 === dt ? dt : Math.sin(dt * Math.PI / 2);
-      },
-      reverse: function reverse() {
-        return _easeSineInObj;
-      }
-    };
-    cc.easeSineOut = function() {
-      return _easeSineOutObj;
-    };
-    var _easeSineInOutObj = {
-      easing: function easing(dt) {
-        return 0 === dt || 1 === dt ? dt : -.5 * (Math.cos(Math.PI * dt) - 1);
-      },
-      reverse: function reverse() {
-        return _easeSineInOutObj;
-      }
-    };
-    cc.easeSineInOut = function() {
-      return _easeSineInOutObj;
-    };
-    var _easeElasticInObj = {
-      easing: function easing(dt) {
-        if (0 === dt || 1 === dt) return dt;
-        dt -= 1;
-        return -Math.pow(2, 10 * dt) * Math.sin((dt - .075) * Math.PI * 2 / .3);
-      },
-      reverse: function reverse() {
-        return _easeElasticOutObj;
-      }
-    };
-    cc.easeElasticIn = function(period) {
-      if (period && .3 !== period) return {
-        _period: period,
-        easing: function easing(dt) {
-          if (0 === dt || 1 === dt) return dt;
-          dt -= 1;
-          return -Math.pow(2, 10 * dt) * Math.sin((dt - this._period / 4) * Math.PI * 2 / this._period);
-        },
-        reverse: function reverse() {
-          return cc.easeElasticOut(this._period);
-        }
-      };
-      return _easeElasticInObj;
-    };
-    var _easeElasticOutObj = {
-      easing: function easing(dt) {
-        return 0 === dt || 1 === dt ? dt : Math.pow(2, -10 * dt) * Math.sin((dt - .075) * Math.PI * 2 / .3) + 1;
-      },
-      reverse: function reverse() {
-        return _easeElasticInObj;
-      }
-    };
-    cc.easeElasticOut = function(period) {
-      if (period && .3 !== period) return {
-        _period: period,
-        easing: function easing(dt) {
-          return 0 === dt || 1 === dt ? dt : Math.pow(2, -10 * dt) * Math.sin((dt - this._period / 4) * Math.PI * 2 / this._period) + 1;
-        },
-        reverse: function reverse() {
-          return cc.easeElasticIn(this._period);
-        }
-      };
-      return _easeElasticOutObj;
-    };
-    cc.easeElasticInOut = function(period) {
-      period = period || .3;
-      return {
-        _period: period,
-        easing: function easing(dt) {
-          var newT = 0;
-          var locPeriod = this._period;
-          if (0 === dt || 1 === dt) newT = dt; else {
-            dt *= 2;
-            locPeriod || (locPeriod = this._period = .3 * 1.5);
-            var s = locPeriod / 4;
-            dt -= 1;
-            newT = dt < 0 ? -.5 * Math.pow(2, 10 * dt) * Math.sin((dt - s) * Math.PI * 2 / locPeriod) : Math.pow(2, -10 * dt) * Math.sin((dt - s) * Math.PI * 2 / locPeriod) * .5 + 1;
-          }
-          return newT;
-        },
-        reverse: function reverse() {
-          return cc.easeElasticInOut(this._period);
-        }
-      };
-    };
-    function _bounceTime(time1) {
-      if (time1 < 1 / 2.75) return 7.5625 * time1 * time1;
-      if (time1 < 2 / 2.75) {
-        time1 -= 1.5 / 2.75;
-        return 7.5625 * time1 * time1 + .75;
-      }
-      if (time1 < 2.5 / 2.75) {
-        time1 -= 2.25 / 2.75;
-        return 7.5625 * time1 * time1 + .9375;
-      }
-      time1 -= 2.625 / 2.75;
-      return 7.5625 * time1 * time1 + .984375;
-    }
-    var _easeBounceInObj = {
-      easing: function easing(dt) {
-        return 1 - _bounceTime(1 - dt);
-      },
-      reverse: function reverse() {
-        return _easeBounceOutObj;
-      }
-    };
-    cc.easeBounceIn = function() {
-      return _easeBounceInObj;
-    };
-    var _easeBounceOutObj = {
-      easing: function easing(dt) {
-        return _bounceTime(dt);
-      },
-      reverse: function reverse() {
-        return _easeBounceInObj;
-      }
-    };
-    cc.easeBounceOut = function() {
-      return _easeBounceOutObj;
-    };
-    var _easeBounceInOutObj = {
-      easing: function easing(time1) {
-        var newT;
-        if (time1 < .5) {
-          time1 *= 2;
-          newT = .5 * (1 - _bounceTime(1 - time1));
-        } else newT = .5 * _bounceTime(2 * time1 - 1) + .5;
-        return newT;
-      },
-      reverse: function reverse() {
-        return _easeBounceInOutObj;
-      }
-    };
-    cc.easeBounceInOut = function() {
-      return _easeBounceInOutObj;
-    };
-    var _easeBackInObj = {
-      easing: function easing(time1) {
-        var overshoot = 1.70158;
-        return 0 === time1 || 1 === time1 ? time1 : time1 * time1 * ((overshoot + 1) * time1 - overshoot);
-      },
-      reverse: function reverse() {
-        return _easeBackOutObj;
-      }
-    };
-    cc.easeBackIn = function() {
-      return _easeBackInObj;
-    };
-    var _easeBackOutObj = {
-      easing: function easing(time1) {
-        if (0 === time1) return 0;
-        var overshoot = 1.70158;
-        time1 -= 1;
-        return time1 * time1 * ((overshoot + 1) * time1 + overshoot) + 1;
-      },
-      reverse: function reverse() {
-        return _easeBackInObj;
-      }
-    };
-    cc.easeBackOut = function() {
-      return _easeBackOutObj;
-    };
-    var _easeBackInOutObj = {
-      easing: function easing(time1) {
-        var overshoot = 2.5949095;
-        time1 *= 2;
-        if (time1 < 1) return time1 * time1 * ((overshoot + 1) * time1 - overshoot) / 2;
-        time1 -= 2;
-        return time1 * time1 * ((overshoot + 1) * time1 + overshoot) / 2 + 1;
-      },
-      reverse: function reverse() {
-        return _easeBackInOutObj;
-      }
-    };
-    cc.easeBackInOut = function() {
-      return _easeBackInOutObj;
-    };
-    cc.easeBezierAction = function(a, b, c, d) {
-      return {
-        easing: function easing(t) {
-          return Math.pow(1 - t, 3) * a + 3 * t * Math.pow(1 - t, 2) * b + 3 * Math.pow(t, 2) * (1 - t) * c + Math.pow(t, 3) * d;
-        },
-        reverse: function reverse() {
-          return cc.easeBezierAction(d, c, b, a);
-        }
-      };
-    };
-    var _easeQuadraticActionIn = {
-      easing: function easing(time) {
-        return Math.pow(time, 2);
-      },
-      reverse: function reverse() {
-        return _easeQuadraticActionIn;
-      }
-    };
-    cc.easeQuadraticActionIn = function() {
-      return _easeQuadraticActionIn;
-    };
-    var _easeQuadraticActionOut = {
-      easing: function easing(time) {
-        return -time * (time - 2);
-      },
-      reverse: function reverse() {
-        return _easeQuadraticActionOut;
-      }
-    };
-    cc.easeQuadraticActionOut = function() {
-      return _easeQuadraticActionOut;
-    };
-    var _easeQuadraticActionInOut = {
-      easing: function easing(time) {
-        var resultTime = time;
-        time *= 2;
-        if (time < 1) resultTime = time * time * .5; else {
-          --time;
-          resultTime = -.5 * (time * (time - 2) - 1);
-        }
-        return resultTime;
-      },
-      reverse: function reverse() {
-        return _easeQuadraticActionInOut;
-      }
-    };
-    cc.easeQuadraticActionInOut = function() {
-      return _easeQuadraticActionInOut;
-    };
-    var _easeQuarticActionIn = {
-      easing: function easing(time) {
-        return time * time * time * time;
-      },
-      reverse: function reverse() {
-        return _easeQuarticActionIn;
-      }
-    };
-    cc.easeQuarticActionIn = function() {
-      return _easeQuarticActionIn;
-    };
-    var _easeQuarticActionOut = {
-      easing: function easing(time) {
-        time -= 1;
-        return -(time * time * time * time - 1);
-      },
-      reverse: function reverse() {
-        return _easeQuarticActionOut;
-      }
-    };
-    cc.easeQuarticActionOut = function() {
-      return _easeQuarticActionOut;
-    };
-    var _easeQuarticActionInOut = {
-      easing: function easing(time) {
-        time *= 2;
-        if (time < 1) return .5 * time * time * time * time;
-        time -= 2;
-        return -.5 * (time * time * time * time - 2);
-      },
-      reverse: function reverse() {
-        return _easeQuarticActionInOut;
-      }
-    };
-    cc.easeQuarticActionInOut = function() {
-      return _easeQuarticActionInOut;
-    };
-    var _easeQuinticActionIn = {
-      easing: function easing(time) {
-        return time * time * time * time * time;
-      },
-      reverse: function reverse() {
-        return _easeQuinticActionIn;
-      }
-    };
-    cc.easeQuinticActionIn = function() {
-      return _easeQuinticActionIn;
-    };
-    var _easeQuinticActionOut = {
-      easing: function easing(time) {
-        time -= 1;
-        return time * time * time * time * time + 1;
-      },
-      reverse: function reverse() {
-        return _easeQuinticActionOut;
-      }
-    };
-    cc.easeQuinticActionOut = function() {
-      return _easeQuinticActionOut;
-    };
-    var _easeQuinticActionInOut = {
-      easing: function easing(time) {
-        time *= 2;
-        if (time < 1) return .5 * time * time * time * time * time;
-        time -= 2;
-        return .5 * (time * time * time * time * time + 2);
-      },
-      reverse: function reverse() {
-        return _easeQuinticActionInOut;
-      }
-    };
-    cc.easeQuinticActionInOut = function() {
-      return _easeQuinticActionInOut;
-    };
-    var _easeCircleActionIn = {
-      easing: function easing(time) {
-        return -1 * (Math.sqrt(1 - time * time) - 1);
-      },
-      reverse: function reverse() {
-        return _easeCircleActionIn;
-      }
-    };
-    cc.easeCircleActionIn = function() {
-      return _easeCircleActionIn;
-    };
-    var _easeCircleActionOut = {
-      easing: function easing(time) {
-        time -= 1;
-        return Math.sqrt(1 - time * time);
-      },
-      reverse: function reverse() {
-        return _easeCircleActionOut;
-      }
-    };
-    cc.easeCircleActionOut = function() {
-      return _easeCircleActionOut;
-    };
-    var _easeCircleActionInOut = {
-      easing: function easing(time) {
-        time *= 2;
-        if (time < 1) return -.5 * (Math.sqrt(1 - time * time) - 1);
-        time -= 2;
-        return .5 * (Math.sqrt(1 - time * time) + 1);
-      },
-      reverse: function reverse() {
-        return _easeCircleActionInOut;
-      }
-    };
-    cc.easeCircleActionInOut = function() {
-      return _easeCircleActionInOut;
-    };
-    var _easeCubicActionIn = {
-      easing: function easing(time) {
-        return time * time * time;
-      },
-      reverse: function reverse() {
-        return _easeCubicActionIn;
-      }
-    };
-    cc.easeCubicActionIn = function() {
-      return _easeCubicActionIn;
-    };
-    var _easeCubicActionOut = {
-      easing: function easing(time) {
-        time -= 1;
-        return time * time * time + 1;
-      },
-      reverse: function reverse() {
-        return _easeCubicActionOut;
-      }
-    };
-    cc.easeCubicActionOut = function() {
-      return _easeCubicActionOut;
-    };
-    var _easeCubicActionInOut = {
-      easing: function easing(time) {
-        time *= 2;
-        if (time < 1) return .5 * time * time * time;
-        time -= 2;
-        return .5 * (time * time * time + 2);
-      },
-      reverse: function reverse() {
-        return _easeCubicActionInOut;
-      }
-    };
-    cc.easeCubicActionInOut = function() {
-      return _easeCubicActionInOut;
-    };
-  }), {} ],
-  5: [ (function(require, module, exports) {
-    "use strict";
-    cc.ActionInstant = cc.Class({
-      name: "cc.ActionInstant",
-      extends: cc.FiniteTimeAction,
-      isDone: function isDone() {
-        return true;
-      },
-      step: function step(dt) {
-        this.update(1);
-      },
-      update: function update(dt) {},
-      reverse: function reverse() {
-        return this.clone();
-      },
-      clone: function clone() {
-        return new cc.ActionInstant();
-      }
-    });
-    cc.Show = cc.Class({
-      name: "cc.Show",
-      extends: cc.ActionInstant,
-      update: function update(dt) {
-        var _renderComps = this.target.getComponentsInChildren(cc.RenderComponent);
-        for (var i = 0; i < _renderComps.length; ++i) {
-          var render = _renderComps[i];
-          render.enabled = true;
-        }
-      },
-      reverse: function reverse() {
-        return new cc.Hide();
-      },
-      clone: function clone() {
-        return new cc.Show();
-      }
-    });
-    cc.show = function() {
-      return new cc.Show();
-    };
-    cc.Hide = cc.Class({
-      name: "cc.Hide",
-      extends: cc.ActionInstant,
-      update: function update(dt) {
-        var _renderComps = this.target.getComponentsInChildren(cc.RenderComponent);
-        for (var i = 0; i < _renderComps.length; ++i) {
-          var render = _renderComps[i];
-          render.enabled = false;
-        }
-      },
-      reverse: function reverse() {
-        return new cc.Show();
-      },
-      clone: function clone() {
-        return new cc.Hide();
-      }
-    });
-    cc.hide = function() {
-      return new cc.Hide();
-    };
-    cc.ToggleVisibility = cc.Class({
-      name: "cc.ToggleVisibility",
-      extends: cc.ActionInstant,
-      update: function update(dt) {
-        var _renderComps = this.target.getComponentsInChildren(cc.RenderComponent);
-        for (var i = 0; i < _renderComps.length; ++i) {
-          var render = _renderComps[i];
-          render.enabled = !render.enabled;
-        }
-      },
-      reverse: function reverse() {
-        return new cc.ToggleVisibility();
-      },
-      clone: function clone() {
-        return new cc.ToggleVisibility();
-      }
-    });
-    cc.toggleVisibility = function() {
-      return new cc.ToggleVisibility();
-    };
-    cc.RemoveSelf = cc.Class({
-      name: "cc.RemoveSelf",
-      extends: cc.ActionInstant,
-      ctor: function ctor(isNeedCleanUp) {
-        this._isNeedCleanUp = true;
-        void 0 !== isNeedCleanUp && this.init(isNeedCleanUp);
-      },
-      update: function update(dt) {
-        this.target.removeFromParent(this._isNeedCleanUp);
-      },
-      init: function init(isNeedCleanUp) {
-        this._isNeedCleanUp = isNeedCleanUp;
-        return true;
-      },
-      reverse: function reverse() {
-        return new cc.RemoveSelf(this._isNeedCleanUp);
-      },
-      clone: function clone() {
-        return new cc.RemoveSelf(this._isNeedCleanUp);
-      }
-    });
-    cc.removeSelf = function(isNeedCleanUp) {
-      return new cc.RemoveSelf(isNeedCleanUp);
-    };
-    cc.DestroySelf = cc.Class({
-      name: "cc.DestroySelf",
-      extends: cc.ActionInstant,
-      update: function update() {
-        this.target.destroy();
-      },
-      reverse: function reverse() {
-        return new cc.DestroySelf();
-      },
-      clone: function clone() {
-        return new cc.DestroySelf();
-      }
-    });
-    cc.destroySelf = function() {
-      return new cc.DestroySelf();
-    };
-    cc.FlipX = cc.Class({
-      name: "cc.FlipX",
-      extends: cc.ActionInstant,
-      ctor: function ctor(flip) {
-        this._flippedX = false;
-        void 0 !== flip && this.initWithFlipX(flip);
-      },
-      initWithFlipX: function initWithFlipX(flip) {
-        this._flippedX = flip;
-        return true;
-      },
-      update: function update(dt) {
-        this.target.scaleX = Math.abs(this.target.scaleX) * (this._flippedX ? -1 : 1);
-      },
-      reverse: function reverse() {
-        return new cc.FlipX(!this._flippedX);
-      },
-      clone: function clone() {
-        var action = new cc.FlipX();
-        action.initWithFlipX(this._flippedX);
-        return action;
-      }
-    });
-    cc.flipX = function(flip) {
-      return new cc.FlipX(flip);
-    };
-    cc.FlipY = cc.Class({
-      name: "cc.FlipY",
-      extends: cc.ActionInstant,
-      ctor: function ctor(flip) {
-        this._flippedY = false;
-        void 0 !== flip && this.initWithFlipY(flip);
-      },
-      initWithFlipY: function initWithFlipY(flip) {
-        this._flippedY = flip;
-        return true;
-      },
-      update: function update(dt) {
-        this.target.scaleY = Math.abs(this.target.scaleY) * (this._flippedY ? -1 : 1);
-      },
-      reverse: function reverse() {
-        return new cc.FlipY(!this._flippedY);
-      },
-      clone: function clone() {
-        var action = new cc.FlipY();
-        action.initWithFlipY(this._flippedY);
-        return action;
-      }
-    });
-    cc.flipY = function(flip) {
-      return new cc.FlipY(flip);
-    };
-    cc.Place = cc.Class({
-      name: "cc.Place",
-      extends: cc.ActionInstant,
-      ctor: function ctor(pos, y) {
-        this._x = 0;
-        this._y = 0;
-        if (void 0 !== pos) {
-          if (void 0 !== pos.x) {
-            y = pos.y;
-            pos = pos.x;
-          }
-          this.initWithPosition(pos, y);
-        }
-      },
-      initWithPosition: function initWithPosition(x, y) {
-        this._x = x;
-        this._y = y;
-        return true;
-      },
-      update: function update(dt) {
-        this.target.setPosition(this._x, this._y);
-      },
-      clone: function clone() {
-        var action = new cc.Place();
-        action.initWithPosition(this._x, this._y);
-        return action;
-      }
-    });
-    cc.place = function(pos, y) {
-      return new cc.Place(pos, y);
-    };
-    cc.CallFunc = cc.Class({
-      name: "cc.CallFunc",
-      extends: cc.ActionInstant,
-      ctor: function ctor(selector, selectorTarget, data) {
-        this._selectorTarget = null;
-        this._function = null;
-        this._data = null;
-        this.initWithFunction(selector, selectorTarget, data);
-      },
-      initWithFunction: function initWithFunction(selector, selectorTarget, data) {
-        selector && (this._function = selector);
-        selectorTarget && (this._selectorTarget = selectorTarget);
-        void 0 !== data && (this._data = data);
-        return true;
-      },
-      execute: function execute() {
-        this._function && this._function.call(this._selectorTarget, this.target, this._data);
-      },
-      update: function update(dt) {
-        this.execute();
-      },
-      getTargetCallback: function getTargetCallback() {
-        return this._selectorTarget;
-      },
-      setTargetCallback: function setTargetCallback(sel) {
-        if (sel !== this._selectorTarget) {
-          this._selectorTarget && (this._selectorTarget = null);
-          this._selectorTarget = sel;
-        }
-      },
-      clone: function clone() {
-        var action = new cc.CallFunc();
-        action.initWithFunction(this._function, this._selectorTarget, this._data);
-        return action;
-      }
-    });
-    cc.callFunc = function(selector, selectorTarget, data) {
-      return new cc.CallFunc(selector, selectorTarget, data);
-    };
-  }), {} ],
-  6: [ (function(require, module, exports) {
-    "use strict";
-    cc.ActionInterval = cc.Class({
-      name: "cc.ActionInterval",
-      extends: cc.FiniteTimeAction,
-      ctor: function ctor(d) {
-        this.MAX_VALUE = 2;
-        this._elapsed = 0;
-        this._firstTick = false;
-        this._easeList = null;
-        this._speed = 1;
-        this._timesForRepeat = 1;
-        this._repeatForever = false;
-        this._repeatMethod = false;
-        this._speedMethod = false;
-        void 0 !== d && cc.ActionInterval.prototype.initWithDuration.call(this, d);
-      },
-      getElapsed: function getElapsed() {
-        return this._elapsed;
-      },
-      initWithDuration: function initWithDuration(d) {
-        this._duration = 0 === d ? cc.macro.FLT_EPSILON : d;
-        this._elapsed = 0;
-        this._firstTick = true;
-        return true;
-      },
-      isDone: function isDone() {
-        return this._elapsed >= this._duration;
-      },
-      _cloneDecoration: function _cloneDecoration(action) {
-        action._repeatForever = this._repeatForever;
-        action._speed = this._speed;
-        action._timesForRepeat = this._timesForRepeat;
-        action._easeList = this._easeList;
-        action._speedMethod = this._speedMethod;
-        action._repeatMethod = this._repeatMethod;
-      },
-      _reverseEaseList: function _reverseEaseList(action) {
-        if (this._easeList) {
-          action._easeList = [];
-          for (var i = 0; i < this._easeList.length; i++) action._easeList.push(this._easeList[i].reverse());
-        }
-      },
-      clone: function clone() {
-        var action = new cc.ActionInterval(this._duration);
-        this._cloneDecoration(action);
-        return action;
-      },
-      easing: function easing(easeObj) {
-        this._easeList ? this._easeList.length = 0 : this._easeList = [];
-        for (var i = 0; i < arguments.length; i++) this._easeList.push(arguments[i]);
-        return this;
-      },
-      _computeEaseTime: function _computeEaseTime(dt) {
-        var locList = this._easeList;
-        if (!locList || 0 === locList.length) return dt;
-        for (var i = 0, n = locList.length; i < n; i++) dt = locList[i].easing(dt);
-        return dt;
-      },
-      step: function step(dt) {
-        if (this._firstTick) {
-          this._firstTick = false;
-          this._elapsed = 0;
-        } else this._elapsed += dt;
-        var t = this._elapsed / (this._duration > 1.192092896e-7 ? this._duration : 1.192092896e-7);
-        t = 1 > t ? t : 1;
-        this.update(t > 0 ? t : 0);
-        if (this._repeatMethod && this._timesForRepeat > 1 && this.isDone()) {
-          this._repeatForever || this._timesForRepeat--;
-          this.startWithTarget(this.target);
-          this.step(this._elapsed - this._duration);
-        }
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.Action.prototype.startWithTarget.call(this, target);
-        this._elapsed = 0;
-        this._firstTick = true;
-      },
-      reverse: function reverse() {
-        cc.logID(1010);
-        return null;
-      },
-      setAmplitudeRate: function setAmplitudeRate(amp) {
-        cc.logID(1011);
-      },
-      getAmplitudeRate: function getAmplitudeRate() {
-        cc.logID(1012);
-        return 0;
-      },
-      speed: function speed(_speed) {
-        if (_speed <= 0) {
-          cc.logID(1013);
-          return this;
-        }
-        this._speedMethod = true;
-        this._speed *= _speed;
-        return this;
-      },
-      getSpeed: function getSpeed() {
-        return this._speed;
-      },
-      setSpeed: function setSpeed(speed) {
-        this._speed = speed;
-        return this;
-      },
-      repeat: function repeat(times) {
-        times = Math.round(times);
-        if (isNaN(times) || times < 1) {
-          cc.logID(1014);
-          return this;
-        }
-        this._repeatMethod = true;
-        this._timesForRepeat *= times;
-        return this;
-      },
-      repeatForever: function repeatForever() {
-        this._repeatMethod = true;
-        this._timesForRepeat = this.MAX_VALUE;
-        this._repeatForever = true;
-        return this;
-      }
-    });
-    cc.actionInterval = function(d) {
-      return new cc.ActionInterval(d);
-    };
-    cc.Sequence = cc.Class({
-      name: "cc.Sequence",
-      extends: cc.ActionInterval,
-      ctor: function ctor(tempArray) {
-        this._actions = [];
-        this._split = null;
-        this._last = 0;
-        this._reversed = false;
-        var paramArray = tempArray instanceof Array ? tempArray : arguments;
-        if (1 === paramArray.length) {
-          cc.errorID(1019);
-          return;
-        }
-        var last = paramArray.length - 1;
-        last >= 0 && null == paramArray[last] && cc.logID(1015);
-        if (last >= 0) {
-          var prev = paramArray[0], action1;
-          for (var i = 1; i < last; i++) if (paramArray[i]) {
-            action1 = prev;
-            prev = cc.Sequence._actionOneTwo(action1, paramArray[i]);
-          }
-          this.initWithTwoActions(prev, paramArray[last]);
-        }
-      },
-      initWithTwoActions: function initWithTwoActions(actionOne, actionTwo) {
-        if (!actionOne || !actionTwo) {
-          cc.errorID(1025);
-          return false;
-        }
-        var durationOne = actionOne._duration, durationTwo = actionTwo._duration;
-        durationOne *= actionOne._repeatMethod ? actionOne._timesForRepeat : 1;
-        durationTwo *= actionTwo._repeatMethod ? actionTwo._timesForRepeat : 1;
-        var d = durationOne + durationTwo;
-        this.initWithDuration(d);
-        this._actions[0] = actionOne;
-        this._actions[1] = actionTwo;
-        return true;
-      },
-      clone: function clone() {
-        var action = new cc.Sequence();
-        this._cloneDecoration(action);
-        action.initWithTwoActions(this._actions[0].clone(), this._actions[1].clone());
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._split = this._actions[0]._duration / this._duration;
-        this._split *= this._actions[0]._repeatMethod ? this._actions[0]._timesForRepeat : 1;
-        this._last = -1;
-      },
-      stop: function stop() {
-        -1 !== this._last && this._actions[this._last].stop();
-        cc.Action.prototype.stop.call(this);
-      },
-      update: function update(dt) {
-        var new_t, found = 0;
-        var locSplit = this._split, locActions = this._actions, locLast = this._last, actionFound;
-        dt = this._computeEaseTime(dt);
-        if (dt < locSplit) {
-          new_t = 0 !== locSplit ? dt / locSplit : 1;
-          if (0 === found && 1 === locLast && this._reversed) {
-            locActions[1].update(0);
-            locActions[1].stop();
-          }
-        } else {
-          found = 1;
-          new_t = 1 === locSplit ? 1 : (dt - locSplit) / (1 - locSplit);
-          if (-1 === locLast) {
-            locActions[0].startWithTarget(this.target);
-            locActions[0].update(1);
-            locActions[0].stop();
-          }
-          if (0 === locLast) {
-            locActions[0].update(1);
-            locActions[0].stop();
-          }
-        }
-        actionFound = locActions[found];
-        if (locLast === found && actionFound.isDone()) return;
-        locLast !== found && actionFound.startWithTarget(this.target);
-        new_t *= actionFound._timesForRepeat;
-        actionFound.update(new_t > 1 ? new_t % 1 : new_t);
-        this._last = found;
-      },
-      reverse: function reverse() {
-        var action = cc.Sequence._actionOneTwo(this._actions[1].reverse(), this._actions[0].reverse());
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        action._reversed = true;
-        return action;
-      }
-    });
-    cc.sequence = function(tempArray) {
-      var paramArray = tempArray instanceof Array ? tempArray : arguments;
-      if (1 === paramArray.length) {
-        cc.errorID(1019);
-        return null;
-      }
-      var last = paramArray.length - 1;
-      last >= 0 && null == paramArray[last] && cc.logID(1015);
-      var result = null;
-      if (last >= 0) {
-        result = paramArray[0];
-        for (var i = 1; i <= last; i++) paramArray[i] && (result = cc.Sequence._actionOneTwo(result, paramArray[i]));
-      }
-      return result;
-    };
-    cc.Sequence._actionOneTwo = function(actionOne, actionTwo) {
-      var sequence = new cc.Sequence();
-      sequence.initWithTwoActions(actionOne, actionTwo);
-      return sequence;
-    };
-    cc.Repeat = cc.Class({
-      name: "cc.Repeat",
-      extends: cc.ActionInterval,
-      ctor: function ctor(action, times) {
-        this._times = 0;
-        this._total = 0;
-        this._nextDt = 0;
-        this._actionInstant = false;
-        this._innerAction = null;
-        void 0 !== times && this.initWithAction(action, times);
-      },
-      initWithAction: function initWithAction(action, times) {
-        var duration = action._duration * times;
-        if (this.initWithDuration(duration)) {
-          this._times = times;
-          this._innerAction = action;
-          if (action instanceof cc.ActionInstant) {
-            this._actionInstant = true;
-            this._times -= 1;
-          }
-          this._total = 0;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.Repeat();
-        this._cloneDecoration(action);
-        action.initWithAction(this._innerAction.clone(), this._times);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        this._total = 0;
-        this._nextDt = this._innerAction._duration / this._duration;
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._innerAction.startWithTarget(target);
-      },
-      stop: function stop() {
-        this._innerAction.stop();
-        cc.Action.prototype.stop.call(this);
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        var locInnerAction = this._innerAction;
-        var locDuration = this._duration;
-        var locTimes = this._times;
-        var locNextDt = this._nextDt;
-        if (dt >= locNextDt) {
-          while (dt > locNextDt && this._total < locTimes) {
-            locInnerAction.update(1);
-            this._total++;
-            locInnerAction.stop();
-            locInnerAction.startWithTarget(this.target);
-            locNextDt += locInnerAction._duration / locDuration;
-            this._nextDt = locNextDt > 1 ? 1 : locNextDt;
-          }
-          if (dt >= 1 && this._total < locTimes) {
-            locInnerAction.update(1);
-            this._total++;
-          }
-          this._actionInstant || (this._total === locTimes ? locInnerAction.stop() : locInnerAction.update(dt - (locNextDt - locInnerAction._duration / locDuration)));
-        } else locInnerAction.update(dt * locTimes % 1);
-      },
-      isDone: function isDone() {
-        return this._total === this._times;
-      },
-      reverse: function reverse() {
-        var action = new cc.Repeat(this._innerAction.reverse(), this._times);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      },
-      setInnerAction: function setInnerAction(action) {
-        this._innerAction !== action && (this._innerAction = action);
-      },
-      getInnerAction: function getInnerAction() {
-        return this._innerAction;
-      }
-    });
-    cc.repeat = function(action, times) {
-      return new cc.Repeat(action, times);
-    };
-    cc.RepeatForever = cc.Class({
-      name: "cc.RepeatForever",
-      extends: cc.ActionInterval,
-      ctor: function ctor(action) {
-        this._innerAction = null;
-        action && this.initWithAction(action);
-      },
-      initWithAction: function initWithAction(action) {
-        if (!action) {
-          cc.errorID(1026);
-          return false;
-        }
-        this._innerAction = action;
-        return true;
-      },
-      clone: function clone() {
-        var action = new cc.RepeatForever();
-        this._cloneDecoration(action);
-        action.initWithAction(this._innerAction.clone());
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._innerAction.startWithTarget(target);
-      },
-      step: function step(dt) {
-        var locInnerAction = this._innerAction;
-        locInnerAction.step(dt);
-        if (locInnerAction.isDone()) {
-          locInnerAction.startWithTarget(this.target);
-          locInnerAction.step(locInnerAction.getElapsed() - locInnerAction._duration);
-        }
-      },
-      isDone: function isDone() {
-        return false;
-      },
-      reverse: function reverse() {
-        var action = new cc.RepeatForever(this._innerAction.reverse());
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      },
-      setInnerAction: function setInnerAction(action) {
-        this._innerAction !== action && (this._innerAction = action);
-      },
-      getInnerAction: function getInnerAction() {
-        return this._innerAction;
-      }
-    });
-    cc.repeatForever = function(action) {
-      return new cc.RepeatForever(action);
-    };
-    cc.Spawn = cc.Class({
-      name: "cc.Spawn",
-      extends: cc.ActionInterval,
-      ctor: function ctor(tempArray) {
-        this._one = null;
-        this._two = null;
-        var paramArray = tempArray instanceof Array ? tempArray : arguments;
-        if (1 === paramArray.length) {
-          cc.errorID(1020);
-          return;
-        }
-        var last = paramArray.length - 1;
-        last >= 0 && null == paramArray[last] && cc.logID(1015);
-        if (last >= 0) {
-          var prev = paramArray[0], action1;
-          for (var i = 1; i < last; i++) if (paramArray[i]) {
-            action1 = prev;
-            prev = cc.Spawn._actionOneTwo(action1, paramArray[i]);
-          }
-          this.initWithTwoActions(prev, paramArray[last]);
-        }
-      },
-      initWithTwoActions: function initWithTwoActions(action1, action2) {
-        if (!action1 || !action2) {
-          cc.errorID(1027);
-          return false;
-        }
-        var ret = false;
-        var d1 = action1._duration;
-        var d2 = action2._duration;
-        if (this.initWithDuration(Math.max(d1, d2))) {
-          this._one = action1;
-          this._two = action2;
-          d1 > d2 ? this._two = cc.Sequence._actionOneTwo(action2, cc.delayTime(d1 - d2)) : d1 < d2 && (this._one = cc.Sequence._actionOneTwo(action1, cc.delayTime(d2 - d1)));
-          ret = true;
-        }
-        return ret;
-      },
-      clone: function clone() {
-        var action = new cc.Spawn();
-        this._cloneDecoration(action);
-        action.initWithTwoActions(this._one.clone(), this._two.clone());
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._one.startWithTarget(target);
-        this._two.startWithTarget(target);
-      },
-      stop: function stop() {
-        this._one.stop();
-        this._two.stop();
-        cc.Action.prototype.stop.call(this);
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        this._one && this._one.update(dt);
-        this._two && this._two.update(dt);
-      },
-      reverse: function reverse() {
-        var action = cc.Spawn._actionOneTwo(this._one.reverse(), this._two.reverse());
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.spawn = function(tempArray) {
-      var paramArray = tempArray instanceof Array ? tempArray : arguments;
-      if (1 === paramArray.length) {
-        cc.errorID(1020);
-        return null;
-      }
-      paramArray.length > 0 && null == paramArray[paramArray.length - 1] && cc.logID(1015);
-      var prev = paramArray[0];
-      for (var i = 1; i < paramArray.length; i++) null != paramArray[i] && (prev = cc.Spawn._actionOneTwo(prev, paramArray[i]));
-      return prev;
-    };
-    cc.Spawn._actionOneTwo = function(action1, action2) {
-      var pSpawn = new cc.Spawn();
-      pSpawn.initWithTwoActions(action1, action2);
-      return pSpawn;
-    };
-    cc.RotateTo = cc.Class({
-      name: "cc.RotateTo",
-      extends: cc.ActionInterval,
-      statics: {
-        _reverse: false
-      },
-      ctor: function ctor(duration, dstAngle) {
-        this._startAngle = 0;
-        this._dstAngle = 0;
-        this._angle = 0;
-        void 0 !== dstAngle && this.initWithDuration(duration, dstAngle);
-      },
-      initWithDuration: function initWithDuration(duration, dstAngle) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this._dstAngle = dstAngle;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.RotateTo();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._dstAngle);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var startAngle = target.angle % 360;
-        var angle = cc.RotateTo._reverse ? this._dstAngle - startAngle : this._dstAngle + startAngle;
-        angle > 180 && (angle -= 360);
-        angle < -180 && (angle += 360);
-        this._startAngle = startAngle;
-        this._angle = cc.RotateTo._reverse ? angle : -angle;
-      },
-      reverse: function reverse() {
-        cc.logID(1016);
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        this.target && (this.target.angle = this._startAngle + this._angle * dt);
-      }
-    });
-    cc.rotateTo = function(duration, dstAngle) {
-      return new cc.RotateTo(duration, dstAngle);
-    };
-    cc.RotateBy = cc.Class({
-      name: "cc.RotateBy",
-      extends: cc.ActionInterval,
-      statics: {
-        _reverse: false
-      },
-      ctor: function ctor(duration, deltaAngle) {
-        deltaAngle *= cc.RotateBy._reverse ? 1 : -1;
-        this._deltaAngle = 0;
-        this._startAngle = 0;
-        void 0 !== deltaAngle && this.initWithDuration(duration, deltaAngle);
-      },
-      initWithDuration: function initWithDuration(duration, deltaAngle) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this._deltaAngle = deltaAngle;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.RotateBy();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._deltaAngle);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._startAngle = target.angle;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        this.target && (this.target.angle = this._startAngle + this._deltaAngle * dt);
-      },
-      reverse: function reverse() {
-        var action = new cc.RotateBy();
-        action.initWithDuration(this._duration, -this._deltaAngle);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.rotateBy = function(duration, deltaAngle) {
-      return new cc.RotateBy(duration, deltaAngle);
-    };
-    cc.MoveBy = cc.Class({
-      name: "cc.MoveBy",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, deltaPos, deltaY) {
-        this._positionDelta = cc.v2(0, 0);
-        this._startPosition = cc.v2(0, 0);
-        this._previousPosition = cc.v2(0, 0);
-        void 0 !== deltaPos && cc.MoveBy.prototype.initWithDuration.call(this, duration, deltaPos, deltaY);
-      },
-      initWithDuration: function initWithDuration(duration, position, y) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          if (void 0 !== position.x) {
-            y = position.y;
-            position = position.x;
-          }
-          this._positionDelta.x = position;
-          this._positionDelta.y = y;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.MoveBy();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._positionDelta);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var locPosX = target.x;
-        var locPosY = target.y;
-        this._previousPosition.x = locPosX;
-        this._previousPosition.y = locPosY;
-        this._startPosition.x = locPosX;
-        this._startPosition.y = locPosY;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        if (this.target) {
-          var x = this._positionDelta.x * dt;
-          var y = this._positionDelta.y * dt;
-          var locStartPosition = this._startPosition;
-          if (cc.macro.ENABLE_STACKABLE_ACTIONS) {
-            var targetX = this.target.x;
-            var targetY = this.target.y;
-            var locPreviousPosition = this._previousPosition;
-            locStartPosition.x = locStartPosition.x + targetX - locPreviousPosition.x;
-            locStartPosition.y = locStartPosition.y + targetY - locPreviousPosition.y;
-            x += locStartPosition.x;
-            y += locStartPosition.y;
-            locPreviousPosition.x = x;
-            locPreviousPosition.y = y;
-            this.target.setPosition(x, y);
-          } else this.target.setPosition(locStartPosition.x + x, locStartPosition.y + y);
-        }
-      },
-      reverse: function reverse() {
-        var action = new cc.MoveBy(this._duration, cc.v2(-this._positionDelta.x, -this._positionDelta.y));
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.moveBy = function(duration, deltaPos, deltaY) {
-      return new cc.MoveBy(duration, deltaPos, deltaY);
-    };
-    cc.MoveTo = cc.Class({
-      name: "cc.MoveTo",
-      extends: cc.MoveBy,
-      ctor: function ctor(duration, position, y) {
-        this._endPosition = cc.v2(0, 0);
-        void 0 !== position && this.initWithDuration(duration, position, y);
-      },
-      initWithDuration: function initWithDuration(duration, position, y) {
-        if (cc.MoveBy.prototype.initWithDuration.call(this, duration, position, y)) {
-          if (void 0 !== position.x) {
-            y = position.y;
-            position = position.x;
-          }
-          this._endPosition.x = position;
-          this._endPosition.y = y;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.MoveTo();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._endPosition);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.MoveBy.prototype.startWithTarget.call(this, target);
-        this._positionDelta.x = this._endPosition.x - target.x;
-        this._positionDelta.y = this._endPosition.y - target.y;
-      }
-    });
-    cc.moveTo = function(duration, position, y) {
-      return new cc.MoveTo(duration, position, y);
-    };
-    cc.SkewTo = cc.Class({
-      name: "cc.SkewTo",
-      extends: cc.ActionInterval,
-      ctor: function ctor(t, sx, sy) {
-        this._skewX = 0;
-        this._skewY = 0;
-        this._startSkewX = 0;
-        this._startSkewY = 0;
-        this._endSkewX = 0;
-        this._endSkewY = 0;
-        this._deltaX = 0;
-        this._deltaY = 0;
-        void 0 !== sy && cc.SkewTo.prototype.initWithDuration.call(this, t, sx, sy);
-      },
-      initWithDuration: function initWithDuration(t, sx, sy) {
-        var ret = false;
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, t)) {
-          this._endSkewX = sx;
-          this._endSkewY = sy;
-          ret = true;
-        }
-        return ret;
-      },
-      clone: function clone() {
-        var action = new cc.SkewTo();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._endSkewX, this._endSkewY);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._startSkewX = target.skewX % 180;
-        this._deltaX = this._endSkewX - this._startSkewX;
-        this._deltaX > 180 && (this._deltaX -= 360);
-        this._deltaX < -180 && (this._deltaX += 360);
-        this._startSkewY = target.skewY % 360;
-        this._deltaY = this._endSkewY - this._startSkewY;
-        this._deltaY > 180 && (this._deltaY -= 360);
-        this._deltaY < -180 && (this._deltaY += 360);
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        this.target.skewX = this._startSkewX + this._deltaX * dt;
-        this.target.skewY = this._startSkewY + this._deltaY * dt;
-      }
-    });
-    cc.skewTo = function(t, sx, sy) {
-      return new cc.SkewTo(t, sx, sy);
-    };
-    cc.SkewBy = cc.Class({
-      name: "cc.SkewBy",
-      extends: cc.SkewTo,
-      ctor: function ctor(t, sx, sy) {
-        void 0 !== sy && this.initWithDuration(t, sx, sy);
-      },
-      initWithDuration: function initWithDuration(t, deltaSkewX, deltaSkewY) {
-        var ret = false;
-        if (cc.SkewTo.prototype.initWithDuration.call(this, t, deltaSkewX, deltaSkewY)) {
-          this._skewX = deltaSkewX;
-          this._skewY = deltaSkewY;
-          ret = true;
-        }
-        return ret;
-      },
-      clone: function clone() {
-        var action = new cc.SkewBy();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._skewX, this._skewY);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.SkewTo.prototype.startWithTarget.call(this, target);
-        this._deltaX = this._skewX;
-        this._deltaY = this._skewY;
-        this._endSkewX = this._startSkewX + this._deltaX;
-        this._endSkewY = this._startSkewY + this._deltaY;
-      },
-      reverse: function reverse() {
-        var action = new cc.SkewBy(this._duration, -this._skewX, -this._skewY);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.skewBy = function(t, sx, sy) {
-      return new cc.SkewBy(t, sx, sy);
-    };
-    cc.JumpBy = cc.Class({
-      name: "cc.JumpBy",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, position, y, height, jumps) {
-        this._startPosition = cc.v2(0, 0);
-        this._previousPosition = cc.v2(0, 0);
-        this._delta = cc.v2(0, 0);
-        this._height = 0;
-        this._jumps = 0;
-        void 0 !== height && cc.JumpBy.prototype.initWithDuration.call(this, duration, position, y, height, jumps);
-      },
-      initWithDuration: function initWithDuration(duration, position, y, height, jumps) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          if (void 0 === jumps) {
-            jumps = height;
-            height = y;
-            y = position.y;
-            position = position.x;
-          }
-          this._delta.x = position;
-          this._delta.y = y;
-          this._height = height;
-          this._jumps = jumps;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.JumpBy();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._delta, this._height, this._jumps);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var locPosX = target.x;
-        var locPosY = target.y;
-        this._previousPosition.x = locPosX;
-        this._previousPosition.y = locPosY;
-        this._startPosition.x = locPosX;
-        this._startPosition.y = locPosY;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        if (this.target) {
-          var frac = dt * this._jumps % 1;
-          var y = 4 * this._height * frac * (1 - frac);
-          y += this._delta.y * dt;
-          var x = this._delta.x * dt;
-          var locStartPosition = this._startPosition;
-          if (cc.macro.ENABLE_STACKABLE_ACTIONS) {
-            var targetX = this.target.x;
-            var targetY = this.target.y;
-            var locPreviousPosition = this._previousPosition;
-            locStartPosition.x = locStartPosition.x + targetX - locPreviousPosition.x;
-            locStartPosition.y = locStartPosition.y + targetY - locPreviousPosition.y;
-            x += locStartPosition.x;
-            y += locStartPosition.y;
-            locPreviousPosition.x = x;
-            locPreviousPosition.y = y;
-            this.target.setPosition(x, y);
-          } else this.target.setPosition(locStartPosition.x + x, locStartPosition.y + y);
-        }
-      },
-      reverse: function reverse() {
-        var action = new cc.JumpBy(this._duration, cc.v2(-this._delta.x, -this._delta.y), this._height, this._jumps);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.jumpBy = function(duration, position, y, height, jumps) {
-      return new cc.JumpBy(duration, position, y, height, jumps);
-    };
-    cc.JumpTo = cc.Class({
-      name: "cc.JumpTo",
-      extends: cc.JumpBy,
-      ctor: function ctor(duration, position, y, height, jumps) {
-        this._endPosition = cc.v2(0, 0);
-        void 0 !== height && this.initWithDuration(duration, position, y, height, jumps);
-      },
-      initWithDuration: function initWithDuration(duration, position, y, height, jumps) {
-        if (cc.JumpBy.prototype.initWithDuration.call(this, duration, position, y, height, jumps)) {
-          if (void 0 === jumps) {
-            y = position.y;
-            position = position.x;
-          }
-          this._endPosition.x = position;
-          this._endPosition.y = y;
-          return true;
-        }
-        return false;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.JumpBy.prototype.startWithTarget.call(this, target);
-        this._delta.x = this._endPosition.x - this._startPosition.x;
-        this._delta.y = this._endPosition.y - this._startPosition.y;
-      },
-      clone: function clone() {
-        var action = new cc.JumpTo();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._endPosition, this._height, this._jumps);
-        return action;
-      }
-    });
-    cc.jumpTo = function(duration, position, y, height, jumps) {
-      return new cc.JumpTo(duration, position, y, height, jumps);
-    };
-    function bezierAt(a, b, c, d, t) {
-      return Math.pow(1 - t, 3) * a + 3 * t * Math.pow(1 - t, 2) * b + 3 * Math.pow(t, 2) * (1 - t) * c + Math.pow(t, 3) * d;
-    }
-    cc.BezierBy = cc.Class({
-      name: "cc.BezierBy",
-      extends: cc.ActionInterval,
-      ctor: function ctor(t, c) {
-        this._config = [];
-        this._startPosition = cc.v2(0, 0);
-        this._previousPosition = cc.v2(0, 0);
-        c && cc.BezierBy.prototype.initWithDuration.call(this, t, c);
-      },
-      initWithDuration: function initWithDuration(t, c) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, t)) {
-          this._config = c;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.BezierBy();
-        this._cloneDecoration(action);
-        var newConfigs = [];
-        for (var i = 0; i < this._config.length; i++) {
-          var selConf = this._config[i];
-          newConfigs.push(cc.v2(selConf.x, selConf.y));
-        }
-        action.initWithDuration(this._duration, newConfigs);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var locPosX = target.x;
-        var locPosY = target.y;
-        this._previousPosition.x = locPosX;
-        this._previousPosition.y = locPosY;
-        this._startPosition.x = locPosX;
-        this._startPosition.y = locPosY;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        if (this.target) {
-          var locConfig = this._config;
-          var xa = 0;
-          var xb = locConfig[0].x;
-          var xc = locConfig[1].x;
-          var xd = locConfig[2].x;
-          var ya = 0;
-          var yb = locConfig[0].y;
-          var yc = locConfig[1].y;
-          var yd = locConfig[2].y;
-          var x = bezierAt(xa, xb, xc, xd, dt);
-          var y = bezierAt(ya, yb, yc, yd, dt);
-          var locStartPosition = this._startPosition;
-          if (cc.macro.ENABLE_STACKABLE_ACTIONS) {
-            var targetX = this.target.x;
-            var targetY = this.target.y;
-            var locPreviousPosition = this._previousPosition;
-            locStartPosition.x = locStartPosition.x + targetX - locPreviousPosition.x;
-            locStartPosition.y = locStartPosition.y + targetY - locPreviousPosition.y;
-            x += locStartPosition.x;
-            y += locStartPosition.y;
-            locPreviousPosition.x = x;
-            locPreviousPosition.y = y;
-            this.target.setPosition(x, y);
-          } else this.target.setPosition(locStartPosition.x + x, locStartPosition.y + y);
-        }
-      },
-      reverse: function reverse() {
-        var locConfig = this._config;
-        var x0 = locConfig[0].x, y0 = locConfig[0].y;
-        var x1 = locConfig[1].x, y1 = locConfig[1].y;
-        var x2 = locConfig[2].x, y2 = locConfig[2].y;
-        var r = [ cc.v2(x1 - x2, y1 - y2), cc.v2(x0 - x2, y0 - y2), cc.v2(-x2, -y2) ];
-        var action = new cc.BezierBy(this._duration, r);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.bezierBy = function(t, c) {
-      return new cc.BezierBy(t, c);
-    };
-    cc.BezierTo = cc.Class({
-      name: "cc.BezierTo",
-      extends: cc.BezierBy,
-      ctor: function ctor(t, c) {
-        this._toConfig = [];
-        c && this.initWithDuration(t, c);
-      },
-      initWithDuration: function initWithDuration(t, c) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, t)) {
-          this._toConfig = c;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.BezierTo();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._toConfig);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.BezierBy.prototype.startWithTarget.call(this, target);
-        var locStartPos = this._startPosition;
-        var locToConfig = this._toConfig;
-        var locConfig = this._config;
-        locConfig[0] = locToConfig[0].sub(locStartPos);
-        locConfig[1] = locToConfig[1].sub(locStartPos);
-        locConfig[2] = locToConfig[2].sub(locStartPos);
-      }
-    });
-    cc.bezierTo = function(t, c) {
-      return new cc.BezierTo(t, c);
-    };
-    cc.ScaleTo = cc.Class({
-      name: "cc.ScaleTo",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, sx, sy) {
-        this._scaleX = 1;
-        this._scaleY = 1;
-        this._startScaleX = 1;
-        this._startScaleY = 1;
-        this._endScaleX = 0;
-        this._endScaleY = 0;
-        this._deltaX = 0;
-        this._deltaY = 0;
-        void 0 !== sx && cc.ScaleTo.prototype.initWithDuration.call(this, duration, sx, sy);
-      },
-      initWithDuration: function initWithDuration(duration, sx, sy) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this._endScaleX = sx;
-          this._endScaleY = null != sy ? sy : sx;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.ScaleTo();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._endScaleX, this._endScaleY);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._startScaleX = target.scaleX;
-        this._startScaleY = target.scaleY;
-        this._deltaX = this._endScaleX - this._startScaleX;
-        this._deltaY = this._endScaleY - this._startScaleY;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        if (this.target) {
-          this.target.scaleX = this._startScaleX + this._deltaX * dt;
-          this.target.scaleY = this._startScaleY + this._deltaY * dt;
-        }
-      }
-    });
-    cc.scaleTo = function(duration, sx, sy) {
-      return new cc.ScaleTo(duration, sx, sy);
-    };
-    cc.ScaleBy = cc.Class({
-      name: "cc.ScaleBy",
-      extends: cc.ScaleTo,
-      startWithTarget: function startWithTarget(target) {
-        cc.ScaleTo.prototype.startWithTarget.call(this, target);
-        this._deltaX = this._startScaleX * this._endScaleX - this._startScaleX;
-        this._deltaY = this._startScaleY * this._endScaleY - this._startScaleY;
-      },
-      reverse: function reverse() {
-        var action = new cc.ScaleBy(this._duration, 1 / this._endScaleX, 1 / this._endScaleY);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      },
-      clone: function clone() {
-        var action = new cc.ScaleBy();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._endScaleX, this._endScaleY);
-        return action;
-      }
-    });
-    cc.scaleBy = function(duration, sx, sy) {
-      return new cc.ScaleBy(duration, sx, sy);
-    };
-    cc.Blink = cc.Class({
-      name: "cc.Blink",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, blinks) {
-        this._times = 0;
-        this._originalState = false;
-        void 0 !== blinks && this.initWithDuration(duration, blinks);
-      },
-      initWithDuration: function initWithDuration(duration, blinks) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this._times = blinks;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.Blink();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._times);
-        return action;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        if (this.target && !this.isDone()) {
-          var slice = 1 / this._times;
-          var m = dt % slice;
-          this.target.opacity = m > slice / 2 ? 255 : 0;
-        }
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._originalState = target.opacity;
-      },
-      stop: function stop() {
-        this.target.opacity = this._originalState;
-        cc.ActionInterval.prototype.stop.call(this);
-      },
-      reverse: function reverse() {
-        var action = new cc.Blink(this._duration, this._times);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.blink = function(duration, blinks) {
-      return new cc.Blink(duration, blinks);
-    };
-    cc.FadeTo = cc.Class({
-      name: "cc.FadeTo",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, opacity) {
-        this._toOpacity = 0;
-        this._fromOpacity = 0;
-        void 0 !== opacity && cc.FadeTo.prototype.initWithDuration.call(this, duration, opacity);
-      },
-      initWithDuration: function initWithDuration(duration, opacity) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this._toOpacity = opacity;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.FadeTo();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._toOpacity);
-        return action;
-      },
-      update: function update(time) {
-        time = this._computeEaseTime(time);
-        var fromOpacity = void 0 !== this._fromOpacity ? this._fromOpacity : 255;
-        this.target.opacity = fromOpacity + (this._toOpacity - fromOpacity) * time;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._fromOpacity = target.opacity;
-      }
-    });
-    cc.fadeTo = function(duration, opacity) {
-      return new cc.FadeTo(duration, opacity);
-    };
-    cc.FadeIn = cc.Class({
-      name: "cc.FadeIn",
-      extends: cc.FadeTo,
-      ctor: function ctor(duration) {
-        null == duration && (duration = 0);
-        this._reverseAction = null;
-        this.initWithDuration(duration, 255);
-      },
-      reverse: function reverse() {
-        var action = new cc.FadeOut();
-        action.initWithDuration(this._duration, 0);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      },
-      clone: function clone() {
-        var action = new cc.FadeIn();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._toOpacity);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        this._reverseAction && (this._toOpacity = this._reverseAction._fromOpacity);
-        cc.FadeTo.prototype.startWithTarget.call(this, target);
-      }
-    });
-    cc.fadeIn = function(duration) {
-      return new cc.FadeIn(duration);
-    };
-    cc.FadeOut = cc.Class({
-      name: "cc.FadeOut",
-      extends: cc.FadeTo,
-      ctor: function ctor(duration) {
-        null == duration && (duration = 0);
-        this._reverseAction = null;
-        this.initWithDuration(duration, 0);
-      },
-      reverse: function reverse() {
-        var action = new cc.FadeIn();
-        action._reverseAction = this;
-        action.initWithDuration(this._duration, 255);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      },
-      clone: function clone() {
-        var action = new cc.FadeOut();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._toOpacity);
-        return action;
-      }
-    });
-    cc.fadeOut = function(d) {
-      return new cc.FadeOut(d);
-    };
-    cc.TintTo = cc.Class({
-      name: "cc.TintTo",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, red, green, blue) {
-        this._to = cc.color(0, 0, 0);
-        this._from = cc.color(0, 0, 0);
-        if (red instanceof cc.Color) {
-          blue = red.b;
-          green = red.g;
-          red = red.r;
-        }
-        void 0 !== blue && this.initWithDuration(duration, red, green, blue);
-      },
-      initWithDuration: function initWithDuration(duration, red, green, blue) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this._to = cc.color(red, green, blue);
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.TintTo();
-        this._cloneDecoration(action);
-        var locTo = this._to;
-        action.initWithDuration(this._duration, locTo.r, locTo.g, locTo.b);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._from = this.target.color;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        var locFrom = this._from, locTo = this._to;
-        locFrom && (this.target.color = cc.color(locFrom.r + (locTo.r - locFrom.r) * dt, locFrom.g + (locTo.g - locFrom.g) * dt, locFrom.b + (locTo.b - locFrom.b) * dt));
-      }
-    });
-    cc.tintTo = function(duration, red, green, blue) {
-      return new cc.TintTo(duration, red, green, blue);
-    };
-    cc.TintBy = cc.Class({
-      name: "cc.TintBy",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, deltaRed, deltaGreen, deltaBlue) {
-        this._deltaR = 0;
-        this._deltaG = 0;
-        this._deltaB = 0;
-        this._fromR = 0;
-        this._fromG = 0;
-        this._fromB = 0;
-        void 0 !== deltaBlue && this.initWithDuration(duration, deltaRed, deltaGreen, deltaBlue);
-      },
-      initWithDuration: function initWithDuration(duration, deltaRed, deltaGreen, deltaBlue) {
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
-          this._deltaR = deltaRed;
-          this._deltaG = deltaGreen;
-          this._deltaB = deltaBlue;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.TintBy();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration, this._deltaR, this._deltaG, this._deltaB);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var color = target.color;
-        this._fromR = color.r;
-        this._fromG = color.g;
-        this._fromB = color.b;
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        this.target.color = cc.color(this._fromR + this._deltaR * dt, this._fromG + this._deltaG * dt, this._fromB + this._deltaB * dt);
-      },
-      reverse: function reverse() {
-        var action = new cc.TintBy(this._duration, -this._deltaR, -this._deltaG, -this._deltaB);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      }
-    });
-    cc.tintBy = function(duration, deltaRed, deltaGreen, deltaBlue) {
-      return new cc.TintBy(duration, deltaRed, deltaGreen, deltaBlue);
-    };
-    cc.DelayTime = cc.Class({
-      name: "cc.DelayTime",
-      extends: cc.ActionInterval,
-      update: function update(dt) {},
-      reverse: function reverse() {
-        var action = new cc.DelayTime(this._duration);
-        this._cloneDecoration(action);
-        this._reverseEaseList(action);
-        return action;
-      },
-      clone: function clone() {
-        var action = new cc.DelayTime();
-        this._cloneDecoration(action);
-        action.initWithDuration(this._duration);
-        return action;
-      }
-    });
-    cc.delayTime = function(d) {
-      return new cc.DelayTime(d);
-    };
-    cc.ReverseTime = cc.Class({
-      name: "cc.ReverseTime",
-      extends: cc.ActionInterval,
-      ctor: function ctor(action) {
-        this._other = null;
-        action && this.initWithAction(action);
-      },
-      initWithAction: function initWithAction(action) {
-        if (!action) {
-          cc.errorID(1028);
-          return false;
-        }
-        if (action === this._other) {
-          cc.errorID(1029);
-          return false;
-        }
-        if (cc.ActionInterval.prototype.initWithDuration.call(this, action._duration)) {
-          this._other = action;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.ReverseTime();
-        this._cloneDecoration(action);
-        action.initWithAction(this._other.clone());
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._other.startWithTarget(target);
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        this._other && this._other.update(1 - dt);
-      },
-      reverse: function reverse() {
-        return this._other.clone();
-      },
-      stop: function stop() {
-        this._other.stop();
-        cc.Action.prototype.stop.call(this);
-      }
-    });
-    cc.reverseTime = function(action) {
-      return new cc.ReverseTime(action);
-    };
-    cc.TargetedAction = cc.Class({
-      name: "cc.TargetedAction",
-      extends: cc.ActionInterval,
-      ctor: function ctor(target, action) {
-        this._action = null;
-        this._forcedTarget = null;
-        action && this.initWithTarget(target, action);
-      },
-      initWithTarget: function initWithTarget(target, action) {
-        if (this.initWithDuration(action._duration)) {
-          this._forcedTarget = target;
-          this._action = action;
-          return true;
-        }
-        return false;
-      },
-      clone: function clone() {
-        var action = new cc.TargetedAction();
-        this._cloneDecoration(action);
-        action.initWithTarget(this._forcedTarget, this._action.clone());
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        this._action.startWithTarget(this._forcedTarget);
-      },
-      stop: function stop() {
-        this._action.stop();
-      },
-      update: function update(dt) {
-        dt = this._computeEaseTime(dt);
-        this._action.update(dt);
-      },
-      getForcedTarget: function getForcedTarget() {
-        return this._forcedTarget;
-      },
-      setForcedTarget: function setForcedTarget(forcedTarget) {
-        this._forcedTarget !== forcedTarget && (this._forcedTarget = forcedTarget);
-      }
-    });
-    cc.targetedAction = function(target, action) {
-      return new cc.TargetedAction(target, action);
-    };
-  }), {} ],
-  7: [ (function(require, module, exports) {
-    "use strict";
-    require("../core/platform/CCClass");
-    var js = require("../core/platform/js");
-    var HashElement = function HashElement() {
-      this.actions = [];
-      this.target = null;
-      this.actionIndex = 0;
-      this.currentAction = null;
-      this.paused = false;
-      this.lock = false;
-    };
-    cc.ActionManager = function() {
-      this._hashTargets = js.createMap(true);
-      this._arrayTargets = [];
-      this._currentTarget = null;
-      cc.director._scheduler && cc.director._scheduler.enableForTarget(this);
-    };
-    cc.ActionManager.prototype = {
-      constructor: cc.ActionManager,
-      _elementPool: [],
-      _searchElementByTarget: function _searchElementByTarget(arr, target) {
-        for (var k = 0; k < arr.length; k++) if (target === arr[k].target) return arr[k];
-        return null;
-      },
-      _getElement: function _getElement(target, paused) {
-        var element = this._elementPool.pop();
-        element || (element = new HashElement());
-        element.target = target;
-        element.paused = !!paused;
-        return element;
-      },
-      _putElement: function _putElement(element) {
-        element.actions.length = 0;
-        element.actionIndex = 0;
-        element.currentAction = null;
-        element.paused = false;
-        element.target = null;
-        element.lock = false;
-        this._elementPool.push(element);
-      },
-      addAction: function addAction(action, target, paused) {
-        if (!action || !target) {
-          cc.errorID(1e3);
-          return;
-        }
-        var element = this._hashTargets[target._id];
-        if (element) element.actions || (element.actions = []); else {
-          element = this._getElement(target, paused);
-          this._hashTargets[target._id] = element;
-          this._arrayTargets.push(element);
-        }
-        element.actions.push(action);
-        action.startWithTarget(target);
-      },
-      removeAllActions: function removeAllActions() {
-        var locTargets = this._arrayTargets;
-        for (var i = 0; i < locTargets.length; i++) {
-          var element = locTargets[i];
-          element && this._putElement(element);
-        }
-        this._arrayTargets.length = 0;
-        this._hashTargets = js.createMap(true);
-      },
-      removeAllActionsFromTarget: function removeAllActionsFromTarget(target, forceDelete) {
-        if (null == target) return;
-        var element = this._hashTargets[target._id];
-        if (element) {
-          element.actions.length = 0;
-          this._deleteHashElement(element);
-        }
-      },
-      removeAction: function removeAction(action) {
-        if (!action) return;
-        var target = action.getOriginalTarget();
-        var element = this._hashTargets[target._id];
-        if (!element) return;
-        for (var i = 0; i < element.actions.length; i++) if (element.actions[i] === action) {
-          element.actions.splice(i, 1);
-          element.actionIndex >= i && element.actionIndex--;
-          break;
-        }
-      },
-      _removeActionByTag: function _removeActionByTag(tag, element, target) {
-        for (var i = 0, l = element.actions.length; i < l; ++i) {
-          var action = element.actions[i];
-          if (action && action.getTag() === tag) {
-            if (target && action.getOriginalTarget() !== target) continue;
-            this._removeActionAtIndex(i, element);
-            break;
-          }
-        }
-      },
-      removeActionByTag: function removeActionByTag(tag, target) {
-        tag === cc.Action.TAG_INVALID && cc.logID(1002);
-        var hashTargets = this._hashTargets;
-        if (target) {
-          var element = hashTargets[target._id];
-          element && this._removeActionByTag(tag, element, target);
-        } else for (var name in hashTargets) {
-          var _element = hashTargets[name];
-          this._removeActionByTag(tag, _element);
-        }
-      },
-      getActionByTag: function getActionByTag(tag, target) {
-        tag === cc.Action.TAG_INVALID && cc.logID(1004);
-        var element = this._hashTargets[target._id];
-        if (element) {
-          if (null != element.actions) for (var i = 0; i < element.actions.length; ++i) {
-            var action = element.actions[i];
-            if (action && action.getTag() === tag) return action;
-          }
-          cc.logID(1005, tag);
-        }
-        return null;
-      },
-      getNumberOfRunningActionsInTarget: function getNumberOfRunningActionsInTarget(target) {
-        var element = this._hashTargets[target._id];
-        if (element) return element.actions ? element.actions.length : 0;
-        return 0;
-      },
-      pauseTarget: function pauseTarget(target) {
-        var element = this._hashTargets[target._id];
-        element && (element.paused = true);
-      },
-      resumeTarget: function resumeTarget(target) {
-        var element = this._hashTargets[target._id];
-        element && (element.paused = false);
-      },
-      pauseAllRunningActions: function pauseAllRunningActions() {
-        var idsWithActions = [];
-        var locTargets = this._arrayTargets;
-        for (var i = 0; i < locTargets.length; i++) {
-          var element = locTargets[i];
-          if (element && !element.paused) {
-            element.paused = true;
-            idsWithActions.push(element.target);
-          }
-        }
-        return idsWithActions;
-      },
-      resumeTargets: function resumeTargets(targetsToResume) {
-        if (!targetsToResume) return;
-        for (var i = 0; i < targetsToResume.length; i++) targetsToResume[i] && this.resumeTarget(targetsToResume[i]);
-      },
-      pauseTargets: function pauseTargets(targetsToPause) {
-        if (!targetsToPause) return;
-        for (var i = 0; i < targetsToPause.length; i++) targetsToPause[i] && this.pauseTarget(targetsToPause[i]);
-      },
-      purgeSharedManager: function purgeSharedManager() {
-        cc.director.getScheduler().unscheduleUpdate(this);
-      },
-      _removeActionAtIndex: function _removeActionAtIndex(index, element) {
-        var action = element.actions[index];
-        element.actions.splice(index, 1);
-        element.actionIndex >= index && element.actionIndex--;
-        0 === element.actions.length && this._deleteHashElement(element);
-      },
-      _deleteHashElement: function _deleteHashElement(element) {
-        var ret = false;
-        if (element && !element.lock && this._hashTargets[element.target._id]) {
-          delete this._hashTargets[element.target._id];
-          var targets = this._arrayTargets;
-          for (var i = 0, l = targets.length; i < l; i++) if (targets[i] === element) {
-            targets.splice(i, 1);
-            break;
-          }
-          this._putElement(element);
-          ret = true;
-        }
-        return ret;
-      },
-      update: function update(dt) {
-        var locTargets = this._arrayTargets, locCurrTarget;
-        for (var elt = 0; elt < locTargets.length; elt++) {
-          this._currentTarget = locTargets[elt];
-          locCurrTarget = this._currentTarget;
-          if (!locCurrTarget.paused && locCurrTarget.actions) {
-            locCurrTarget.lock = true;
-            for (locCurrTarget.actionIndex = 0; locCurrTarget.actionIndex < locCurrTarget.actions.length; locCurrTarget.actionIndex++) {
-              locCurrTarget.currentAction = locCurrTarget.actions[locCurrTarget.actionIndex];
-              if (!locCurrTarget.currentAction) continue;
-              locCurrTarget.currentAction.step(dt * (locCurrTarget.currentAction._speedMethod ? locCurrTarget.currentAction._speed : 1));
-              if (locCurrTarget.currentAction && locCurrTarget.currentAction.isDone()) {
-                locCurrTarget.currentAction.stop();
-                var action = locCurrTarget.currentAction;
-                locCurrTarget.currentAction = null;
-                this.removeAction(action);
-              }
-              locCurrTarget.currentAction = null;
-            }
-            locCurrTarget.lock = false;
-          }
-          0 === locCurrTarget.actions.length && this._deleteHashElement(locCurrTarget) && elt--;
-        }
-      }
-    };
-    false;
-  }), {
-    "../core/platform/CCClass": 150,
-    "../core/platform/js": 170
-  } ],
-  8: [ (function(require, module, exports) {
-    "use strict";
-    require("./CCActionManager");
-    require("./CCAction");
-    require("./CCActionInterval");
-    require("./CCActionInstant");
-    require("./CCActionEase");
-    require("./CCActionCatmullRom");
-    require("./tween");
-  }), {
-    "./CCAction": 2,
-    "./CCActionCatmullRom": 3,
-    "./CCActionEase": 4,
-    "./CCActionInstant": 5,
-    "./CCActionInterval": 6,
-    "./CCActionManager": 7,
-    "./tween": 9
-  } ],
-  9: [ (function(require, module, exports) {
-    "use strict";
-    var _bezier = require("../animation/bezier");
-    var _tweenID = 0;
-    var TweenAction = cc.Class({
-      name: "cc.TweenAction",
-      extends: cc.ActionInterval,
-      ctor: function ctor(duration, props, opts) {
-        this._opts = opts = opts || Object.create(null);
-        this._props = Object.create(null);
-        opts.progress = opts.progress || this.progress;
-        if (opts.easing && "string" === typeof opts.easing) {
-          var easingName = opts.easing;
-          opts.easing = cc.easing[easingName];
-          !opts.easing && cc.warnID(1031, easingName);
-        }
-        var relative = this._opts.relative;
-        for (var name in props) {
-          var value = props[name];
-          var easing = void 0, progress = void 0;
-          if (void 0 !== value.value && (value.easing || value.progress)) {
-            if ("string" === typeof value.easing) {
-              easing = cc.easing[value.easing];
-              !easing && cc.warnID(1031, value.easing);
-            } else easing = value.easing;
-            progress = value.progress;
-            value = value.value;
-          }
-          var isNumber = "number" === typeof value;
-          if (!isNumber && (!value.lerp || relative && !value.add && !value.mul || !value.clone)) {
-            cc.warn("Can not animate " + name + " property, because it do not have [lerp, (add|mul), clone] function.");
-            continue;
-          }
-          var prop = Object.create(null);
-          prop.value = value;
-          prop.easing = easing;
-          prop.progress = progress;
-          this._props[name] = prop;
-        }
-        this._originProps = props;
-        this.initWithDuration(duration);
-      },
-      clone: function clone() {
-        var action = new TweenAction(this._duration, this._originProps, this._opts);
-        this._cloneDecoration(action);
-        return action;
-      },
-      startWithTarget: function startWithTarget(target) {
-        cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var relative = !!this._opts.relative;
-        var props = this._props;
-        for (var name in props) {
-          var value = target[name];
-          var prop = props[name];
-          if ("number" === typeof value) {
-            prop.start = value;
-            prop.current = value;
-            prop.end = relative ? value + prop.value : prop.value;
-          } else {
-            prop.start = value.clone();
-            prop.current = value.clone();
-            prop.end = relative ? (value.add || value.mul).call(value, prop.value) : prop.value;
-          }
-        }
-      },
-      update: function update(t) {
-        var opts = this._opts;
-        var easingTime = t;
-        opts.easing && (easingTime = opts.easing(t));
-        var target = this.target;
-        if (!target) return;
-        var props = this._props;
-        var progress = this._opts.progress;
-        for (var name in props) {
-          var prop = props[name];
-          var time = prop.easing ? prop.easing(t) : easingTime;
-          var current = prop.current = (prop.progress || progress)(prop.start, prop.end, prop.current, time);
-          target[name] = current;
-        }
-      },
-      progress: function progress(start, end, current, t) {
-        "number" === typeof start ? current = start + (end - start) * t : start.lerp(end, t, current);
-        return current;
-      }
-    });
-    var SetAction = cc.Class({
-      name: "cc.SetAction",
-      extends: cc.ActionInstant,
-      ctor: function ctor(props) {
-        this._props = {};
-        void 0 !== props && this.init(props);
-      },
-      init: function init(props) {
-        for (var name in props) this._props[name] = props[name];
-        return true;
-      },
-      update: function update() {
-        var props = this._props;
-        var target = this.target;
-        for (var name in props) target[name] = props[name];
-      },
-      clone: function clone() {
-        var action = new SetAction();
-        action.init(this._props);
-        return action;
-      }
-    });
-    function Tween(target) {
-      this._actions = [];
-      this._finalAction = null;
-      this._target = target;
-      this._tag = cc.Action.TAG_INVALID;
-    }
-    Tween.stopAll = function() {
-      cc.director.getActionManager().removeAllActions();
-    };
-    Tween.stopAllByTag = function(tag) {
-      cc.director.getActionManager().removeActionByTag(tag);
-    };
-    Tween.stopAllByTarget = function(target) {
-      cc.director.getActionManager().removeAllActionsFromTarget(target);
-    };
-    Tween.prototype.then = function(other) {
-      other instanceof cc.Action ? this._actions.push(other.clone()) : this._actions.push(other._union());
-      return this;
-    };
-    Tween.prototype.target = function(target) {
-      this._target = target;
-      return this;
-    };
-    Tween.prototype.start = function() {
-      var target = this._target;
-      if (!target) {
-        cc.warn("Please set target to tween first");
-        return this;
-      }
-      if (target instanceof cc.Object && !target.isValid) return;
-      this._finalAction && cc.director.getActionManager().removeAction(this._finalAction);
-      this._finalAction = this._union();
-      void 0 === target._id && (target._id = ++_tweenID);
-      this._finalAction.setTag(this._tag);
-      cc.director.getActionManager().addAction(this._finalAction, target, false);
-      return this;
-    };
-    Tween.prototype.stop = function() {
-      this._finalAction && cc.director.getActionManager().removeAction(this._finalAction);
-      return this;
-    };
-    Tween.prototype.tag = function(tag) {
-      this._tag = tag;
-      return this;
-    };
-    Tween.prototype.clone = function(target) {
-      var action = this._union();
-      return cc.tween(target).then(action.clone());
-    };
-    Tween.prototype.union = function() {
-      var action = this._union();
-      this._actions.length = 0;
-      this._actions.push(action);
-      return this;
-    };
-    Tween.prototype._union = function() {
-      var actions = this._actions;
-      actions = 1 === actions.length ? actions[0] : cc.sequence(actions);
-      return actions;
-    };
-    Object.assign(Tween.prototype, {
-      bezierTo: function bezierTo(duration, c1, c2, to, opts) {
-        var c0x = c1.x, c0y = c1.y, c1x = c2.x, c1y = c2.y;
-        opts = opts || Object.create(null);
-        opts.progress = function(start, end, current, t) {
-          current.x = (0, _bezier.bezier)(start.x, c0x, c1x, end.x, t);
-          current.y = (0, _bezier.bezier)(start.y, c0y, c1y, end.y, t);
-          return current;
-        };
-        return this.to(duration, {
-          position: to
-        }, opts);
-      },
-      bezierBy: function bezierBy(duration, c1, c2, to, opts) {
-        var c0x = c1.x, c0y = c1.y, c1x = c2.x, c1y = c2.y;
-        opts = opts || Object.create(null);
-        opts.progress = function(start, end, current, t) {
-          var sx = start.x, sy = start.y;
-          current.x = (0, _bezier.bezier)(sx, c0x + sx, c1x + sx, end.x, t);
-          current.y = (0, _bezier.bezier)(sy, c0y + sy, c1y + sy, end.y, t);
-          return current;
-        };
-        return this.by(duration, {
-          position: to
-        }, opts);
-      },
-      flipX: function flipX() {
-        var _this = this;
-        return this.call((function() {
-          _this._target.scaleX *= -1;
-        }), this);
-      },
-      flipY: function flipY() {
-        var _this2 = this;
-        return this.call((function() {
-          _this2._target.scaleY *= -1;
-        }), this);
-      },
-      blink: function blink(duration, times, opts) {
-        var slice = 1 / times;
-        opts = opts || Object.create(null);
-        opts.progress = function(start, end, current, t) {
-          if (t >= 1) return start;
-          var m = t % slice;
-          return m > slice / 2 ? 255 : 0;
-        };
-        return this.to(duration, {
-          opacity: 1
-        }, opts);
-      }
-    });
-    var tmp_args = [];
-    function wrapAction(action) {
-      return function() {
-        tmp_args.length = 0;
-        for (var l = arguments.length, i = 0; i < l; i++) {
-          var arg = tmp_args[i] = arguments[i];
-          arg instanceof Tween && (tmp_args[i] = arg._union());
-        }
-        return action.apply(this, tmp_args);
-      };
-    }
-    var actions = {
-      to: function to(duration, props, opts) {
-        opts = opts || Object.create(null);
-        opts.relative = false;
-        return new TweenAction(duration, props, opts);
-      },
-      by: function by(duration, props, opts) {
-        opts = opts || Object.create(null);
-        opts.relative = true;
-        return new TweenAction(duration, props, opts);
-      },
-      set: function set(props) {
-        return new SetAction(props);
-      },
-      delay: cc.delayTime,
-      call: cc.callFunc,
-      hide: cc.hide,
-      show: cc.show,
-      removeSelf: cc.removeSelf,
-      sequence: wrapAction(cc.sequence),
-      parallel: wrapAction(cc.spawn)
-    };
-    var previousAsInputActions = {
-      repeat: cc.repeat,
-      repeatForever: function repeatForever(action) {
-        return cc.repeat(action, 1e9);
-      },
-      reverseTime: cc.reverseTime
-    };
-    var keys = Object.keys(actions);
-    var _loop = function _loop(i) {
-      var key = keys[i];
-      Tween.prototype[key] = function() {
-        var action = actions[key].apply(this, arguments);
-        this._actions.push(action);
-        return this;
-      };
-    };
-    for (var i = 0; i < keys.length; i++) _loop(i);
-    keys = Object.keys(previousAsInputActions);
-    var _loop2 = function _loop2(_i) {
-      var key = keys[_i];
-      Tween.prototype[key] = function() {
-        var actions = this._actions;
-        var action = arguments[arguments.length - 1];
-        var length = arguments.length - 1;
-        if (action instanceof cc.Tween) action = action._union(); else if (!(action instanceof cc.Action)) {
-          action = actions[actions.length - 1];
-          actions.length -= 1;
-          length += 1;
-        }
-        var args = [ action ];
-        for (var _i2 = 0; _i2 < length; _i2++) args.push(arguments[_i2]);
-        action = previousAsInputActions[key].apply(this, args);
-        actions.push(action);
-        return this;
-      };
-    };
-    for (var _i = 0; _i < keys.length; _i++) _loop2(_i);
-    cc.tween = function(target) {
-      return new Tween(target);
-    };
-    cc.Tween = Tween;
-  }), {
-    "../animation/bezier": 15
-  } ],
-  10: [ (function(require, module, exports) {
-    "use strict";
     var js = cc.js;
     var Playable = require("./playable");
     var _require = require("./animation-curves"), EventAnimCurve = _require.EventAnimCurve, EventInfo = _require.EventInfo;
@@ -3570,12 +583,12 @@
     false;
     module.exports = AnimationAnimator;
   }), {
-    "../core/utils/binary-search": 213,
-    "./animation-curves": 12,
-    "./playable": 19,
-    "./types": 20
+    "../core/utils/binary-search": 204,
+    "./animation-curves": 4,
+    "./playable": 11,
+    "./types": 12
   } ],
-  11: [ (function(require, module, exports) {
+  3: [ (function(require, module, exports) {
     "use strict";
     var WrapMode = require("./types").WrapMode;
     var _require = require("./animation-curves"), DynamicAnimCurve = _require.DynamicAnimCurve, quickFindIndex = _require.quickFindIndex;
@@ -3721,12 +734,12 @@
     });
     cc.AnimationClip = module.exports = AnimationClip;
   }), {
-    "../core/utils/binary-search": 213,
-    "./animation-curves": 12,
-    "./motion-path-helper": 18,
-    "./types": 20
+    "../core/utils/binary-search": 204,
+    "./animation-curves": 4,
+    "./motion-path-helper": 10,
+    "./types": 12
   } ],
-  12: [ (function(require, module, exports) {
+  4: [ (function(require, module, exports) {
     "use strict";
     var bezierByTime = require("./bezier").bezierByTime;
     var binarySearch = require("../core/utils/binary-search").binarySearchEpsilon;
@@ -3949,11 +962,11 @@
       quickFindIndex: quickFindIndex
     };
   }), {
-    "../core/utils/binary-search": 213,
-    "./bezier": 15,
-    "./types": 20
+    "../core/utils/binary-search": 204,
+    "./bezier": 7,
+    "./types": 12
   } ],
-  13: [ (function(require, module, exports) {
+  5: [ (function(require, module, exports) {
     "use strict";
     var js = cc.js;
     var AnimationManager = cc.Class({
@@ -3995,7 +1008,7 @@
     });
     cc.AnimationManager = module.exports = AnimationManager;
   }), {} ],
-  14: [ (function(require, module, exports) {
+  6: [ (function(require, module, exports) {
     "use strict";
     var js = cc.js;
     var Playable = require("./playable");
@@ -4222,10 +1235,10 @@
     }));
     cc.AnimationState = module.exports = AnimationState;
   }), {
-    "./playable": 19,
-    "./types": 20
+    "./playable": 11,
+    "./types": 12
   } ],
-  15: [ (function(require, module, exports) {
+  7: [ (function(require, module, exports) {
     "use strict";
     function bezier(C1, C2, C3, C4, t) {
       var t1 = 1 - t;
@@ -4275,7 +1288,7 @@
       bezierByTime: bezierByTime
     };
   }), {} ],
-  16: [ (function(require, module, exports) {
+  8: [ (function(require, module, exports) {
     "use strict";
     var easing = {
       constant: function constant() {
@@ -4444,7 +1457,7 @@
     easing.bounceOutIn = _makeOutIn(easing.bounceIn, easing.bounceOut);
     cc.easing = module.exports = easing;
   }), {} ],
-  17: [ (function(require, module, exports) {
+  9: [ (function(require, module, exports) {
     "use strict";
     require("./bezier");
     require("./easing");
@@ -4456,17 +1469,17 @@
     require("./animation-state");
     require("./animation-animator");
   }), {
-    "./animation-animator": 10,
-    "./animation-clip": 11,
-    "./animation-curves": 12,
-    "./animation-manager": 13,
-    "./animation-state": 14,
-    "./bezier": 15,
-    "./easing": 16,
-    "./motion-path-helper": 18,
-    "./types": 20
+    "./animation-animator": 2,
+    "./animation-clip": 3,
+    "./animation-curves": 4,
+    "./animation-manager": 5,
+    "./animation-state": 6,
+    "./bezier": 7,
+    "./easing": 8,
+    "./motion-path-helper": 10,
+    "./types": 12
   } ],
-  18: [ (function(require, module, exports) {
+  10: [ (function(require, module, exports) {
     "use strict";
     var DynamicAnimCurve = require("./animation-curves").DynamicAnimCurve;
     var computeRatioByType = require("./animation-curves").computeRatioByType;
@@ -4702,11 +1715,11 @@
       Bezier: Bezier
     };
   }), {
-    "../core/utils/binary-search": 213,
-    "./animation-curves": 12,
-    "./bezier": 15
+    "../core/utils/binary-search": 204,
+    "./animation-curves": 4,
+    "./bezier": 7
   } ],
-  19: [ (function(require, module, exports) {
+  11: [ (function(require, module, exports) {
     "use strict";
     var js = cc.js;
     var debug = require("../core/CCDebug");
@@ -4763,9 +1776,9 @@
     };
     module.exports = Playable;
   }), {
-    "../core/CCDebug": 21
+    "../core/CCDebug": 13
   } ],
-  20: [ (function(require, module, exports) {
+  12: [ (function(require, module, exports) {
     "use strict";
     var WrapModeMask = {
       Loop: 2,
@@ -4809,7 +1822,7 @@
       WrappedInfo: WrappedInfo
     };
   }), {} ],
-  21: [ (function(require, module, exports) {
+  13: [ (function(require, module, exports) {
     "use strict";
     var utils = require("./platform/utils");
     var debugInfos = require("../../DebugInfos") || {};
@@ -4951,9 +1964,9 @@
     };
   }), {
     "../../DebugInfos": 1,
-    "./platform/utils": 173
+    "./platform/utils": 164
   } ],
-  22: [ (function(require, module, exports) {
+  14: [ (function(require, module, exports) {
     "use strict";
     var EventTarget = require("./event/event-target");
     var ComponentScheduler = require("./component-scheduler");
@@ -5308,16 +2321,16 @@
     cc.director = new cc.Director();
     module.exports = cc.director;
   }), {
-    "./CCGame": 23,
-    "./CCScheduler": 27,
-    "./component-scheduler": 93,
-    "./event-manager": 112,
-    "./event/event-target": 114,
-    "./node-activator": 123,
-    "./platform/CCObject": 156,
-    "./renderer": 180
+    "./CCGame": 15,
+    "./CCScheduler": 19,
+    "./component-scheduler": 85,
+    "./event-manager": 103,
+    "./event/event-target": 105,
+    "./node-activator": 114,
+    "./platform/CCObject": 147,
+    "./renderer": 171
   } ],
-  23: [ (function(require, module, exports) {
+  15: [ (function(require, module, exports) {
     "use strict";
     var EventTarget = require("./event/event-target");
     require("../audio/CCAudioEngine");
@@ -5658,11 +2671,11 @@
   }), {
     "../audio/CCAudioEngine": void 0,
     "../core/renderer/utils/dynamic-atlas/manager": void 0,
-    "./CCDebug": 21,
-    "./event/event-target": 114,
-    "./renderer/index.js": 180
+    "./CCDebug": 13,
+    "./event/event-target": 105,
+    "./renderer/index.js": 171
   } ],
-  24: [ (function(require, module, exports) {
+  16: [ (function(require, module, exports) {
     "use strict";
     var _valueTypes = require("./value-types");
     var BaseNode = require("./utils/base-node");
@@ -7326,19 +4339,19 @@
     false;
     cc.Node = module.exports = Node;
   }), {
-    "./event-manager": 112,
-    "./event/event": 115,
-    "./event/event-target": 114,
-    "./platform/CCMacro": 155,
-    "./platform/js": 170,
-    "./renderer/render-flow": 181,
-    "./utils/affine-transform": 211,
-    "./utils/base-node": 212,
-    "./utils/prefab-helper": 222,
-    "./utils/trans-pool": 228,
-    "./value-types": 234
+    "./event-manager": 103,
+    "./event/event": 106,
+    "./event/event-target": 105,
+    "./platform/CCMacro": 146,
+    "./platform/js": 161,
+    "./renderer/render-flow": 172,
+    "./utils/affine-transform": 202,
+    "./utils/base-node": 203,
+    "./utils/prefab-helper": 213,
+    "./utils/trans-pool": 219,
+    "./value-types": 225
   } ],
-  25: [ (function(require, module, exports) {
+  17: [ (function(require, module, exports) {
     "use strict";
     var Node = require("./CCNode");
     var RenderFlow = require("./renderer/render-flow");
@@ -7437,10 +4450,10 @@
     cc.js.getset(PrivateNode.prototype, "position", PrivateNode.prototype.getPosition, PrivateNode.prototype.setPosition);
     cc.PrivateNode = module.exports = PrivateNode;
   }), {
-    "./CCNode": 24,
-    "./renderer/render-flow": 181
+    "./CCNode": 16,
+    "./renderer/render-flow": 172
   } ],
-  26: [ (function(require, module, exports) {
+  18: [ (function(require, module, exports) {
     "use strict";
     var NIL = function NIL() {};
     cc.Scene = cc.Class({
@@ -7487,9 +4500,9 @@
     });
     module.exports = cc.Scene;
   }), {
-    "./CCNode": 24
+    "./CCNode": 16
   } ],
-  27: [ (function(require, module, exports) {
+  19: [ (function(require, module, exports) {
     "use strict";
     var js = require("./platform/js");
     var IdGenerater = require("./platform/id-generater");
@@ -8007,10 +5020,10 @@
     cc.Scheduler.PRIORITY_NON_SYSTEM = cc.Scheduler.PRIORITY_SYSTEM + 1;
     module.exports = cc.Scheduler;
   }), {
-    "./platform/id-generater": 166,
-    "./platform/js": 170
+    "./platform/id-generater": 157,
+    "./platform/js": 161
   } ],
-  28: [ (function(require, module, exports) {
+  20: [ (function(require, module, exports) {
     "use strict";
     var preprocess = require("./preprocess");
     var fetch = require("./fetch");
@@ -8231,27 +5244,27 @@
     });
     module.exports = cc.assetManager;
   }), {
-    "./builtins": 29,
-    "./bundle": 30,
-    "./cache": 31,
-    "./depend-util": 33,
-    "./downloader": 40,
-    "./factory": 41,
-    "./fetch": 42,
-    "./helper": 44,
-    "./load": 46,
-    "./pack-manager": 47,
-    "./parser": 48,
-    "./pipeline": 49,
-    "./preprocess": 50,
-    "./releaseManager": 51,
-    "./request-item": 52,
-    "./shared": 53,
-    "./task": 54,
-    "./urlTransformer": 55,
-    "./utilities": 56
+    "./builtins": 21,
+    "./bundle": 22,
+    "./cache": 23,
+    "./depend-util": 25,
+    "./downloader": 32,
+    "./factory": 33,
+    "./fetch": 34,
+    "./helper": 36,
+    "./load": 38,
+    "./pack-manager": 39,
+    "./parser": 40,
+    "./pipeline": 41,
+    "./preprocess": 42,
+    "./releaseManager": 43,
+    "./request-item": 44,
+    "./shared": 45,
+    "./task": 46,
+    "./urlTransformer": 47,
+    "./utilities": 48
   } ],
-  29: [ (function(require, module, exports) {
+  21: [ (function(require, module, exports) {
     "use strict";
     var Cache = require("./cache");
     var releaseManager = require("./releaseManager");
@@ -8294,11 +5307,11 @@
     };
     module.exports = builtins;
   }), {
-    "./cache": 31,
-    "./releaseManager": 51,
-    "./shared": 53
+    "./cache": 23,
+    "./releaseManager": 43,
+    "./shared": 45
   } ],
-  30: [ (function(require, module, exports) {
+  22: [ (function(require, module, exports) {
     "use strict";
     var Config = require("./config");
     var releaseManager = require("./releaseManager");
@@ -8422,12 +5435,12 @@
     };
     module.exports = Bundle;
   }), {
-    "./config": 32,
-    "./releaseManager": 51,
-    "./shared": 53,
-    "./utilities": 56
+    "./config": 24,
+    "./releaseManager": 43,
+    "./shared": 45,
+    "./utilities": 48
   } ],
-  31: [ (function(require, module, exports) {
+  23: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     function Cache(map) {
@@ -8481,9 +5494,9 @@
     };
     module.exports = Cache;
   }), {
-    "../platform/js": 170
+    "../platform/js": 161
   } ],
-  32: [ (function(require, module, exports) {
+  24: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     var Cache = require("./cache");
@@ -8648,12 +5661,12 @@
     false;
     module.exports = Config;
   }), {
-    "../platform/js": 170,
-    "./cache": 31,
-    "./helper": 44,
-    "./utilities": 56
+    "../platform/js": 161,
+    "./cache": 23,
+    "./helper": 36,
+    "./utilities": 48
   } ],
-  33: [ (function(require, module, exports) {
+  25: [ (function(require, module, exports) {
     "use strict";
     var Cache = require("./cache");
     var js = require("../platform/js");
@@ -8730,10 +5743,10 @@
     };
     module.exports = dependUtil;
   }), {
-    "../platform/js": 170,
-    "./cache": 31
+    "../platform/js": 161,
+    "./cache": 23
   } ],
-  34: [ (function(require, module, exports) {
+  26: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     require("../CCDirector");
@@ -9113,14 +6126,14 @@
       }
     };
   }), {
-    "../CCDirector": 22,
-    "../platform/js": 170,
-    "./depend-util": 33,
-    "./downloader": 40,
-    "./releaseManager": 51,
-    "./utilities": 56
+    "../CCDirector": 14,
+    "../platform/js": 161,
+    "./depend-util": 25,
+    "./downloader": 32,
+    "./releaseManager": 43,
+    "./utilities": 48
   } ],
-  35: [ (function(require, module, exports) {
+  27: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     var helper = require("./helper");
@@ -9169,11 +6182,11 @@
     }
     module.exports = deserialize;
   }), {
-    "../platform/deserialize": 165,
-    "../platform/js": 170,
-    "./helper": 44
+    "../platform/deserialize": 156,
+    "../platform/js": 161,
+    "./helper": 36
   } ],
-  36: [ (function(require, module, exports) {
+  28: [ (function(require, module, exports) {
     "use strict";
     var __audioSupport = cc.sys.__audioSupport;
     var _require = require("./utilities"), parseParameters = _require.parseParameters;
@@ -9207,9 +6220,9 @@
     }
     module.exports = downloadDomAudio;
   }), {
-    "./utilities": 56
+    "./utilities": 48
   } ],
-  37: [ (function(require, module, exports) {
+  29: [ (function(require, module, exports) {
     "use strict";
     var _require = require("./utilities"), parseParameters = _require.parseParameters;
     function downloadDomImage(url, options, onComplete) {
@@ -9233,9 +6246,9 @@
     }
     module.exports = downloadDomImage;
   }), {
-    "./utilities": 56
+    "./utilities": 48
   } ],
-  38: [ (function(require, module, exports) {
+  30: [ (function(require, module, exports) {
     "use strict";
     var _require = require("./utilities"), parseParameters = _require.parseParameters;
     function downloadFile(url, options, onProgress, onComplete) {
@@ -9267,9 +6280,9 @@
     }
     module.exports = downloadFile;
   }), {
-    "./utilities": 56
+    "./utilities": 48
   } ],
-  39: [ (function(require, module, exports) {
+  31: [ (function(require, module, exports) {
     "use strict";
     var _require = require("./utilities"), parseParameters = _require.parseParameters;
     var downloaded = {};
@@ -9299,9 +6312,9 @@
     }
     module.exports = downloadScript;
   }), {
-    "./utilities": 56
+    "./utilities": 48
   } ],
-  40: [ (function(require, module, exports) {
+  32: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     var debug = require("../CCDebug");
@@ -9542,20 +6555,20 @@
     };
     module.exports = downloader;
   }), {
-    "../CCDebug": 21,
-    "../platform/CCSys": 159,
-    "../platform/js": 170,
-    "../platform/utils": 173,
-    "./cache": 31,
-    "./download-dom-audio": 36,
-    "./download-dom-image": 37,
-    "./download-file": 38,
-    "./download-script.js": 39,
-    "./font-loader": 43,
-    "./shared": 53,
-    "./utilities": 56
+    "../CCDebug": 13,
+    "../platform/CCSys": 150,
+    "../platform/js": 161,
+    "../platform/utils": 164,
+    "./cache": 23,
+    "./download-dom-audio": 28,
+    "./download-dom-image": 29,
+    "./download-file": 30,
+    "./download-script.js": 31,
+    "./font-loader": 35,
+    "./shared": 45,
+    "./utilities": 48
   } ],
-  41: [ (function(require, module, exports) {
+  33: [ (function(require, module, exports) {
     "use strict";
     var Bundle = require("./bundle");
     function createTexture(id, data, options, onComplete) {
@@ -9667,9 +6680,9 @@
     };
     module.exports = factory;
   }), {
-    "./bundle": 30
+    "./bundle": 22
   } ],
-  42: [ (function(require, module, exports) {
+  34: [ (function(require, module, exports) {
     "use strict";
     var packManager = require("./pack-manager");
     var Task = require("./task");
@@ -9758,12 +6771,12 @@
     }
     module.exports = fetch;
   }), {
-    "./pack-manager": 47,
-    "./shared": 53,
-    "./task": 54,
-    "./utilities": 56
+    "./pack-manager": 39,
+    "./shared": 45,
+    "./task": 46,
+    "./utilities": 48
   } ],
-  43: [ (function(require, module, exports) {
+  35: [ (function(require, module, exports) {
     "use strict";
     var textUtils = require("../utils/text-utils");
     var _canvasContext = null;
@@ -9887,9 +6900,9 @@
     };
     module.exports = fontLoader;
   }), {
-    "../utils/text-utils": 226
+    "../utils/text-utils": 217
   } ],
-  44: [ (function(require, module, exports) {
+  36: [ (function(require, module, exports) {
     "use strict";
     var _require = require("./shared"), bundles = _require.bundles;
     var helper = {
@@ -9925,18 +6938,18 @@
     };
     module.exports = helper;
   }), {
-    "../utils/decode-uuid": 215,
-    "./shared": 53
+    "../utils/decode-uuid": 206,
+    "./shared": 45
   } ],
-  45: [ (function(require, module, exports) {
+  37: [ (function(require, module, exports) {
     "use strict";
     require("./deprecated");
     require("./CCAssetManager");
   }), {
-    "./CCAssetManager": 28,
-    "./deprecated": 34
+    "./CCAssetManager": 20,
+    "./deprecated": 26
   } ],
-  46: [ (function(require, module, exports) {
+  38: [ (function(require, module, exports) {
     "use strict";
     var packManager = require("./pack-manager");
     var Pipeline = require("./pipeline");
@@ -10101,14 +7114,14 @@
     }
     module.exports = load;
   }), {
-    "./pack-manager": 47,
-    "./parser": 48,
-    "./pipeline": 49,
-    "./shared": 53,
-    "./task": 54,
-    "./utilities": 56
+    "./pack-manager": 39,
+    "./parser": 40,
+    "./pipeline": 41,
+    "./shared": 45,
+    "./task": 46,
+    "./utilities": 48
   } ],
-  47: [ (function(require, module, exports) {
+  39: [ (function(require, module, exports) {
     "use strict";
     var downloader = require("./downloader");
     var Cache = require("./cache");
@@ -10198,12 +7211,12 @@
     };
     module.exports = packManager;
   }), {
-    "../platform/js": 170,
-    "./cache": 31,
-    "./downloader": 40,
-    "./shared": 53
+    "../platform/js": 161,
+    "./cache": 23,
+    "./downloader": 32,
+    "./shared": 45
   } ],
-  48: [ (function(require, module, exports) {
+  40: [ (function(require, module, exports) {
     "use strict";
     var plistParser = require("../platform/CCSAXParser").plistParser;
     var js = require("../platform/js");
@@ -10358,15 +7371,15 @@
     };
     module.exports = parser;
   }), {
-    "../platform/CCSAXParser": 157,
-    "../platform/CCSys": 159,
-    "../platform/js": 170,
-    "./cache": 31,
-    "./deserialize": 35,
-    "./helper": 44,
-    "./shared": 53
+    "../platform/CCSAXParser": 148,
+    "../platform/CCSys": 150,
+    "../platform/js": 161,
+    "./cache": 23,
+    "./deserialize": 27,
+    "./helper": 36,
+    "./shared": 45
   } ],
-  49: [ (function(require, module, exports) {
+  41: [ (function(require, module, exports) {
     "use strict";
     var Task = require("./task");
     var _pipelineId = 0;
@@ -10457,9 +7470,9 @@
     };
     module.exports = Pipeline;
   }), {
-    "./task": 54
+    "./task": 46
   } ],
-  50: [ (function(require, module, exports) {
+  42: [ (function(require, module, exports) {
     "use strict";
     var Task = require("./task");
     var _require = require("./shared"), transformPipeline = _require.transformPipeline, RequestType = _require.RequestType;
@@ -10509,10 +7522,10 @@
     }
     module.exports = preprocess;
   }), {
-    "./shared": 53,
-    "./task": 54
+    "./shared": 45,
+    "./task": 46
   } ],
-  51: [ (function(require, module, exports) {
+  43: [ (function(require, module, exports) {
     "use strict";
     var dependUtil = require("./depend-util");
     var Cache = require("./cache");
@@ -10662,12 +7675,12 @@
     };
     module.exports = releaseManager;
   }), {
-    "../assets/CCAsset": 57,
-    "./cache": 31,
-    "./depend-util": 33,
-    "./shared": 53
+    "../assets/CCAsset": 49,
+    "./cache": 23,
+    "./depend-util": 25,
+    "./shared": 45
   } ],
-  52: [ (function(require, module, exports) {
+  44: [ (function(require, module, exports) {
     "use strict";
     var MAX_DEAD_NUM = 500;
     var _deadPool = [];
@@ -10711,7 +7724,7 @@
     };
     module.exports = RequestItem;
   }), {} ],
-  53: [ (function(require, module, exports) {
+  45: [ (function(require, module, exports) {
     "use strict";
     var Cache = require("./cache");
     var Pipeline = require("./pipeline");
@@ -10747,10 +7760,10 @@
       BuiltinBundleName: BuiltinBundleName
     };
   }), {
-    "./cache": 31,
-    "./pipeline": 49
+    "./cache": 23,
+    "./pipeline": 41
   } ],
-  54: [ (function(require, module, exports) {
+  46: [ (function(require, module, exports) {
     "use strict";
     var _taskId = 0;
     var MAX_DEAD_NUM = 500;
@@ -10823,7 +7836,7 @@
     };
     module.exports = Task;
   }), {} ],
-  55: [ (function(require, module, exports) {
+  47: [ (function(require, module, exports) {
     "use strict";
     var _require = require("./helper"), decodeUuid = _require.decodeUuid;
     var RequestItem = require("./request-item");
@@ -10968,11 +7981,11 @@
       combine: combine
     };
   }), {
-    "./helper": 44,
-    "./request-item": 52,
-    "./shared": 53
+    "./helper": 36,
+    "./request-item": 44,
+    "./shared": 45
   } ],
-  56: [ (function(require, module, exports) {
+  48: [ (function(require, module, exports) {
     "use strict";
     var dependUtil = require("./depend-util");
     var _require = require("./helper"), isScene = _require.isScene, decodeUuid = _require.decodeUuid;
@@ -11214,13 +8227,13 @@
     };
     module.exports = utils;
   }), {
-    "../assets/CCAsset": 57,
-    "../platform/utils": 173,
-    "./depend-util": 33,
-    "./helper": 44,
-    "./shared": 53
+    "../assets/CCAsset": 49,
+    "../platform/utils": 164,
+    "./depend-util": 25,
+    "./helper": 36,
+    "./shared": 45
   } ],
-  57: [ (function(require, module, exports) {
+  49: [ (function(require, module, exports) {
     "use strict";
     var CCObject = require("../platform/CCObject");
     cc.Asset = cc.Class({
@@ -11320,9 +8333,9 @@
     }
     module.exports = cc.Asset;
   }), {
-    "../platform/CCObject": 156
+    "../platform/CCObject": 147
   } ],
-  58: [ (function(require, module, exports) {
+  50: [ (function(require, module, exports) {
     "use strict";
     var Asset = require("./CCAsset");
     var EventTarget = require("../event/event-target");
@@ -11409,10 +8422,10 @@
     cc.AudioClip = AudioClip;
     module.exports = AudioClip;
   }), {
-    "../event/event-target": 114,
-    "./CCAsset": 57
+    "../event/event-target": 105,
+    "./CCAsset": 49
   } ],
-  59: [ (function(require, module, exports) {
+  51: [ (function(require, module, exports) {
     "use strict";
     var FontLetterDefinition = function FontLetterDefinition() {
       this.u = 0;
@@ -11504,7 +8517,7 @@
     cc.BitmapFont.FontAtlas = FontAtlas;
     module.exports = BitmapFont;
   }), {} ],
-  60: [ (function(require, module, exports) {
+  52: [ (function(require, module, exports) {
     "use strict";
     var BufferAsset = cc.Class({
       name: "cc.BufferAsset",
@@ -11529,7 +8542,7 @@
     });
     cc.BufferAsset = module.exports = BufferAsset;
   }), {} ],
-  61: [ (function(require, module, exports) {
+  53: [ (function(require, module, exports) {
     "use strict";
     var Font = cc.Class({
       name: "cc.Font",
@@ -11537,7 +8550,7 @@
     });
     cc.Font = module.exports = Font;
   }), {} ],
-  62: [ (function(require, module, exports) {
+  54: [ (function(require, module, exports) {
     "use strict";
     var JsonAsset = cc.Class({
       name: "cc.JsonAsset",
@@ -11548,7 +8561,7 @@
     });
     module.exports = cc.JsonAsset = JsonAsset;
   }), {} ],
-  63: [ (function(require, module, exports) {
+  55: [ (function(require, module, exports) {
     "use strict";
     var LabelAtlas = cc.Class({
       name: "cc.LabelAtlas",
@@ -11568,7 +8581,7 @@
     cc.LabelAtlas = LabelAtlas;
     module.exports = LabelAtlas;
   }), {} ],
-  64: [ (function(require, module, exports) {
+  56: [ (function(require, module, exports) {
     "use strict";
     var OptimizationPolicy = cc.Enum({
       AUTO: 0,
@@ -11629,9 +8642,9 @@
     cc.Prefab = module.exports = Prefab;
     cc.js.obsolete(cc, "cc._Prefab", "Prefab");
   }), {
-    "../platform/instantiate-jit": 168
+    "../platform/instantiate-jit": 159
   } ],
-  65: [ (function(require, module, exports) {
+  57: [ (function(require, module, exports) {
     "use strict";
     var _gfx = _interopRequireDefault(require("../../renderer/gfx"));
     function _interopRequireDefault(obj) {
@@ -11721,11 +8734,11 @@
     });
     cc.RenderTexture = module.exports = RenderTexture;
   }), {
-    "../../renderer/gfx": 261,
-    "../renderer": 180,
-    "./CCTexture2D": 72
+    "../../renderer/gfx": 252,
+    "../renderer": 171,
+    "./CCTexture2D": 64
   } ],
-  66: [ (function(require, module, exports) {
+  58: [ (function(require, module, exports) {
     "use strict";
     var Scene = cc.Class({
       name: "cc.SceneAsset",
@@ -11738,7 +8751,7 @@
     cc.SceneAsset = Scene;
     module.exports = Scene;
   }), {} ],
-  67: [ (function(require, module, exports) {
+  59: [ (function(require, module, exports) {
     "use strict";
     var Script = cc.Class({
       name: "cc.Script",
@@ -11756,7 +8769,7 @@
     });
     cc._TypeScript = TypeScript;
   }), {} ],
-  68: [ (function(require, module, exports) {
+  60: [ (function(require, module, exports) {
     "use strict";
     var SpriteAtlas = cc.Class({
       name: "cc.SpriteAtlas",
@@ -11790,7 +8803,7 @@
     cc.SpriteAtlas = SpriteAtlas;
     module.exports = SpriteAtlas;
   }), {} ],
-  69: [ (function(require, module, exports) {
+  61: [ (function(require, module, exports) {
     "use strict";
     var EventTarget = require("../event/event-target");
     var textureUtil = require("../utils/texture-util");
@@ -12187,11 +9200,11 @@
     cc.SpriteFrame = SpriteFrame;
     module.exports = SpriteFrame;
   }), {
-    "../assets/CCAsset": 57,
-    "../event/event-target": 114,
-    "../utils/texture-util": 227
+    "../assets/CCAsset": 49,
+    "../event/event-target": 105,
+    "../utils/texture-util": 218
   } ],
-  70: [ (function(require, module, exports) {
+  62: [ (function(require, module, exports) {
     "use strict";
     var Font = require("./CCFont");
     var TTFFont = cc.Class({
@@ -12236,9 +9249,9 @@
     });
     cc.TTFFont = module.exports = TTFFont;
   }), {
-    "./CCFont": 61
+    "./CCFont": 53
   } ],
-  71: [ (function(require, module, exports) {
+  63: [ (function(require, module, exports) {
     "use strict";
     var TextAsset = cc.Class({
       name: "cc.TextAsset",
@@ -12252,7 +9265,7 @@
     });
     module.exports = cc.TextAsset = TextAsset;
   }), {} ],
-  72: [ (function(require, module, exports) {
+  64: [ (function(require, module, exports) {
     "use strict";
     var _gfx = _interopRequireDefault(require("../../renderer/gfx"));
     function _interopRequireDefault(obj) {
@@ -12755,14 +9768,14 @@
     });
     cc.Texture2D = module.exports = Texture2D;
   }), {
-    "../../renderer/gfx": 261,
-    "../assets/CCAsset": 57,
-    "../event/event-target": 114,
-    "../platform/CCClass": 150,
-    "../platform/id-generater": 166,
-    "../renderer": 180
+    "../../renderer/gfx": 252,
+    "../assets/CCAsset": 49,
+    "../event/event-target": 105,
+    "../platform/CCClass": 141,
+    "../platform/id-generater": 157,
+    "../renderer": 171
   } ],
-  73: [ (function(require, module, exports) {
+  65: [ (function(require, module, exports) {
     "use strict";
     require("./CCAsset");
     require("./CCFont");
@@ -12782,25 +9795,25 @@
     require("./CCBufferAsset");
     require("./material");
   }), {
-    "./CCAsset": 57,
-    "./CCAudioClip": 58,
-    "./CCBitmapFont": 59,
-    "./CCBufferAsset": 60,
-    "./CCFont": 61,
-    "./CCJsonAsset": 62,
-    "./CCLabelAtlas": 63,
-    "./CCPrefab": 64,
-    "./CCRenderTexture": 65,
-    "./CCSceneAsset": 66,
-    "./CCScripts": 67,
-    "./CCSpriteAtlas": 68,
-    "./CCSpriteFrame": 69,
-    "./CCTTFFont": 70,
-    "./CCTextAsset": 71,
-    "./CCTexture2D": 72,
-    "./material": 80
+    "./CCAsset": 49,
+    "./CCAudioClip": 50,
+    "./CCBitmapFont": 51,
+    "./CCBufferAsset": 52,
+    "./CCFont": 53,
+    "./CCJsonAsset": 54,
+    "./CCLabelAtlas": 55,
+    "./CCPrefab": 56,
+    "./CCRenderTexture": 57,
+    "./CCSceneAsset": 58,
+    "./CCScripts": 59,
+    "./CCSpriteAtlas": 60,
+    "./CCSpriteFrame": 61,
+    "./CCTTFFont": 62,
+    "./CCTextAsset": 63,
+    "./CCTexture2D": 64,
+    "./material": 72
   } ],
-  74: [ (function(require, module, exports) {
+  66: [ (function(require, module, exports) {
     "use strict";
     var _CCAsset = _interopRequireDefault(require("../CCAsset"));
     var _effectParser = require("./effect-parser");
@@ -12842,10 +9855,10 @@
     });
     module.exports = cc.EffectAsset = EffectAsset;
   }), {
-    "../CCAsset": 57,
-    "./effect-parser": 77
+    "../CCAsset": 49,
+    "./effect-parser": 69
   } ],
-  75: [ (function(require, module, exports) {
+  67: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -13029,12 +10042,12 @@
     cc.Material = Material;
     module.exports = exports["default"];
   }), {
-    "../../utils/texture-util": 227,
-    "../CCAsset": 57,
-    "../CCTexture2D": 72,
-    "./CCEffectAsset": 74
+    "../../utils/texture-util": 218,
+    "../CCAsset": 49,
+    "../CCTexture2D": 64,
+    "./CCEffectAsset": 66
   } ],
-  76: [ (function(require, module, exports) {
+  68: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -13184,9 +10197,9 @@
     cc.EffectBase = EffectBase;
     module.exports = exports["default"];
   }), {
-    "../../../renderer/core/pass": 252
+    "../../../renderer/core/pass": 243
   } ],
-  77: [ (function(require, module, exports) {
+  69: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports.parseEffect = parseEffect;
@@ -13273,13 +10286,13 @@
     }
     false;
   }), {
-    "../../../renderer/core/pass": 252,
-    "../../../renderer/core/technique": 254,
-    "../../../renderer/enums": 256,
-    "../../../renderer/types": 284,
-    "./effect": 79
+    "../../../renderer/core/pass": 243,
+    "../../../renderer/core/technique": 245,
+    "../../../renderer/enums": 247,
+    "../../../renderer/types": 275,
+    "./effect": 71
   } ],
-  78: [ (function(require, module, exports) {
+  70: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -13382,11 +10395,11 @@
     cc.EffectVariant = EffectVariant;
     module.exports = exports["default"];
   }), {
-    "../../../renderer/murmurhash2_gc": 279,
-    "./effect-base": 76,
-    "./utils": 83
+    "../../../renderer/murmurhash2_gc": 270,
+    "./effect-base": 68,
+    "./utils": 75
   } ],
-  79: [ (function(require, module, exports) {
+  71: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -13465,19 +10478,19 @@
     cc.Effect = Effect;
     module.exports = exports["default"];
   }), {
-    "./effect-base": 76
+    "./effect-base": 68
   } ],
-  80: [ (function(require, module, exports) {
+  72: [ (function(require, module, exports) {
     "use strict";
     require("./CCEffectAsset");
     require("./CCMaterial");
     require("./material-variant");
   }), {
-    "./CCEffectAsset": 74,
-    "./CCMaterial": 75,
-    "./material-variant": 82
+    "./CCEffectAsset": 66,
+    "./CCMaterial": 67,
+    "./material-variant": 74
   } ],
-  81: [ (function(require, module, exports) {
+  73: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -13557,10 +10570,10 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "../../utils/pool": 221,
-    "./utils": 83
+    "../../utils/pool": 212,
+    "./utils": 75
   } ],
-  82: [ (function(require, module, exports) {
+  74: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -13638,11 +10651,11 @@
     cc.MaterialVariant = MaterialVariant;
     module.exports = exports["default"];
   }), {
-    "./CCMaterial": 75,
-    "./effect-variant": 78,
-    "./material-pool": 81
+    "./CCMaterial": 67,
+    "./effect-variant": 70,
+    "./material-pool": 73
   } ],
-  83: [ (function(require, module, exports) {
+  75: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -13689,9 +10702,9 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "../../../renderer/enums": 256
+    "../../../renderer/enums": 247
   } ],
-  84: [ (function(require, module, exports) {
+  76: [ (function(require, module, exports) {
     "use strict";
     var Event;
     true;
@@ -13940,9 +10953,9 @@
     };
     false;
   }), {
-    "../CCNode": 24
+    "../CCNode": 16
   } ],
-  85: [ (function(require, module, exports) {
+  77: [ (function(require, module, exports) {
     "use strict";
     var _valueTypes = require("../value-types");
     var _geomUtils = require("../geom-utils");
@@ -14386,15 +11399,15 @@
     });
     module.exports = cc.Camera = Camera;
   }), {
-    "../../renderer/scene/camera": 281,
-    "../CCGame": 23,
+    "../../renderer/scene/camera": 272,
+    "../CCGame": 15,
     "../geom-utils": void 0,
-    "../renderer/index": 180,
-    "../renderer/render-flow": 181,
-    "../utils/affine-transform": 211,
-    "../value-types": 234
+    "../renderer/index": 171,
+    "../renderer/render-flow": 172,
+    "../utils/affine-transform": 202,
+    "../value-types": 225
   } ],
-  86: [ (function(require, module, exports) {
+  78: [ (function(require, module, exports) {
     "use strict";
     cc.Collider.Box = cc.Class({
       properties: {
@@ -14432,7 +11445,7 @@
     });
     cc.BoxCollider = module.exports = BoxCollider;
   }), {} ],
-  87: [ (function(require, module, exports) {
+  79: [ (function(require, module, exports) {
     "use strict";
     cc.Collider.Circle = cc.Class({
       properties: {
@@ -14468,7 +11481,7 @@
     });
     cc.CircleCollider = module.exports = CircleCollider;
   }), {} ],
-  88: [ (function(require, module, exports) {
+  80: [ (function(require, module, exports) {
     "use strict";
     var Collider = cc.Class({
       name: "cc.Collider",
@@ -14495,7 +11508,7 @@
     });
     cc.Collider = module.exports = Collider;
   }), {} ],
-  89: [ (function(require, module, exports) {
+  81: [ (function(require, module, exports) {
     "use strict";
     var _vec = _interopRequireDefault(require("../value-types/vec2"));
     function _interopRequireDefault(obj) {
@@ -14783,11 +11796,11 @@
     }));
     cc.CollisionManager = module.exports = CollisionManager;
   }), {
-    "../CCNode": 24,
-    "../value-types/vec2": 243,
-    "./CCContact": 90
+    "../CCNode": 16,
+    "../value-types/vec2": 234,
+    "./CCContact": 82
   } ],
-  90: [ (function(require, module, exports) {
+  82: [ (function(require, module, exports) {
     "use strict";
     var Intersection = require("./CCIntersection");
     var CollisionType = cc.Enum({
@@ -14836,7 +11849,7 @@
   }), {
     "./CCIntersection": void 0
   } ],
-  91: [ (function(require, module, exports) {
+  83: [ (function(require, module, exports) {
     "use strict";
     cc.Collider.Polygon = cc.Class({
       properties: {
@@ -14873,7 +11886,7 @@
     });
     cc.PolygonCollider = module.exports = PolygonCollider;
   }), {} ],
-  92: [ (function(require, module, exports) {
+  84: [ (function(require, module, exports) {
     "use strict";
     require("./CCCollisionManager");
     require("./CCCollider");
@@ -14881,13 +11894,13 @@
     require("./CCCircleCollider");
     require("./CCPolygonCollider");
   }), {
-    "./CCBoxCollider": 86,
-    "./CCCircleCollider": 87,
-    "./CCCollider": 88,
-    "./CCCollisionManager": 89,
-    "./CCPolygonCollider": 91
+    "./CCBoxCollider": 78,
+    "./CCCircleCollider": 79,
+    "./CCCollider": 80,
+    "./CCCollisionManager": 81,
+    "./CCPolygonCollider": 83
   } ],
-  93: [ (function(require, module, exports) {
+  85: [ (function(require, module, exports) {
     "use strict";
     require("./platform/CCClass");
     var Flags = require("./platform/CCObject").Flags;
@@ -15127,12 +12140,12 @@
     });
     module.exports = ComponentScheduler;
   }), {
-    "./platform/CCClass": 150,
-    "./platform/CCObject": 156,
-    "./platform/js": 170,
-    "./utils/misc": 219
+    "./platform/CCClass": 141,
+    "./platform/CCObject": 147,
+    "./platform/js": 161,
+    "./utils/misc": 210
   } ],
-  94: [ (function(require, module, exports) {
+  86: [ (function(require, module, exports) {
     "use strict";
     var AnimationAnimator = require("../../animation/animation-animator");
     var AnimationClip = require("../../animation/animation-clip");
@@ -15392,13 +12405,13 @@
     Animation.prototype._EventTargetOff = EventTarget.prototype.off;
     cc.Animation = module.exports = Animation;
   }), {
-    "../../animation/animation-animator": 10,
-    "../../animation/animation-clip": 11,
-    "../event/event-target": 114,
-    "../platform/js": 170,
-    "./CCComponent": 98
+    "../../animation/animation-animator": 2,
+    "../../animation/animation-clip": 3,
+    "../event/event-target": 105,
+    "../platform/js": 161,
+    "./CCComponent": 90
   } ],
-  95: [ (function(require, module, exports) {
+  87: [ (function(require, module, exports) {
     "use strict";
     var BlockEvents = [ "touchstart", "touchmove", "touchend", "mousedown", "mousemove", "mouseup", "mouseenter", "mouseleave", "mousewheel" ];
     function stopPropagation(event) {
@@ -15421,9 +12434,9 @@
     });
     cc.BlockInputEvents = module.exports = BlockInputEvents;
   }), {
-    "./CCComponent": 98
+    "./CCComponent": 90
   } ],
-  96: [ (function(require, module, exports) {
+  88: [ (function(require, module, exports) {
     "use strict";
     var Component = require("./CCComponent");
     var GraySpriteState = require("../utils/gray-sprite-state");
@@ -15891,10 +12904,10 @@
     });
     cc.Button = module.exports = Button;
   }), {
-    "../utils/gray-sprite-state": 217,
-    "./CCComponent": 98
+    "../utils/gray-sprite-state": 208,
+    "./CCComponent": 90
   } ],
-  97: [ (function(require, module, exports) {
+  89: [ (function(require, module, exports) {
     "use strict";
     var Camera = require("../camera/CCCamera");
     var Component = require("./CCComponent");
@@ -15995,10 +13008,10 @@
     });
     cc.Canvas = module.exports = Canvas;
   }), {
-    "../camera/CCCamera": 85,
-    "./CCComponent": 98
+    "../camera/CCCamera": 77,
+    "./CCComponent": 90
   } ],
-  98: [ (function(require, module, exports) {
+  90: [ (function(require, module, exports) {
     "use strict";
     var CCObject = require("../platform/CCObject");
     var js = require("../platform/js");
@@ -16158,11 +13171,11 @@
     Component.prototype.__scriptUuid = "";
     cc.Component = module.exports = Component;
   }), {
-    "../platform/CCObject": 156,
-    "../platform/id-generater": 166,
-    "../platform/js": 170
+    "../platform/CCObject": 147,
+    "../platform/id-generater": 157,
+    "../platform/js": 161
   } ],
-  99: [ (function(require, module, exports) {
+  91: [ (function(require, module, exports) {
     "use strict";
     cc.Component.EventHandler = cc.Class({
       name: "cc.ClickEvent",
@@ -16234,7 +13247,7 @@
       }
     });
   }), {} ],
-  100: [ (function(require, module, exports) {
+  92: [ (function(require, module, exports) {
     "use strict";
     var macro = require("../platform/CCMacro");
     var RenderComponent = require("./CCRenderComponent");
@@ -16645,13 +13658,13 @@
     });
     cc.Label = module.exports = Label;
   }), {
-    "../assets/material/CCMaterial": 75,
-    "../platform/CCMacro": 155,
-    "../renderer/utils/label/label-frame": 183,
-    "../utils/blend-func": 214,
-    "./CCRenderComponent": 102
+    "../assets/material/CCMaterial": 67,
+    "../platform/CCMacro": 146,
+    "../renderer/utils/label/label-frame": 174,
+    "../utils/blend-func": 205,
+    "./CCRenderComponent": 94
   } ],
-  101: [ (function(require, module, exports) {
+  93: [ (function(require, module, exports) {
     "use strict";
     var NodeEvent = require("../CCNode").EventType;
     var Type = cc.Enum({
@@ -17196,10 +14209,10 @@
     });
     cc.Layout = module.exports = Layout;
   }), {
-    "../CCNode": 24,
-    "./CCComponent": 98
+    "../CCNode": 16,
+    "./CCComponent": 90
   } ],
-  102: [ (function(require, module, exports) {
+  94: [ (function(require, module, exports) {
     "use strict";
     var _assembler = _interopRequireDefault(require("../renderer/assembler"));
     var _materialVariant = _interopRequireDefault(require("../assets/material/material-variant"));
@@ -17340,143 +14353,14 @@
     });
     cc.RenderComponent = module.exports = RenderComponent;
   }), {
-    "../assets/material/CCMaterial": 75,
-    "../assets/material/material-variant": 82,
-    "../renderer/assembler": 177,
-    "../renderer/render-flow": 181,
-    "../value-types": 234,
-    "./CCComponent": 98
+    "../assets/material/CCMaterial": 67,
+    "../assets/material/material-variant": 74,
+    "../renderer/assembler": 168,
+    "../renderer/render-flow": 172,
+    "../value-types": 225,
+    "./CCComponent": 90
   } ],
-  103: [ (function(require, module, exports) {
-    "use strict";
-    var misc = require("../utils/misc");
-    var Component = require("./CCComponent");
-    var Direction = cc.Enum({
-      Horizontal: 0,
-      Vertical: 1
-    });
-    var Slider = cc.Class({
-      name: "cc.Slider",
-      extends: Component,
-      editor: false,
-      ctor: function ctor() {
-        this._offset = cc.v2();
-        this._touchHandle = false;
-        this._dragging = false;
-      },
-      properties: {
-        handle: {
-          default: null,
-          type: cc.Button,
-          tooltip: false,
-          notify: function notify() {
-            false;
-          }
-        },
-        direction: {
-          default: Direction.Horizontal,
-          type: Direction,
-          tooltip: false
-        },
-        progress: {
-          default: .5,
-          type: cc.Float,
-          range: [ 0, 1, .1 ],
-          slide: true,
-          tooltip: false,
-          notify: function notify() {
-            this._updateHandlePosition();
-          }
-        },
-        slideEvents: {
-          default: [],
-          type: cc.Component.EventHandler,
-          tooltip: false
-        }
-      },
-      statics: {
-        Direction: Direction
-      },
-      __preload: function __preload() {
-        this._updateHandlePosition();
-      },
-      onEnable: function onEnable() {
-        this.node.on(cc.Node.EventType.TOUCH_START, this._onTouchBegan, this);
-        this.node.on(cc.Node.EventType.TOUCH_MOVE, this._onTouchMoved, this);
-        this.node.on(cc.Node.EventType.TOUCH_END, this._onTouchEnded, this);
-        this.node.on(cc.Node.EventType.TOUCH_CANCEL, this._onTouchCancelled, this);
-        if (this.handle && this.handle.isValid) {
-          this.handle.node.on(cc.Node.EventType.TOUCH_START, this._onHandleDragStart, this);
-          this.handle.node.on(cc.Node.EventType.TOUCH_MOVE, this._onTouchMoved, this);
-          this.handle.node.on(cc.Node.EventType.TOUCH_END, this._onTouchEnded, this);
-        }
-      },
-      onDisable: function onDisable() {
-        this.node.off(cc.Node.EventType.TOUCH_START, this._onTouchBegan, this);
-        this.node.off(cc.Node.EventType.TOUCH_MOVE, this._onTouchMoved, this);
-        this.node.off(cc.Node.EventType.TOUCH_END, this._onTouchEnded, this);
-        this.node.off(cc.Node.EventType.TOUCH_CANCEL, this._onTouchCancelled, this);
-        if (this.handle && this.handle.isValid) {
-          this.handle.node.off(cc.Node.EventType.TOUCH_START, this._onHandleDragStart, this);
-          this.handle.node.off(cc.Node.EventType.TOUCH_MOVE, this._onTouchMoved, this);
-          this.handle.node.off(cc.Node.EventType.TOUCH_END, this._onTouchEnded, this);
-        }
-      },
-      _onHandleDragStart: function _onHandleDragStart(event) {
-        this._dragging = true;
-        this._touchHandle = true;
-        this._offset = this.handle.node.convertToNodeSpaceAR(event.touch.getLocation());
-        event.stopPropagation();
-      },
-      _onTouchBegan: function _onTouchBegan(event) {
-        if (!this.handle) return;
-        this._dragging = true;
-        this._touchHandle || this._handleSliderLogic(event.touch);
-        event.stopPropagation();
-      },
-      _onTouchMoved: function _onTouchMoved(event) {
-        if (!this._dragging) return;
-        this._handleSliderLogic(event.touch);
-        event.stopPropagation();
-      },
-      _onTouchEnded: function _onTouchEnded(event) {
-        this._dragging = false;
-        this._touchHandle = false;
-        this._offset = cc.v2();
-        event.stopPropagation();
-      },
-      _onTouchCancelled: function _onTouchCancelled(event) {
-        this._dragging = false;
-        event.stopPropagation();
-      },
-      _handleSliderLogic: function _handleSliderLogic(touch) {
-        this._updateProgress(touch);
-        this._emitSlideEvent();
-      },
-      _emitSlideEvent: function _emitSlideEvent() {
-        cc.Component.EventHandler.emitEvents(this.slideEvents, this);
-        this.node.emit("slide", this);
-      },
-      _updateProgress: function _updateProgress(touch) {
-        if (!this.handle) return;
-        var node = this.node;
-        var localTouchPos = node.convertToNodeSpaceAR(touch.getLocation());
-        this.direction === Direction.Horizontal ? this.progress = misc.clamp01((localTouchPos.x - this._offset.x + node.anchorX * node.width) / node.width) : this.progress = misc.clamp01((localTouchPos.y - this._offset.y + node.anchorY * node.height) / node.height);
-      },
-      _updateHandlePosition: function _updateHandlePosition() {
-        if (!this.handle) return;
-        var handlelocalPos;
-        handlelocalPos = this.direction === Direction.Horizontal ? cc.v2(-this.node.width * this.node.anchorX + this.progress * this.node.width, 0) : cc.v2(0, -this.node.height * this.node.anchorY + this.progress * this.node.height);
-        var worldSpacePos = this.node.convertToWorldSpaceAR(handlelocalPos);
-        this.handle.node.position = this.handle.node.parent.convertToNodeSpaceAR(worldSpacePos);
-      }
-    });
-    cc.Slider = module.exports = Slider;
-  }), {
-    "../utils/misc": 219,
-    "./CCComponent": 98
-  } ],
-  104: [ (function(require, module, exports) {
+  95: [ (function(require, module, exports) {
     "use strict";
     var misc = require("../utils/misc");
     var NodeEvent = require("../CCNode").EventType;
@@ -17699,12 +14583,12 @@
     false;
     cc.Sprite = module.exports = Sprite;
   }), {
-    "../CCNode": 24,
-    "../utils/blend-func": 214,
-    "../utils/misc": 219,
-    "./CCRenderComponent": 102
+    "../CCNode": 16,
+    "../utils/blend-func": 205,
+    "../utils/misc": 210,
+    "./CCRenderComponent": 94
   } ],
-  105: [ (function(require, module, exports) {
+  96: [ (function(require, module, exports) {
     "use strict";
     var WidgetManager = require("../base-ui/CCWidgetManager");
     var AlignMode = WidgetManager.AlignMode;
@@ -18006,10 +14890,10 @@
     });
     cc.Widget = module.exports = Widget;
   }), {
-    "../base-ui/CCWidgetManager": 84,
-    "./CCComponent": 98
+    "../base-ui/CCWidgetManager": 76,
+    "./CCComponent": 90
   } ],
-  106: [ (function(require, module, exports) {
+  97: [ (function(require, module, exports) {
     "use strict";
     require("./CCComponent");
     require("./CCComponentEventHandler");
@@ -18025,17 +14909,17 @@
     var components = [ require("./CCSprite"), require("./CCWidget"), require("./CCCanvas"), require("./CCAudioSource"), require("./CCAnimation"), require("./CCButton"), require("./CCLabel"), require("./CCProgressBar"), require("./CCMask"), require("./CCScrollBar"), require("./CCScrollView"), require("./CCPageViewIndicator"), require("./CCPageView"), require("./CCSlider"), require("./CCLayout"), require("./editbox/CCEditBox"), require("./CCLabelOutline"), require("./CCLabelShadow"), require("./CCRichText"), require("./CCToggleContainer"), require("./CCToggleGroup"), require("./CCToggle"), require("./CCBlockInputEvents"), require("./CCMotionStreak"), require("./CCSafeArea"), SubContextView ];
     module.exports = components;
   }), {
-    "./CCAnimation": 94,
+    "./CCAnimation": 86,
     "./CCAudioSource": void 0,
-    "./CCBlockInputEvents": 95,
-    "./CCButton": 96,
-    "./CCCanvas": 97,
-    "./CCComponent": 98,
-    "./CCComponentEventHandler": 99,
-    "./CCLabel": 100,
+    "./CCBlockInputEvents": 87,
+    "./CCButton": 88,
+    "./CCCanvas": 89,
+    "./CCComponent": 90,
+    "./CCComponentEventHandler": 91,
+    "./CCLabel": 92,
     "./CCLabelOutline": void 0,
     "./CCLabelShadow": void 0,
-    "./CCLayout": 101,
+    "./CCLayout": 93,
     "./CCMask": void 0,
     "./CCMotionStreak": void 0,
     "./CCPageView": void 0,
@@ -18045,17 +14929,17 @@
     "./CCSafeArea": void 0,
     "./CCScrollBar": void 0,
     "./CCScrollView": void 0,
-    "./CCSlider": 103,
-    "./CCSprite": 104,
+    "./CCSlider": void 0,
+    "./CCSprite": 95,
     "./CCToggle": void 0,
     "./CCToggleContainer": void 0,
     "./CCToggleGroup": void 0,
-    "./CCWidget": 105,
+    "./CCWidget": 96,
     "./SubContextView": void 0,
     "./editbox/CCEditBox": void 0,
-    "./missing-script": 107
+    "./missing-script": 98
   } ],
-  107: [ (function(require, module, exports) {
+  98: [ (function(require, module, exports) {
     "use strict";
     var js = cc.js;
     var BUILTIN_CLASSID_RE = require("../utils/misc").BUILTIN_CLASSID_RE;
@@ -18107,9 +14991,9 @@
     });
     cc._MissingScript = module.exports = MissingScript;
   }), {
-    "../utils/misc": 219
+    "../utils/misc": 210
   } ],
-  108: [ (function(require, module, exports) {
+  99: [ (function(require, module, exports) {
     "use strict";
     var js = cc.js;
     require("../event/event");
@@ -18263,9 +15147,9 @@
     cc.Event.EventKeyboard = EventKeyboard;
     module.exports = cc.Event;
   }), {
-    "../event/event": 115
+    "../event/event": 106
   } ],
-  109: [ (function(require, module, exports) {
+  100: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     cc.EventListener = function(type, listenerID, callback) {
@@ -18522,9 +15406,9 @@
     };
     module.exports = cc.EventListener;
   }), {
-    "../platform/js": 170
+    "../platform/js": 161
   } ],
-  110: [ (function(require, module, exports) {
+  101: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     require("./CCEventListener");
@@ -19143,10 +16027,10 @@
     }));
     module.exports = cc.internal.eventManager = eventManager;
   }), {
-    "../platform/js": 170,
-    "./CCEventListener": 109
+    "../platform/js": 161,
+    "./CCEventListener": 100
   } ],
-  111: [ (function(require, module, exports) {
+  102: [ (function(require, module, exports) {
     "use strict";
     cc.Touch = function(x, y, id) {
       this._lastModified = 0;
@@ -19208,7 +16092,7 @@
       }
     };
   }), {} ],
-  112: [ (function(require, module, exports) {
+  103: [ (function(require, module, exports) {
     "use strict";
     require("./CCEvent");
     require("./CCTouch");
@@ -19217,12 +16101,12 @@
     module.exports = eventManager;
     false;
   }), {
-    "./CCEvent": 108,
-    "./CCEventListener": 109,
-    "./CCEventManager": 110,
-    "./CCTouch": 111
+    "./CCEvent": 99,
+    "./CCEventListener": 100,
+    "./CCEventManager": 101,
+    "./CCTouch": 102
   } ],
-  113: [ (function(require, module, exports) {
+  104: [ (function(require, module, exports) {
     "use strict";
     var js = cc.js;
     var CallbacksInvoker = require("../platform/callbacks-invoker");
@@ -19253,9 +16137,9 @@
     module.exports = EventListeners;
     false;
   }), {
-    "../platform/callbacks-invoker": 163
+    "../platform/callbacks-invoker": 154
   } ],
-  114: [ (function(require, module, exports) {
+  105: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     var CallbacksInvoker = require("../platform/callbacks-invoker");
@@ -19305,10 +16189,10 @@
     };
     cc.EventTarget = module.exports = EventTarget;
   }), {
-    "../platform/callbacks-invoker": 163,
-    "../platform/js": 170
+    "../platform/callbacks-invoker": 154,
+    "../platform/js": 161
   } ],
-  115: [ (function(require, module, exports) {
+  106: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     cc.Event = function(type, bubbles) {
@@ -19385,21 +16269,21 @@
     cc.Event.EventCustom = EventCustom;
     module.exports = cc.Event;
   }), {
-    "../platform/js": 170
+    "../platform/js": 161
   } ],
-  116: [ (function(require, module, exports) {
+  107: [ (function(require, module, exports) {
     "use strict";
     require("./event");
     require("./event-listeners");
     require("./event-target");
     require("./system-event");
   }), {
-    "./event": 115,
-    "./event-listeners": 113,
-    "./event-target": 114,
-    "./system-event": 117
+    "./event": 106,
+    "./event-listeners": 104,
+    "./event-target": 105,
+    "./system-event": 108
   } ],
-  117: [ (function(require, module, exports) {
+  108: [ (function(require, module, exports) {
     "use strict";
     var EventTarget = require("../event/event-target");
     var eventManager = require("../event-manager");
@@ -19470,11 +16354,11 @@
     cc.SystemEvent = module.exports = SystemEvent;
     cc.systemEvent = new cc.SystemEvent();
   }), {
-    "../event-manager": 112,
-    "../event/event-target": 114,
-    "../platform/CCInputManager": 154
+    "../event-manager": 103,
+    "../event/event-target": 105,
+    "../platform/CCInputManager": 145
   } ],
-  118: [ (function(require, module, exports) {
+  109: [ (function(require, module, exports) {
     "use strict";
     var RenderComponent = require("../components/CCRenderComponent");
     var Material = require("../assets/material/CCMaterial");
@@ -19630,12 +16514,12 @@
     cc.Graphics.Types = Types;
     cc.Graphics.Helper = require("./helper");
   }), {
-    "../assets/material/CCMaterial": 75,
-    "../components/CCRenderComponent": 102,
-    "./helper": 119,
-    "./types": 121
+    "../assets/material/CCMaterial": 67,
+    "../components/CCRenderComponent": 94,
+    "./helper": 110,
+    "./types": 112
   } ],
-  119: [ (function(require, module, exports) {
+  110: [ (function(require, module, exports) {
     "use strict";
     var PointFlags = require("./types").PointFlags;
     var PI = Math.PI;
@@ -19732,15 +16616,15 @@
       tesselateBezier: tesselateBezier
     };
   }), {
-    "./types": 121
+    "./types": 112
   } ],
-  120: [ (function(require, module, exports) {
+  111: [ (function(require, module, exports) {
     "use strict";
     require("./graphics");
   }), {
-    "./graphics": 118
+    "./graphics": 109
   } ],
-  121: [ (function(require, module, exports) {
+  112: [ (function(require, module, exports) {
     "use strict";
     var LineCap = cc.Enum({
       BUTT: 0,
@@ -19764,7 +16648,7 @@
       PointFlags: PointFlags
     };
   }), {} ],
-  122: [ (function(require, module, exports) {
+  113: [ (function(require, module, exports) {
     "use strict";
     require("./platform");
     require("./assets");
@@ -19784,22 +16668,22 @@
     require("./base-ui/CCWidgetManager");
   }), {
     "./3d": void 0,
-    "./CCNode": 24,
-    "./CCPrivateNode": 25,
-    "./CCScene": 26,
-    "./assets": 73,
-    "./base-ui/CCWidgetManager": 84,
-    "./camera/CCCamera": 85,
-    "./collider": 92,
+    "./CCNode": 16,
+    "./CCPrivateNode": 17,
+    "./CCScene": 18,
+    "./assets": 65,
+    "./base-ui/CCWidgetManager": 76,
+    "./camera/CCCamera": 77,
+    "./collider": 84,
     "./collider/CCIntersection": void 0,
-    "./components": 106,
+    "./components": 97,
     "./geom-utils": void 0,
-    "./graphics": 120,
+    "./graphics": 111,
     "./mesh": void 0,
-    "./physics": 135,
-    "./platform": 167
+    "./physics": 126,
+    "./platform": 158
   } ],
-  123: [ (function(require, module, exports) {
+  114: [ (function(require, module, exports) {
     "use strict";
     var CompScheduler = require("./component-scheduler");
     var Flags = require("./platform/CCObject").Flags;
@@ -19969,12 +16853,12 @@
     });
     module.exports = NodeActivator;
   }), {
-    "./component-scheduler": 93,
-    "./platform/CCObject": 156,
-    "./platform/js": 170,
-    "./utils/misc": 219
+    "./component-scheduler": 85,
+    "./platform/CCObject": 147,
+    "./platform/js": 161,
+    "./utils/misc": 210
   } ],
-  124: [ (function(require, module, exports) {
+  115: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("./CCPhysicsTypes").PTM_RATIO;
     var ContactType = require("./CCPhysicsTypes").ContactType;
@@ -20180,9 +17064,9 @@
     PhysicsContact.ContactType = ContactType;
     cc.PhysicsContact = module.exports = PhysicsContact;
   }), {
-    "./CCPhysicsTypes": 126
+    "./CCPhysicsTypes": 117
   } ],
-  125: [ (function(require, module, exports) {
+  116: [ (function(require, module, exports) {
     "use strict";
     var PhysicsTypes = require("./CCPhysicsTypes");
     var ContactType = PhysicsTypes.ContactType;
@@ -20497,11 +17381,11 @@
     }));
     cc.PhysicsManager = module.exports = PhysicsManager;
   }), {
-    "./CCPhysicsTypes": 126,
-    "./platform/CCPhysicsDebugDraw": 147,
-    "./utils": 149
+    "./CCPhysicsTypes": 117,
+    "./platform/CCPhysicsDebugDraw": 138,
+    "./utils": 140
   } ],
-  126: [ (function(require, module, exports) {
+  117: [ (function(require, module, exports) {
     "use strict";
     var ContactType = {
       BEGIN_CONTACT: "begin-contact",
@@ -20533,7 +17417,7 @@
       PHYSICS_ANGLE_TO_ANGLE: -180 / Math.PI
     };
   }), {} ],
-  127: [ (function(require, module, exports) {
+  118: [ (function(require, module, exports) {
     "use strict";
     function At(i, vertices) {
       var s = vertices.length;
@@ -20718,7 +17602,7 @@
       IsCounterClockWise: IsCounterClockWise
     };
   }), {} ],
-  128: [ (function(require, module, exports) {
+  119: [ (function(require, module, exports) {
     "use strict";
     var NodeEvent = require("../CCNode").EventType;
     var PTM_RATIO = require("./CCPhysicsTypes").PTM_RATIO;
@@ -21117,11 +18001,11 @@
     });
     cc.RigidBody = module.exports = RigidBody;
   }), {
-    "../CCNode": 24,
-    "./CCPhysicsTypes": 126,
-    "./utils": 149
+    "../CCNode": 16,
+    "./CCPhysicsTypes": 117,
+    "./utils": 140
   } ],
-  129: [ (function(require, module, exports) {
+  120: [ (function(require, module, exports) {
     "use strict";
     var box2d = require("../../../external/box2d/box2d");
     window.b2 = {};
@@ -21132,9 +18016,9 @@
     }
     b2.maxPolygonVertices = 8;
   }), {
-    "../../../external/box2d/box2d": 287
+    "../../../external/box2d/box2d": 278
   } ],
-  130: [ (function(require, module, exports) {
+  121: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var PhysicsBoxCollider = cc.Class({
@@ -21159,9 +18043,9 @@
     });
     cc.PhysicsBoxCollider = module.exports = PhysicsBoxCollider;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  131: [ (function(require, module, exports) {
+  122: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var PhysicsChainCollider = cc.Class({
@@ -21202,9 +18086,9 @@
     });
     cc.PhysicsChainCollider = module.exports = PhysicsChainCollider;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  132: [ (function(require, module, exports) {
+  123: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var PhysicsCircleCollider = cc.Class({
@@ -21228,9 +18112,9 @@
     });
     cc.PhysicsCircleCollider = module.exports = PhysicsCircleCollider;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  133: [ (function(require, module, exports) {
+  124: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var getWorldScale = require("../utils").getWorldScale;
@@ -21401,10 +18285,10 @@
     });
     cc.PhysicsCollider = module.exports = PhysicsCollider;
   }), {
-    "../CCPhysicsTypes": 126,
-    "../utils": 149
+    "../CCPhysicsTypes": 117,
+    "../utils": 140
   } ],
-  134: [ (function(require, module, exports) {
+  125: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var PolygonSeparator = require("../CCPolygonSeparator");
@@ -21452,10 +18336,10 @@
     });
     cc.PhysicsPolygonCollider = module.exports = PhysicsPolygonCollider;
   }), {
-    "../CCPhysicsTypes": 126,
-    "../CCPolygonSeparator": 127
+    "../CCPhysicsTypes": 117,
+    "../CCPolygonSeparator": 118
   } ],
-  135: [ (function(require, module, exports) {
+  126: [ (function(require, module, exports) {
     "use strict";
     require("./box2d-adapter");
     require("./CCPhysicsManager");
@@ -21479,29 +18363,29 @@
     require("./platform/CCPhysicsAABBQueryCallback");
     require("./platform/CCPhysicsRayCastCallback");
   }), {
-    "./CCPhysicsContact": 124,
-    "./CCPhysicsManager": 125,
-    "./CCRigidBody": 128,
-    "./box2d-adapter": 129,
-    "./collider/CCPhysicsBoxCollider": 130,
-    "./collider/CCPhysicsChainCollider": 131,
-    "./collider/CCPhysicsCircleCollider": 132,
-    "./collider/CCPhysicsCollider": 133,
-    "./collider/CCPhysicsPolygonCollider": 134,
-    "./joint/CCDistanceJoint": 136,
-    "./joint/CCJoint": 137,
-    "./joint/CCMotorJoint": 138,
-    "./joint/CCMouseJoint": 139,
-    "./joint/CCPrismaticJoint": 140,
-    "./joint/CCRevoluteJoint": 141,
-    "./joint/CCRopeJoint": 142,
-    "./joint/CCWeldJoint": 143,
-    "./joint/CCWheelJoint": 144,
-    "./platform/CCPhysicsAABBQueryCallback": 145,
-    "./platform/CCPhysicsContactListner": 146,
-    "./platform/CCPhysicsRayCastCallback": 148
+    "./CCPhysicsContact": 115,
+    "./CCPhysicsManager": 116,
+    "./CCRigidBody": 119,
+    "./box2d-adapter": 120,
+    "./collider/CCPhysicsBoxCollider": 121,
+    "./collider/CCPhysicsChainCollider": 122,
+    "./collider/CCPhysicsCircleCollider": 123,
+    "./collider/CCPhysicsCollider": 124,
+    "./collider/CCPhysicsPolygonCollider": 125,
+    "./joint/CCDistanceJoint": 127,
+    "./joint/CCJoint": 128,
+    "./joint/CCMotorJoint": 129,
+    "./joint/CCMouseJoint": 130,
+    "./joint/CCPrismaticJoint": 131,
+    "./joint/CCRevoluteJoint": 132,
+    "./joint/CCRopeJoint": 133,
+    "./joint/CCWeldJoint": 134,
+    "./joint/CCWheelJoint": 135,
+    "./platform/CCPhysicsAABBQueryCallback": 136,
+    "./platform/CCPhysicsContactListner": 137,
+    "./platform/CCPhysicsRayCastCallback": 139
   } ],
-  136: [ (function(require, module, exports) {
+  127: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var DistanceJoint = cc.Class({
@@ -21555,9 +18439,9 @@
     });
     cc.DistanceJoint = module.exports = DistanceJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  137: [ (function(require, module, exports) {
+  128: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var Joint = cc.Class({
@@ -21655,9 +18539,9 @@
     });
     cc.Joint = module.exports = Joint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  138: [ (function(require, module, exports) {
+  129: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var ANGLE_TO_PHYSICS_ANGLE = require("../CCPhysicsTypes").ANGLE_TO_PHYSICS_ANGLE;
@@ -21746,9 +18630,9 @@
     });
     cc.MotorJoint = module.exports = MotorJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  139: [ (function(require, module, exports) {
+  130: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var tempB2Vec2 = new b2.Vec2();
@@ -21882,9 +18766,9 @@
     });
     cc.MouseJoint = module.exports = MouseJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  140: [ (function(require, module, exports) {
+  131: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var ANGLE_TO_PHYSICS_ANGLE = require("../CCPhysicsTypes").ANGLE_TO_PHYSICS_ANGLE;
@@ -21957,9 +18841,9 @@
     });
     cc.PrismaticJoint = module.exports = PrismaticJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  141: [ (function(require, module, exports) {
+  132: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var ANGLE_TO_PHYSICS_ANGLE = require("../CCPhysicsTypes").ANGLE_TO_PHYSICS_ANGLE;
@@ -22049,9 +18933,9 @@
     });
     cc.RevoluteJoint = module.exports = RevoluteJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  142: [ (function(require, module, exports) {
+  133: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var RopeJoint = cc.Class({
@@ -22081,9 +18965,9 @@
     });
     cc.RopeJoint = module.exports = RopeJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  143: [ (function(require, module, exports) {
+  134: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var ANGLE_TO_PHYSICS_ANGLE = require("../CCPhysicsTypes").ANGLE_TO_PHYSICS_ANGLE;
@@ -22131,9 +19015,9 @@
     });
     cc.WeldJoint = module.exports = WeldJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  144: [ (function(require, module, exports) {
+  135: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var ANGLE_TO_PHYSICS_ANGLE = require("../CCPhysicsTypes").ANGLE_TO_PHYSICS_ANGLE;
@@ -22217,9 +19101,9 @@
     });
     cc.WheelJoint = module.exports = WheelJoint;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  145: [ (function(require, module, exports) {
+  136: [ (function(require, module, exports) {
     "use strict";
     var BodyType = require("../CCPhysicsTypes").BodyType;
     function PhysicsAABBQueryCallback() {
@@ -22253,9 +19137,9 @@
     };
     cc.PhysicsAABBQueryCallback = module.exports = PhysicsAABBQueryCallback;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  146: [ (function(require, module, exports) {
+  137: [ (function(require, module, exports) {
     "use strict";
     function PhysicsContactListener() {
       this._contactFixtures = [];
@@ -22303,7 +19187,7 @@
     };
     cc.PhysicsContactListener = module.exports = PhysicsContactListener;
   }), {} ],
-  147: [ (function(require, module, exports) {
+  138: [ (function(require, module, exports) {
     "use strict";
     var PTM_RATIO = require("../CCPhysicsTypes").PTM_RATIO;
     var _tmp_vec2 = cc.v2();
@@ -22412,9 +19296,9 @@
     });
     module.exports = PhysicsDebugDraw;
   }), {
-    "../CCPhysicsTypes": 126
+    "../CCPhysicsTypes": 117
   } ],
-  148: [ (function(require, module, exports) {
+  139: [ (function(require, module, exports) {
     "use strict";
     function PhysicsRayCastCallback() {
       this._type = 0;
@@ -22460,7 +19344,7 @@
     };
     cc.PhysicsRayCastCallback = module.exports = PhysicsRayCastCallback;
   }), {} ],
-  149: [ (function(require, module, exports) {
+  140: [ (function(require, module, exports) {
     "use strict";
     function getWorldRotation(node) {
       var rot = node.angle;
@@ -22497,7 +19381,7 @@
       convertToNodeRotation: convertToNodeRotation
     };
   }), {} ],
-  150: [ (function(require, module, exports) {
+  141: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     var Enum = require("./CCEnum");
@@ -23004,14 +19888,14 @@
     };
     false;
   }), {
-    "./CCEnum": 152,
-    "./attribute": 162,
-    "./js": 170,
-    "./preprocess-class": 171,
-    "./requiring-frame": 172,
-    "./utils": 173
+    "./CCEnum": 143,
+    "./attribute": 153,
+    "./js": 161,
+    "./preprocess-class": 162,
+    "./requiring-frame": 163,
+    "./utils": 164
   } ],
-  151: [ (function(require, module, exports) {
+  142: [ (function(require, module, exports) {
     "use strict";
     require("./CCClass");
     var Preprocess = require("./preprocess-class");
@@ -23186,12 +20070,12 @@
       mixins: mixins
     };
   }), {
-    "./CCClass": 150,
-    "./js": 170,
-    "./preprocess-class": 171,
-    "./utils": 173
+    "./CCClass": 141,
+    "./js": 161,
+    "./preprocess-class": 162,
+    "./utils": 164
   } ],
-  152: [ (function(require, module, exports) {
+  143: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     function Enum(obj) {
@@ -23239,9 +20123,9 @@
     false;
     module.exports = cc.Enum = Enum;
   }), {
-    "./js": 170
+    "./js": 161
   } ],
-  153: [ (function(require, module, exports) {
+  144: [ (function(require, module, exports) {
     "use strict";
     var eventManager = require("../event-manager");
     var inputManager = require("./CCInputManager");
@@ -23348,10 +20232,10 @@
       }
     };
   }), {
-    "../event-manager": 112,
-    "./CCInputManager": 154
+    "../event-manager": 103,
+    "./CCInputManager": 145
   } ],
-  154: [ (function(require, module, exports) {
+  145: [ (function(require, module, exports) {
     "use strict";
     var macro = require("./CCMacro");
     var sys = require("./CCSys");
@@ -23723,11 +20607,11 @@
     };
     module.exports = cc.internal.inputManager = inputManager;
   }), {
-    "../event-manager": 112,
-    "./CCMacro": 155,
-    "./CCSys": 159
+    "../event-manager": 103,
+    "./CCMacro": 146,
+    "./CCSys": 150
   } ],
-  155: [ (function(require, module, exports) {
+  146: [ (function(require, module, exports) {
     "use strict";
     cc.macro = {
       RAD: Math.PI / 180,
@@ -23928,7 +20812,7 @@
     });
     module.exports = cc.macro;
   }), {} ],
-  156: [ (function(require, module, exports) {
+  147: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     var CCClass = require("./CCClass");
@@ -24100,10 +20984,10 @@
     false, false;
     cc.Object = module.exports = CCObject;
   }), {
-    "./CCClass": 150,
-    "./js": 170
+    "./CCClass": 141,
+    "./js": 161
   } ],
-  157: [ (function(require, module, exports) {
+  148: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     cc.SAXParser = function() {
@@ -24185,9 +21069,9 @@
       plistParser: cc.plistParser
     };
   }), {
-    "../platform/js": 170
+    "../platform/js": 161
   } ],
-  158: [ (function(require, module, exports) {
+  149: [ (function(require, module, exports) {
     "use strict";
     cc.screen = {
       _supportsFullScreen: false,
@@ -24292,7 +21176,7 @@
     };
     cc.screen.init();
   }), {} ],
-  159: [ (function(require, module, exports) {
+  150: [ (function(require, module, exports) {
     "use strict";
     var settingPlatform;
     true;
@@ -24634,7 +21518,7 @@
     var sys = cc && cc.sys ? cc.sys : initSys();
     module.exports = sys;
   }), {} ],
-  160: [ (function(require, module, exports) {
+  151: [ (function(require, module, exports) {
     "use strict";
     var EventTarget = require("../event/event-target");
     var js = require("../platform/js");
@@ -25286,12 +22170,12 @@
     cc.winSize = cc.size();
     module.exports = cc.view;
   }), {
-    "../event/event-target": 114,
-    "../platform/CCClass": 150,
-    "../platform/js": 170,
-    "../renderer": 180
+    "../event/event-target": 105,
+    "../platform/CCClass": 141,
+    "../platform/js": 161,
+    "../renderer": 171
   } ],
-  161: [ (function(require, module, exports) {
+  152: [ (function(require, module, exports) {
     "use strict";
     cc.visibleRect = {
       topLeft: cc.v2(0, 0),
@@ -25330,7 +22214,7 @@
       }
     };
   }), {} ],
-  162: [ (function(require, module, exports) {
+  153: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     var isPlainEmptyObj = require("./utils").isPlainEmptyObj_DEV;
@@ -25436,11 +22320,11 @@
       ScriptUuid: {}
     };
   }), {
-    "./CCClass": 150,
-    "./js": 170,
-    "./utils": 173
+    "./CCClass": 141,
+    "./js": 161,
+    "./utils": 164
   } ],
-  163: [ (function(require, module, exports) {
+  154: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     var fastRemoveAt = js.array.fastRemoveAt;
@@ -25618,9 +22502,9 @@
     false;
     module.exports = CallbacksInvoker;
   }), {
-    "./js": 170
+    "./js": 161
   } ],
-  164: [ (function(require, module, exports) {
+  155: [ (function(require, module, exports) {
     "use strict";
     function deepFlatten(strList, array) {
       for (var i = 0; i < array.length; i++) {
@@ -25638,7 +22522,7 @@
       flattenCodeArray: flattenCodeArray
     };
   }), {} ],
-  165: [ (function(require, module, exports) {
+  156: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     var Attr = require("./attribute");
@@ -25943,12 +22827,12 @@
       cc.warnID(5302, id);
     };
   }), {
-    "../utils/misc": 219,
-    "./CCClass": 150,
-    "./attribute": 162,
-    "./js": 170
+    "../utils/misc": 210,
+    "./CCClass": 141,
+    "./attribute": 153,
+    "./js": 161
   } ],
-  166: [ (function(require, module, exports) {
+  157: [ (function(require, module, exports) {
     "use strict";
     var NonUuidMark = ".";
     function IdGenerater(category) {
@@ -25961,7 +22845,7 @@
     IdGenerater.global = new IdGenerater("global");
     module.exports = IdGenerater;
   }), {} ],
-  167: [ (function(require, module, exports) {
+  158: [ (function(require, module, exports) {
     "use strict";
     require("./js");
     require("./CCClass");
@@ -25978,21 +22862,21 @@
     true;
     require("./CCVisibleRect");
   }), {
-    "./CCClass": 150,
-    "./CCClassDecorator": 151,
-    "./CCEnum": 152,
-    "./CCMacro": 155,
-    "./CCObject": 156,
-    "./CCSys": 159,
-    "./CCVisibleRect": 161,
-    "./callbacks-invoker": 163,
-    "./deserialize": 165,
-    "./instantiate": 169,
-    "./instantiate-jit": 168,
-    "./js": 170,
-    "./requiring-frame": 172
+    "./CCClass": 141,
+    "./CCClassDecorator": 142,
+    "./CCEnum": 143,
+    "./CCMacro": 146,
+    "./CCObject": 147,
+    "./CCSys": 150,
+    "./CCVisibleRect": 152,
+    "./callbacks-invoker": 154,
+    "./deserialize": 156,
+    "./instantiate": 160,
+    "./instantiate-jit": 159,
+    "./js": 161,
+    "./requiring-frame": 163
   } ],
-  168: [ (function(require, module, exports) {
+  159: [ (function(require, module, exports) {
     "use strict";
     var CCObject = require("./CCObject");
     var Destroyed = CCObject.Flags.Destroyed;
@@ -26301,13 +23185,13 @@
     };
     false;
   }), {
-    "./CCClass": 150,
-    "./CCObject": 156,
-    "./attribute": 162,
-    "./compiler": 164,
-    "./js": 170
+    "./CCClass": 141,
+    "./CCObject": 147,
+    "./attribute": 153,
+    "./compiler": 155,
+    "./js": 161
   } ],
-  169: [ (function(require, module, exports) {
+  160: [ (function(require, module, exports) {
     "use strict";
     var CCObject = require("./CCObject");
     var CCValueType = require("../value-types/value-type");
@@ -26437,12 +23321,12 @@
     cc.instantiate = instantiate;
     module.exports = instantiate;
   }), {
-    "../value-types/value-type": 242,
-    "./CCObject": 156,
-    "./js": 170,
-    "./utils": 173
+    "../value-types/value-type": 233,
+    "./CCObject": 147,
+    "./js": 161,
+    "./utils": 164
   } ],
-  170: [ (function(require, module, exports) {
+  161: [ (function(require, module, exports) {
     "use strict";
     var tempCIDGenerater = new (require("./id-generater"))("TmpCId.");
     function _getPropertyDescriptor(obj, name) {
@@ -26822,10 +23706,10 @@
     cc.js = js;
     module.exports = js;
   }), {
-    "../utils/mutable-forward-iterator": 220,
-    "./id-generater": 166
+    "../utils/mutable-forward-iterator": 211,
+    "./id-generater": 157
   } ],
-  171: [ (function(require, module, exports) {
+  162: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     var Attrs = require("./attribute");
@@ -26964,11 +23848,11 @@
       return true;
     };
   }), {
-    "./CCClass": 150,
-    "./attribute": 162,
-    "./js": 170
+    "./CCClass": 141,
+    "./attribute": 153,
+    "./js": 161
   } ],
-  172: [ (function(require, module, exports) {
+  163: [ (function(require, module, exports) {
     "use strict";
     var requiringFrames = [];
     cc._RF = {
@@ -27000,7 +23884,7 @@
     };
     false;
   }), {} ],
-  173: [ (function(require, module, exports) {
+  164: [ (function(require, module, exports) {
     "use strict";
     var js = require("./js");
     module.exports = {
@@ -27028,9 +23912,9 @@
     false;
     false;
   }), {
-    "./js": 170
+    "./js": 161
   } ],
-  174: [ (function(require, module, exports) {
+  165: [ (function(require, module, exports) {
     "use strict";
     require("./platform/js");
     require("./value-types");
@@ -27049,23 +23933,23 @@
     require("./CCScheduler");
     require("./event-manager");
   }), {
-    "./CCDirector": 22,
-    "./CCScheduler": 27,
-    "./asset-manager": 45,
-    "./event": 116,
-    "./event-manager": 112,
-    "./platform/CCInputExtension": 153,
-    "./platform/CCInputManager": 154,
-    "./platform/CCMacro": 155,
-    "./platform/CCScreen": 158,
-    "./platform/CCSys": 159,
-    "./platform/CCView": 160,
-    "./platform/js": 170,
-    "./renderer": 180,
-    "./utils": 218,
-    "./value-types": 234
+    "./CCDirector": 14,
+    "./CCScheduler": 19,
+    "./asset-manager": 37,
+    "./event": 107,
+    "./event-manager": 103,
+    "./platform/CCInputExtension": 144,
+    "./platform/CCInputManager": 145,
+    "./platform/CCMacro": 146,
+    "./platform/CCScreen": 149,
+    "./platform/CCSys": 150,
+    "./platform/CCView": 151,
+    "./platform/js": 161,
+    "./renderer": 171,
+    "./utils": 209,
+    "./value-types": 225
   } ],
-  175: [ (function(require, module, exports) {
+  166: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -27204,12 +24088,12 @@
     cc.Assembler2D = Assembler2D;
     module.exports = exports["default"];
   }), {
-    "../value-types": 234,
-    "./assembler": 177,
+    "../value-types": 225,
+    "./assembler": 168,
     "./utils/dynamic-atlas/manager": void 0,
-    "./webgl/render-data": 207
+    "./webgl/render-data": 198
   } ],
-  176: [ (function(require, module, exports) {
+  167: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -27284,9 +24168,9 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "../utils/pool": 221
+    "../utils/pool": 212
   } ],
-  177: [ (function(require, module, exports) {
+  168: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -27337,10 +24221,10 @@
     cc.Assembler = Assembler;
     module.exports = exports["default"];
   }), {
-    "./assembler-pool": 176,
-    "./webgl/vertex-format": 209
+    "./assembler-pool": 167,
+    "./webgl/vertex-format": 200
   } ],
-  178: [ (function(require, module, exports) {
+  169: [ (function(require, module, exports) {
     "use strict";
     var Device = function Device(canvasEL) {
       var ctx;
@@ -27393,7 +24277,7 @@
     };
     module.exports = Device;
   }), {} ],
-  179: [ (function(require, module, exports) {
+  170: [ (function(require, module, exports) {
     "use strict";
     var Texture2D = function Texture2D(device, options) {
       this._device = device;
@@ -27420,7 +24304,7 @@
     };
     module.exports = Texture2D;
   }), {} ],
-  180: [ (function(require, module, exports) {
+  171: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -27530,18 +24414,18 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "../../renderer/core/input-assembler": 251,
-    "../../renderer/core/pass": 252,
-    "../../renderer/gfx": 261,
-    "../../renderer/renderers/forward-renderer": 280,
-    "../../renderer/scene/scene": 283,
+    "../../renderer/core/input-assembler": 242,
+    "../../renderer/core/pass": 243,
+    "../../renderer/gfx": 252,
+    "../../renderer/renderers/forward-renderer": 271,
+    "../../renderer/scene/scene": 274,
     "./canvas": void 0,
-    "./canvas/Device": 178,
-    "./canvas/Texture2D": 179,
-    "./webgl/assemblers": 190,
-    "./webgl/model-batcher": 205
+    "./canvas/Device": 169,
+    "./canvas/Texture2D": 170,
+    "./webgl/assemblers": 181,
+    "./webgl/model-batcher": 196
   } ],
-  181: [ (function(require, module, exports) {
+  172: [ (function(require, module, exports) {
     "use strict";
     var FlagOfset = 0;
     var DONOTHING = 1 << FlagOfset++;
@@ -27765,7 +24649,7 @@
     RenderFlow.FLAG_FINAL = FINAL;
     module.exports = cc.RenderFlow = RenderFlow;
   }), {} ],
-  182: [ (function(require, module, exports) {
+  173: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -28213,13 +25097,13 @@
     exports["default"] = BmfontAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../components/CCLabel": 100,
-    "../../../platform/CCMacro": 155,
-    "../../../utils/text-utils": 226,
-    "../../assembler-2d": 175,
-    "../utils": 186
+    "../../../components/CCLabel": 92,
+    "../../../platform/CCMacro": 146,
+    "../../../utils/text-utils": 217,
+    "../../assembler-2d": 166,
+    "../utils": 177
   } ],
-  183: [ (function(require, module, exports) {
+  174: [ (function(require, module, exports) {
     "use strict";
     function LabelFrame() {
       this._rect = null;
@@ -28279,7 +25163,7 @@
     };
     module.exports = LabelFrame;
   }), {} ],
-  184: [ (function(require, module, exports) {
+  175: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -28515,15 +25399,15 @@
     exports["default"] = LetterFontAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../assets/CCRenderTexture": 65,
-    "../../../components/CCComponent": 98,
-    "../../../components/CCLabel": 100,
+    "../../../assets/CCRenderTexture": 57,
+    "../../../components/CCComponent": 90,
+    "../../../components/CCLabel": 92,
     "../../../components/CCLabelOutline": void 0,
-    "../../../utils/text-utils": 226,
-    "../../webgl/assemblers/label/2d/bmfont": 191,
-    "../utils": 186
+    "../../../utils/text-utils": 217,
+    "../../webgl/assemblers/label/2d/bmfont": 182,
+    "../utils": 177
   } ],
-  185: [ (function(require, module, exports) {
+  176: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -28887,15 +25771,15 @@
     exports["default"] = TTFAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../components/CCLabel": 100,
+    "../../../components/CCLabel": 92,
     "../../../components/CCLabelOutline": void 0,
     "../../../components/CCLabelShadow": void 0,
-    "../../../platform/CCMacro": 155,
-    "../../../utils/text-utils": 226,
-    "../../assembler-2d": 175,
-    "../utils": 186
+    "../../../platform/CCMacro": 146,
+    "../../../utils/text-utils": 217,
+    "../../assembler-2d": 166,
+    "../utils": 177
   } ],
-  186: [ (function(require, module, exports) {
+  177: [ (function(require, module, exports) {
     "use strict";
     var dynamicAtlasManager = require("./dynamic-atlas/manager");
     var WHITE = cc.Color.WHITE;
@@ -28936,7 +25820,7 @@
   }), {
     "./dynamic-atlas/manager": void 0
   } ],
-  187: [ (function(require, module, exports) {
+  178: [ (function(require, module, exports) {
     "use strict";
     cc.Graphics.earcut = module.exports = earcut;
     function earcut(data, holeIndices, dim) {
@@ -29328,7 +26212,7 @@
       return result;
     };
   }), {} ],
-  188: [ (function(require, module, exports) {
+  179: [ (function(require, module, exports) {
     "use strict";
     var Helper = require("../../../../graphics/helper");
     var PointFlags = require("../../../../graphics/types").PointFlags;
@@ -29473,10 +26357,10 @@
     cc.Graphics._Impl = Impl;
     module.exports = Impl;
   }), {
-    "../../../../graphics/helper": 119,
-    "../../../../graphics/types": 121
+    "../../../../graphics/helper": 110,
+    "../../../../graphics/types": 112
   } ],
-  189: [ (function(require, module, exports) {
+  180: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -29963,16 +26847,16 @@
     _assembler["default"].register(cc.Graphics, GraphicsAssembler);
     module.exports = exports["default"];
   }), {
-    "../../../../../renderer/core/input-assembler": 251,
-    "../../../../graphics/graphics": 118,
-    "../../../../graphics/types": 121,
-    "../../../assembler": 177,
-    "../../../index": 180,
-    "../../mesh-buffer": 204,
-    "./earcut": 187,
-    "./impl": 188
+    "../../../../../renderer/core/input-assembler": 242,
+    "../../../../graphics/graphics": 109,
+    "../../../../graphics/types": 112,
+    "../../../assembler": 168,
+    "../../../index": 171,
+    "../../mesh-buffer": 195,
+    "./earcut": 178,
+    "./impl": 179
   } ],
-  190: [ (function(require, module, exports) {
+  181: [ (function(require, module, exports) {
     "use strict";
     cc.assemblers = {};
     require("./sprite");
@@ -29981,13 +26865,13 @@
     require("./label");
     require("./motion-streak");
   }), {
-    "./graphics": 189,
-    "./label": 195,
+    "./graphics": 180,
+    "./label": 186,
     "./mask-assembler": void 0,
     "./motion-streak": void 0,
-    "./sprite": 202
+    "./sprite": 193
   } ],
-  191: [ (function(require, module, exports) {
+  182: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -30125,9 +27009,9 @@
     exports["default"] = WebglBmfontAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../../utils/label/bmfont": 182
+    "../../../../utils/label/bmfont": 173
   } ],
-  192: [ (function(require, module, exports) {
+  183: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -30162,11 +27046,11 @@
     exports["default"] = WebglLetterFontAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../../../platform/js": 170,
-    "../../../../utils/label/letter-font": 184,
-    "./bmfont": 191
+    "../../../../../platform/js": 161,
+    "../../../../utils/label/letter-font": 175,
+    "./bmfont": 182
   } ],
-  193: [ (function(require, module, exports) {
+  184: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -30489,13 +27373,13 @@
     exports["default"] = NativeTTF;
     module.exports = exports["default"];
   }), {
-    "../../../../../assets/material/CCMaterial": 75,
-    "../../../../../assets/material/material-variant": 82,
-    "../../../../../components/CCLabel": 100,
+    "../../../../../assets/material/CCMaterial": 67,
+    "../../../../../assets/material/material-variant": 74,
+    "../../../../../components/CCLabel": 92,
     "../../../../../components/CCLabelOutline": void 0,
     "../../../../../components/CCLabelShadow": void 0
   } ],
-  194: [ (function(require, module, exports) {
+  185: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -30559,9 +27443,9 @@
     module.exports = exports["default"];
   }), {
     "../../../../../components/CCLabelShadow": void 0,
-    "../../../../utils/label/ttf": 185
+    "../../../../utils/label/ttf": 176
   } ],
-  195: [ (function(require, module, exports) {
+  186: [ (function(require, module, exports) {
     "use strict";
     var _assembler = _interopRequireDefault(require("../../../assembler"));
     var _CCLabel = _interopRequireDefault(require("../../../../components/CCLabel"));
@@ -30618,17 +27502,17 @@
       NativeTTF: NativeTTF
     });
   }), {
-    "../../../../components/CCLabel": 100,
-    "../../../assembler": 177,
-    "./2d/bmfont": 191,
-    "./2d/letter": 192,
-    "./2d/nativeTTF": 193,
-    "./2d/ttf": 194,
+    "../../../../components/CCLabel": 92,
+    "../../../assembler": 168,
+    "./2d/bmfont": 182,
+    "./2d/letter": 183,
+    "./2d/nativeTTF": 184,
+    "./2d/ttf": 185,
     "./3d/bmfont": void 0,
     "./3d/letter": void 0,
     "./3d/ttf": void 0
   } ],
-  196: [ (function(require, module, exports) {
+  187: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -30764,10 +27648,10 @@
     exports["default"] = BarFilledAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../../../components/CCSprite": 104,
-    "../../../../assembler-2d": 175
+    "../../../../../components/CCSprite": 95,
+    "../../../../assembler-2d": 166
   } ],
-  197: [ (function(require, module, exports) {
+  188: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -30865,9 +27749,9 @@
     exports["default"] = MeshSpriteAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../../assembler-2d": 175
+    "../../../../assembler-2d": 166
   } ],
-  198: [ (function(require, module, exports) {
+  189: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -31126,9 +28010,9 @@
     exports["default"] = RadialFilledAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../../assembler-2d": 175
+    "../../../../assembler-2d": 166
   } ],
-  199: [ (function(require, module, exports) {
+  190: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -31199,9 +28083,9 @@
     exports["default"] = SimpleSpriteAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../../assembler-2d": 175
+    "../../../../assembler-2d": 166
   } ],
-  200: [ (function(require, module, exports) {
+  191: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -31314,9 +28198,9 @@
     });
     module.exports = exports["default"];
   }), {
-    "../../../../assembler-2d": 175
+    "../../../../assembler-2d": 166
   } ],
-  201: [ (function(require, module, exports) {
+  192: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -31500,9 +28384,9 @@
     exports["default"] = TiledAssembler;
     module.exports = exports["default"];
   }), {
-    "../../../../assembler-2d": 175
+    "../../../../assembler-2d": 166
   } ],
-  202: [ (function(require, module, exports) {
+  193: [ (function(require, module, exports) {
     "use strict";
     var _assembler = _interopRequireDefault(require("../../../assembler"));
     var _CCSprite = require("../../../../components/CCSprite");
@@ -31560,14 +28444,14 @@
     };
     _assembler["default"].register(cc.Sprite, ctor);
   }), {
-    "../../../../components/CCSprite": 104,
-    "../../../assembler": 177,
-    "./2d/bar-filled": 196,
-    "./2d/mesh": 197,
-    "./2d/radial-filled": 198,
-    "./2d/simple": 199,
-    "./2d/sliced": 200,
-    "./2d/tiled": 201,
+    "../../../../components/CCSprite": 95,
+    "../../../assembler": 168,
+    "./2d/bar-filled": 187,
+    "./2d/mesh": 188,
+    "./2d/radial-filled": 189,
+    "./2d/simple": 190,
+    "./2d/sliced": 191,
+    "./2d/tiled": 192,
     "./3d/bar-filled": void 0,
     "./3d/mesh": void 0,
     "./3d/radial-filled": void 0,
@@ -31575,7 +28459,7 @@
     "./3d/sliced": void 0,
     "./3d/tiled": void 0
   } ],
-  203: [ (function(require, module, exports) {
+  194: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -31638,7 +28522,7 @@
     cc.FlexBuffer = FlexBuffer;
     module.exports = exports["default"];
   }), {} ],
-  204: [ (function(require, module, exports) {
+  195: [ (function(require, module, exports) {
     "use strict";
     var _gfx = _interopRequireDefault(require("../../../renderer/gfx"));
     function _interopRequireDefault(obj) {
@@ -31798,9 +28682,9 @@
     });
     cc.MeshBuffer = module.exports = MeshBuffer;
   }), {
-    "../../../renderer/gfx": 261
+    "../../../renderer/gfx": 252
   } ],
-  205: [ (function(require, module, exports) {
+  196: [ (function(require, module, exports) {
     "use strict";
     var _inputAssembler = _interopRequireDefault(require("../../../renderer/core/input-assembler"));
     var _recyclePool = _interopRequireDefault(require("../../../renderer/memop/recycle-pool"));
@@ -31940,17 +28824,17 @@
     };
     module.exports = ModelBatcher;
   }), {
-    "../../../renderer/core/input-assembler": 251,
-    "../../../renderer/memop/recycle-pool": 276,
-    "../../../renderer/scene/model": 282,
-    "../../assets/material/CCMaterial": 75,
-    "../../platform/id-generater": 166,
-    "./mesh-buffer": 204,
-    "./quad-buffer": 206,
-    "./spine-buffer": 208,
-    "./vertex-format": 209
+    "../../../renderer/core/input-assembler": 242,
+    "../../../renderer/memop/recycle-pool": 267,
+    "../../../renderer/scene/model": 273,
+    "../../assets/material/CCMaterial": 67,
+    "../../platform/id-generater": 157,
+    "./mesh-buffer": 195,
+    "./quad-buffer": 197,
+    "./spine-buffer": 199,
+    "./vertex-format": 200
   } ],
-  206: [ (function(require, module, exports) {
+  197: [ (function(require, module, exports) {
     "use strict";
     var MeshBuffer = require("./mesh-buffer");
     var QuadBuffer = cc.Class({
@@ -31990,9 +28874,9 @@
     });
     cc.QuadBuffer = module.exports = QuadBuffer;
   }), {
-    "./mesh-buffer": 204
+    "./mesh-buffer": 195
   } ],
-  207: [ (function(require, module, exports) {
+  198: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = RenderData;
@@ -32057,10 +28941,10 @@
     cc.RenderData = RenderData;
     module.exports = exports["default"];
   }), {
-    "./flex-buffer": 203,
-    "./vertex-format": 209
+    "./flex-buffer": 194,
+    "./vertex-format": 200
   } ],
-  208: [ (function(require, module, exports) {
+  199: [ (function(require, module, exports) {
     "use strict";
     var SpineBuffer = cc.Class({
       name: "cc.SpineBuffer",
@@ -32094,9 +28978,9 @@
     });
     cc.SpineBuffer = module.exports = SpineBuffer;
   }), {
-    "./mesh-buffer": 204
+    "./mesh-buffer": 195
   } ],
-  209: [ (function(require, module, exports) {
+  200: [ (function(require, module, exports) {
     "use strict";
     var _gfx = _interopRequireDefault(require("../../../renderer/gfx"));
     function _interopRequireDefault(obj) {
@@ -32196,9 +29080,9 @@
       vfmtPos: vfmtPos
     };
   }), {
-    "../../../renderer/gfx": 261
+    "../../../renderer/gfx": 252
   } ],
-  210: [ (function(require, module, exports) {
+  201: [ (function(require, module, exports) {
     "use strict";
     require("../platform/CCSys");
     var EXTNAME_RE = /(\.[^\.\/\?\\]*)(\?.*)?$/;
@@ -32276,9 +29160,9 @@
     };
     module.exports = cc.path;
   }), {
-    "../platform/CCSys": 159
+    "../platform/CCSys": 150
   } ],
-  211: [ (function(require, module, exports) {
+  202: [ (function(require, module, exports) {
     "use strict";
     var AffineTransform = function AffineTransform(a, b, c, d, tx, ty) {
       this.a = a;
@@ -32414,7 +29298,7 @@
     };
     cc.AffineTransform = module.exports = AffineTransform;
   }), {} ],
-  212: [ (function(require, module, exports) {
+  203: [ (function(require, module, exports) {
     "use strict";
     var Flags = require("../platform/CCObject").Flags;
     var misc = require("./misc");
@@ -32908,14 +29792,14 @@
     false;
     cc._BaseNode = module.exports = BaseNode;
   }), {
-    "../event-manager": 112,
-    "../platform/CCObject": 156,
-    "../platform/id-generater": 166,
-    "../platform/js": 170,
-    "../renderer/render-flow": 181,
-    "./misc": 219
+    "../event-manager": 103,
+    "../platform/CCObject": 147,
+    "../platform/id-generater": 157,
+    "../platform/js": 161,
+    "../renderer/render-flow": 172,
+    "./misc": 210
   } ],
-  213: [ (function(require, module, exports) {
+  204: [ (function(require, module, exports) {
     "use strict";
     var EPSILON = 1e-6;
     function binarySearchEpsilon(array, value) {
@@ -32932,7 +29816,7 @@
       binarySearchEpsilon: binarySearchEpsilon
     };
   }), {} ],
-  214: [ (function(require, module, exports) {
+  205: [ (function(require, module, exports) {
     "use strict";
     var RenderComponent = require("../components/CCRenderComponent");
     var BlendFactor = require("../platform/CCMacro").BlendFactor;
@@ -32993,11 +29877,11 @@
     });
     module.exports = cc.BlendFunc = BlendFunc;
   }), {
-    "../../renderer/gfx": 261,
-    "../components/CCRenderComponent": 102,
-    "../platform/CCMacro": 155
+    "../../renderer/gfx": 252,
+    "../components/CCRenderComponent": 94,
+    "../platform/CCMacro": 146
   } ],
-  215: [ (function(require, module, exports) {
+  206: [ (function(require, module, exports) {
     "use strict";
     var Base64Values = require("./misc").BASE64_VALUES;
     var HexChars = "0123456789abcdef".split("");
@@ -33021,9 +29905,9 @@
     };
     false;
   }), {
-    "./misc": 219
+    "./misc": 210
   } ],
-  216: [ (function(require, module, exports) {
+  207: [ (function(require, module, exports) {
     "use strict";
     cc.find = module.exports = function(path, referenceNode) {
       if (null == path) {
@@ -33058,7 +29942,7 @@
       return match;
     };
   }), {} ],
-  217: [ (function(require, module, exports) {
+  208: [ (function(require, module, exports) {
     "use strict";
     var _materialVariant = _interopRequireDefault(require("../assets/material/material-variant"));
     function _interopRequireDefault(obj) {
@@ -33112,10 +29996,10 @@
     });
     module.exports = GraySpriteState;
   }), {
-    "../assets/material/CCMaterial": 75,
-    "../assets/material/material-variant": 82
+    "../assets/material/CCMaterial": 67,
+    "../assets/material/material-variant": 74
   } ],
-  218: [ (function(require, module, exports) {
+  209: [ (function(require, module, exports) {
     "use strict";
     require("./CCPath");
     true;
@@ -33123,12 +30007,12 @@
     require("./find");
     require("./mutable-forward-iterator");
   }), {
-    "./CCPath": 210,
-    "./find": 216,
-    "./mutable-forward-iterator": 220,
-    "./profiler/CCProfiler": 223
+    "./CCPath": 201,
+    "./find": 207,
+    "./mutable-forward-iterator": 211,
+    "./profiler/CCProfiler": 214
   } ],
-  219: [ (function(require, module, exports) {
+  210: [ (function(require, module, exports) {
     "use strict";
     var js = require("../platform/js");
     var misc = {};
@@ -33201,9 +30085,9 @@
     };
     cc.misc = module.exports = misc;
   }), {
-    "../platform/js": 170
+    "../platform/js": 161
   } ],
-  220: [ (function(require, module, exports) {
+  211: [ (function(require, module, exports) {
     "use strict";
     function MutableForwardIterator(array) {
       this.i = 0;
@@ -33233,7 +30117,7 @@
     };
     module.exports = MutableForwardIterator;
   }), {} ],
-  221: [ (function(require, module, exports) {
+  212: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -33256,7 +30140,7 @@
     };
     module.exports = exports["default"];
   }), {} ],
-  222: [ (function(require, module, exports) {
+  213: [ (function(require, module, exports) {
     "use strict";
     cc._PrefabInfo = cc.Class({
       name: "cc.PrefabInfo",
@@ -33320,7 +30204,7 @@
       }
     };
   }), {} ],
-  223: [ (function(require, module, exports) {
+  214: [ (function(require, module, exports) {
     "use strict";
     var macro = require("../../platform/CCMacro");
     var PerfCounter = require("./perf-counter");
@@ -33461,10 +30345,10 @@
       }
     };
   }), {
-    "../../platform/CCMacro": 155,
-    "./perf-counter": 225
+    "../../platform/CCMacro": 146,
+    "./perf-counter": 216
   } ],
-  224: [ (function(require, module, exports) {
+  215: [ (function(require, module, exports) {
     "use strict";
     var Counter = cc.Class({
       name: "cc.Counter",
@@ -33514,7 +30398,7 @@
     });
     module.exports = Counter;
   }), {} ],
-  225: [ (function(require, module, exports) {
+  216: [ (function(require, module, exports) {
     "use strict";
     var Counter = require("./counter");
     var PerfCounter = cc.Class({
@@ -33549,9 +30433,9 @@
     });
     module.exports = PerfCounter;
   }), {
-    "./counter": 224
+    "./counter": 215
   } ],
-  226: [ (function(require, module, exports) {
+  217: [ (function(require, module, exports) {
     "use strict";
     var _js = _interopRequireDefault(require("../platform/js"));
     function _interopRequireDefault(obj) {
@@ -33748,9 +30632,9 @@
     };
     cc.textUtils = module.exports = textUtils;
   }), {
-    "../platform/js": 170
+    "../platform/js": 161
   } ],
-  227: [ (function(require, module, exports) {
+  218: [ (function(require, module, exports) {
     "use strict";
     var Texture2D = require("../assets/CCTexture2D");
     var textureUtil = {
@@ -33796,9 +30680,9 @@
     };
     module.exports = textureUtil;
   }), {
-    "../assets/CCTexture2D": 72
+    "../assets/CCTexture2D": 64
   } ],
-  228: [ (function(require, module, exports) {
+  219: [ (function(require, module, exports) {
     "use strict";
     var NodeUnit = require("./node-unit");
     var NodeMemPool = require("./node-mem-pool");
@@ -33806,10 +30690,10 @@
       NodeMemPool: new NodeMemPool(NodeUnit)
     };
   }), {
-    "./node-mem-pool": 230,
-    "./node-unit": 231
+    "./node-mem-pool": 221,
+    "./node-unit": 222
   } ],
-  229: [ (function(require, module, exports) {
+  220: [ (function(require, module, exports) {
     "use strict";
     var MemPool = function MemPool(unitClass) {
       this._unitClass = unitClass;
@@ -33877,7 +30761,7 @@
     };
     module.exports = MemPool;
   }), {} ],
-  230: [ (function(require, module, exports) {
+  221: [ (function(require, module, exports) {
     "use strict";
     var MemPool = require("./mem-pool");
     var NodeMemPool = function NodeMemPool(unitClass) {
@@ -33898,9 +30782,9 @@
     };
     module.exports = NodeMemPool;
   }), {
-    "./mem-pool": 229
+    "./mem-pool": 220
   } ],
-  231: [ (function(require, module, exports) {
+  222: [ (function(require, module, exports) {
     "use strict";
     var _utils = require("../../value-types/utils");
     var Uint32_Bytes = 4;
@@ -33956,10 +30840,10 @@
     })();
     module.exports = NodeUnit;
   }), {
-    "../../value-types/utils": 241,
-    "./unit-base": 232
+    "../../value-types/utils": 232,
+    "./unit-base": 223
   } ],
-  232: [ (function(require, module, exports) {
+  223: [ (function(require, module, exports) {
     "use strict";
     var POINTER_INVALID_FLAG = 65535;
     var SPACE_FREE_FLAG = 0;
@@ -34040,7 +30924,7 @@
     };
     module.exports = UnitBase;
   }), {} ],
-  233: [ (function(require, module, exports) {
+  224: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -34498,11 +31382,11 @@
     };
     module.exports = exports["default"];
   }), {
-    "../platform/CCClass": 150,
-    "../utils/misc": 219,
-    "./value-type": 242
+    "../platform/CCClass": 141,
+    "../utils/misc": 210,
+    "./value-type": 233
   } ],
-  234: [ (function(require, module, exports) {
+  225: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     var _exportNames = {
@@ -34551,19 +31435,19 @@
     }
     cc.math = module.exports;
   }), {
-    "./color": 233,
-    "./mat3": 235,
-    "./mat4": 236,
-    "./quat": 237,
-    "./rect": 238,
-    "./size": 239,
-    "./trs": 240,
-    "./utils": 241,
-    "./vec2": 243,
-    "./vec3": 244,
-    "./vec4": 245
+    "./color": 224,
+    "./mat3": 226,
+    "./mat4": 227,
+    "./quat": 228,
+    "./rect": 229,
+    "./size": 230,
+    "./trs": 231,
+    "./utils": 232,
+    "./vec2": 234,
+    "./vec3": 235,
+    "./vec4": 236
   } ],
-  235: [ (function(require, module, exports) {
+  226: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -35010,10 +31894,10 @@
     cc.Mat3 = Mat3;
     module.exports = exports["default"];
   }), {
-    "../value-types/utils": 241,
-    "./vec3": 244
+    "../value-types/utils": 232,
+    "./vec3": 235
   } ],
-  236: [ (function(require, module, exports) {
+  227: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -36330,14 +33214,14 @@
     cc.Mat4 = Mat4;
     module.exports = exports["default"];
   }), {
-    "../platform/CCClass": 150,
-    "./mat3": 235,
-    "./quat": 237,
-    "./utils": 241,
-    "./value-type": 242,
-    "./vec3": 244
+    "../platform/CCClass": 141,
+    "./mat3": 226,
+    "./quat": 228,
+    "./utils": 232,
+    "./value-type": 233,
+    "./vec3": 235
   } ],
-  237: [ (function(require, module, exports) {
+  228: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -36807,13 +33691,13 @@
     cc.Quat = Quat;
     module.exports = exports["default"];
   }), {
-    "../platform/CCClass": 150,
-    "./mat3": 235,
-    "./utils": 241,
-    "./value-type": 242,
-    "./vec3": 244
+    "../platform/CCClass": 141,
+    "./mat3": 226,
+    "./utils": 232,
+    "./value-type": 233,
+    "./vec3": 235
   } ],
-  238: [ (function(require, module, exports) {
+  229: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -37035,12 +33919,12 @@
     };
     module.exports = exports["default"];
   }), {
-    "../platform/CCClass": 150,
-    "./size": 239,
-    "./value-type": 242,
-    "./vec2": 243
+    "../platform/CCClass": 141,
+    "./size": 230,
+    "./value-type": 233,
+    "./vec2": 234
   } ],
-  239: [ (function(require, module, exports) {
+  230: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -37131,10 +34015,10 @@
     cc.Size = Size;
     module.exports = exports["default"];
   }), {
-    "../platform/CCClass": 150,
-    "./value-type": 242
+    "../platform/CCClass": 141,
+    "./value-type": 233
   } ],
-  240: [ (function(require, module, exports) {
+  231: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -37247,9 +34131,9 @@
     cc.Trs = Trs;
     module.exports = exports["default"];
   }), {
-    "./quat": 237
+    "./quat": 228
   } ],
-  241: [ (function(require, module, exports) {
+  232: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports.equals = equals;
@@ -37349,7 +34233,7 @@
       return (v > 0) - (v < 0);
     }
   }), {} ],
-  242: [ (function(require, module, exports) {
+  233: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -37387,9 +34271,9 @@
     cc.ValueType = ValueType;
     module.exports = exports["default"];
   }), {
-    "../platform/js": 170
+    "../platform/js": 161
   } ],
-  243: [ (function(require, module, exports) {
+  234: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -37828,12 +34712,12 @@
     cc.Vec2 = Vec2;
     module.exports = exports["default"];
   }), {
-    "../platform/CCClass": 150,
-    "../utils/misc": 219,
-    "./utils": 241,
-    "./value-type": 242
+    "../platform/CCClass": 141,
+    "../utils/misc": 210,
+    "./utils": 232,
+    "./value-type": 233
   } ],
-  244: [ (function(require, module, exports) {
+  235: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -38419,13 +35303,13 @@
     cc.Vec3 = Vec3;
     module.exports = exports["default"];
   }), {
-    "../platform/CCClass": 150,
-    "../utils/misc": 219,
-    "./utils": 241,
-    "./value-type": 242,
-    "./vec2": 243
+    "../platform/CCClass": 141,
+    "../utils/misc": 210,
+    "./utils": 232,
+    "./value-type": 233,
+    "./vec2": 234
   } ],
-  245: [ (function(require, module, exports) {
+  236: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports.v4 = v4;
@@ -38955,11 +35839,11 @@
     cc.v4 = v4;
     cc.Vec4 = Vec4;
   }), {
-    "../platform/CCClass": 150,
-    "./utils": 241,
-    "./value-type": 242
+    "../platform/CCClass": 141,
+    "./utils": 232,
+    "./value-type": 233
   } ],
-  246: [ (function(require, module, exports) {
+  237: [ (function(require, module, exports) {
     "use strict";
     var js = cc.js;
     true;
@@ -39452,15 +36336,15 @@
     };
     markAsRemovedInObject(cc.audioEngine, [ "getProfile", "preload", "setMaxWebAudioSize" ], "cc.audioEngine");
   }), {} ],
-  247: [ (function(require, module, exports) {
+  238: [ (function(require, module, exports) {
     "use strict";
     require("./core/CCGame");
     require("./actions");
   }), {
-    "./actions": 8,
-    "./core/CCGame": 23
+    "./actions": void 0,
+    "./core/CCGame": 15
   } ],
-  248: [ (function(require, module, exports) {
+  239: [ (function(require, module, exports) {
     "use strict";
     var Asset = require("../core/assets/CCAsset");
     var CCSpriteFrame = require("../core/assets/CCSpriteFrame");
@@ -39476,10 +36360,10 @@
     });
     cc.ParticleAsset = module.exports = ParticleAsset;
   }), {
-    "../core/assets/CCAsset": 57,
-    "../core/assets/CCSpriteFrame": 69
+    "../core/assets/CCAsset": 49,
+    "../core/assets/CCSpriteFrame": 61
   } ],
-  249: [ (function(require, module, exports) {
+  240: [ (function(require, module, exports) {
     "use strict";
     var enums = {
       USAGE_STATIC: 35044,
@@ -40305,7 +37189,7 @@
     };
     module.exports = mappings;
   }), {} ],
-  250: [ (function(require, module, exports) {
+  241: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -40557,14 +37441,14 @@
     exports["default"] = Base;
     module.exports = exports["default"];
   }), {
-    "../../core/value-types": 234,
-    "../enums": 256,
-    "../gfx": 261,
-    "../memop": 273,
-    "./program-lib": 253,
-    "./view": 255
+    "../../core/value-types": 225,
+    "../enums": 247,
+    "../gfx": 252,
+    "../memop": 264,
+    "./program-lib": 244,
+    "./view": 246
   } ],
-  251: [ (function(require, module, exports) {
+  242: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -40611,9 +37495,9 @@
     exports["default"] = InputAssembler;
     module.exports = exports["default"];
   }), {
-    "../gfx": 261
+    "../gfx": 252
   } ],
-  252: [ (function(require, module, exports) {
+  243: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -40795,11 +37679,11 @@
     exports["default"] = Pass;
     module.exports = exports["default"];
   }), {
-    "../../core/value-types/value-type": 242,
-    "../enums": 256,
-    "../gfx": 261
+    "../../core/value-types/value-type": 233,
+    "../enums": 247,
+    "../gfx": 252
   } ],
-  253: [ (function(require, module, exports) {
+  244: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -40971,9 +37855,9 @@
     exports["default"] = ProgramLib;
     module.exports = exports["default"];
   }), {
-    "../gfx": 261
+    "../gfx": 252
   } ],
-  254: [ (function(require, module, exports) {
+  245: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -41018,7 +37902,7 @@
     exports["default"] = Technique;
     module.exports = exports["default"];
   }), {} ],
-  255: [ (function(require, module, exports) {
+  246: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -41071,10 +37955,10 @@
     exports["default"] = View;
     module.exports = exports["default"];
   }), {
-    "../../core/value-types": 234,
-    "../enums": 256
+    "../../core/value-types": 225,
+    "../enums": 247
   } ],
-  256: [ (function(require, module, exports) {
+  247: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -41117,9 +38001,9 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "./build/mappings": 249
+    "./build/mappings": 240
   } ],
-  257: [ (function(require, module, exports) {
+  248: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -41790,12 +38674,12 @@
     exports["default"] = Device;
     module.exports = exports["default"];
   }), {
-    "./enums": 258,
-    "./state": 265,
-    "./texture-2d": 266,
-    "./texture-cube": 267
+    "./enums": 249,
+    "./state": 256,
+    "./texture-2d": 257,
+    "./texture-cube": 258
   } ],
-  258: [ (function(require, module, exports) {
+  249: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports.attrTypeBytes = attrTypeBytes;
@@ -42116,7 +39000,7 @@
       return result;
     }
   }), {} ],
-  259: [ (function(require, module, exports) {
+  250: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42149,7 +39033,7 @@
     exports["default"] = FrameBuffer;
     module.exports = exports["default"];
   }), {} ],
-  260: [ (function(require, module, exports) {
+  251: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42236,9 +39120,9 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "./enums": 258
+    "./enums": 249
   } ],
-  261: [ (function(require, module, exports) {
+  252: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42276,19 +39160,19 @@
     cc.gfx = gfx;
     module.exports = exports["default"];
   }), {
-    "./device": 257,
-    "./enums": 258,
-    "./frame-buffer": 259,
-    "./index-buffer": 260,
-    "./program": 263,
-    "./render-buffer": 264,
-    "./texture": 268,
-    "./texture-2d": 266,
-    "./texture-cube": 267,
-    "./vertex-buffer": 269,
-    "./vertex-format": 270
+    "./device": 248,
+    "./enums": 249,
+    "./frame-buffer": 250,
+    "./index-buffer": 251,
+    "./program": 254,
+    "./render-buffer": 255,
+    "./texture": 259,
+    "./texture-2d": 257,
+    "./texture-cube": 258,
+    "./vertex-buffer": 260,
+    "./vertex-format": 261
   } ],
-  262: [ (function(require, module, exports) {
+  253: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports.isPow2 = isPow2;
@@ -42296,7 +39180,7 @@
       return !(v & v - 1) && !!v;
     }
   }), {} ],
-  263: [ (function(require, module, exports) {
+  254: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42428,7 +39312,7 @@
     }
     module.exports = exports["default"];
   }), {} ],
-  264: [ (function(require, module, exports) {
+  255: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42463,7 +39347,7 @@
     exports["default"] = RenderBuffer;
     module.exports = exports["default"];
   }), {} ],
-  265: [ (function(require, module, exports) {
+  256: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42567,9 +39451,9 @@
     exports["default"] = State;
     module.exports = exports["default"];
   }), {
-    "./enums": 258
+    "./enums": 249
   } ],
-  266: [ (function(require, module, exports) {
+  257: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42733,11 +39617,11 @@
     exports["default"] = Texture2D;
     module.exports = exports["default"];
   }), {
-    "./enums": 258,
-    "./misc": 262,
-    "./texture": 268
+    "./enums": 249,
+    "./misc": 253,
+    "./texture": 259
   } ],
-  267: [ (function(require, module, exports) {
+  258: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42892,11 +39776,11 @@
     exports["default"] = TextureCube;
     module.exports = exports["default"];
   }), {
-    "./enums": 258,
-    "./misc": 262,
-    "./texture": 268
+    "./enums": 249,
+    "./misc": 253,
+    "./texture": 259
   } ],
-  268: [ (function(require, module, exports) {
+  259: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -42936,9 +39820,9 @@
     exports["default"] = Texture;
     module.exports = exports["default"];
   }), {
-    "./enums": 258
+    "./enums": 249
   } ],
-  269: [ (function(require, module, exports) {
+  260: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43023,9 +39907,9 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "./enums": 258
+    "./enums": 249
   } ],
-  270: [ (function(require, module, exports) {
+  261: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43077,10 +39961,10 @@
     exports["default"] = VertexFormat;
     module.exports = exports["default"];
   }), {
-    "../murmurhash2_gc": 279,
-    "./enums": 258
+    "../murmurhash2_gc": 270,
+    "./enums": 249
   } ],
-  271: [ (function(require, module, exports) {
+  262: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43101,7 +39985,7 @@
     exports["default"] = CircularPool;
     module.exports = exports["default"];
   }), {} ],
-  272: [ (function(require, module, exports) {
+  263: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43179,9 +40063,9 @@
     exports["default"] = FixedArray;
     module.exports = exports["default"];
   }), {
-    "./timsort": 277
+    "./timsort": 268
   } ],
-  273: [ (function(require, module, exports) {
+  264: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports.TypedArrayPool = exports.RecyclePool = exports.Pool = exports.LinkedArray = exports.FixedArray = exports.CircularPool = void 0;
@@ -43203,14 +40087,14 @@
       };
     }
   }), {
-    "./circular-pool": 271,
-    "./fixed-array": 272,
-    "./linked-array": 274,
-    "./pool": 275,
-    "./recycle-pool": 276,
-    "./typed-array-pool": 278
+    "./circular-pool": 262,
+    "./fixed-array": 263,
+    "./linked-array": 265,
+    "./pool": 266,
+    "./recycle-pool": 267,
+    "./typed-array-pool": 269
   } ],
-  274: [ (function(require, module, exports) {
+  265: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43295,9 +40179,9 @@
     exports["default"] = LinkedArray;
     module.exports = exports["default"];
   }), {
-    "./pool": 275
+    "./pool": 266
   } ],
-  275: [ (function(require, module, exports) {
+  266: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43338,7 +40222,7 @@
     exports["default"] = Pool;
     module.exports = exports["default"];
   }), {} ],
-  276: [ (function(require, module, exports) {
+  267: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43408,9 +40292,9 @@
     cc.RecyclePool = RecyclePool;
     module.exports = exports["default"];
   }), {
-    "./timsort": 277
+    "./timsort": 268
   } ],
-  277: [ (function(require, module, exports) {
+  268: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = _default;
@@ -43871,7 +40755,7 @@
     }
     module.exports = exports["default"];
   }), {} ],
-  278: [ (function(require, module, exports) {
+  269: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -43962,7 +40846,7 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {} ],
-  279: [ (function(require, module, exports) {
+  270: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = murmurhash2_32_gc;
@@ -43995,7 +40879,7 @@
     }
     module.exports = exports["default"];
   }), {} ],
-  280: [ (function(require, module, exports) {
+  271: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -44235,12 +41119,12 @@
     exports["default"] = ForwardRenderer;
     module.exports = exports["default"];
   }), {
-    "../../core/value-types": 234,
-    "../core/base-renderer": 250,
-    "../enums": 256,
-    "../memop": 273
+    "../../core/value-types": 225,
+    "../core/base-renderer": 241,
+    "../enums": 247,
+    "../memop": 264
   } ],
-  281: [ (function(require, module, exports) {
+  272: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -44502,10 +41386,10 @@
     module.exports = exports["default"];
   }), {
     "../../core/geom-utils": void 0,
-    "../../core/value-types": 234,
-    "../enums": 256
+    "../../core/value-types": 225,
+    "../enums": 247
   } ],
-  282: [ (function(require, module, exports) {
+  273: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -44546,7 +41430,7 @@
     exports["default"] = Model;
     module.exports = exports["default"];
   }), {} ],
-  283: [ (function(require, module, exports) {
+  274: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports["default"] = void 0;
@@ -44630,9 +41514,9 @@
     exports["default"] = _default;
     module.exports = exports["default"];
   }), {
-    "../memop": 273
+    "../memop": 264
   } ],
-  284: [ (function(require, module, exports) {
+  275: [ (function(require, module, exports) {
     "use strict";
     exports.__esModule = true;
     exports.getInspectorProps = getInspectorProps;
@@ -44727,12 +41611,12 @@
       return editor;
     }
   }), {
-    "../core/assets/CCTexture2D": 72,
-    "../core/value-types": 234,
-    "./enums": 256,
-    "./gfx/texture-2d": 266
+    "../core/assets/CCTexture2D": 64,
+    "../core/value-types": 225,
+    "./enums": 247,
+    "./gfx/texture-2d": 257
   } ],
-  285: [ (function(require, module, exports) {
+  276: [ (function(require, module, exports) {
     "use strict";
     var TiledMapAsset = cc.Class({
       name: "cc.TiledMapAsset",
@@ -44764,7 +41648,7 @@
     cc.TiledMapAsset = TiledMapAsset;
     module.exports = TiledMapAsset;
   }), {} ],
-  286: [ (function(require, module, exports) {
+  277: [ (function(require, module, exports) {
     "use strict";
     require("./cocos2d/core");
     require("./cocos2d/animation");
@@ -44781,22 +41665,22 @@
     true;
     require("./cocos2d/deprecated");
   }), {
-    "./cocos2d/actions": 8,
-    "./cocos2d/animation": 17,
-    "./cocos2d/core": 122,
+    "./cocos2d/actions": void 0,
+    "./cocos2d/animation": 9,
+    "./cocos2d/core": 113,
     "./cocos2d/core/components/CCStudioComponent": void 0,
-    "./cocos2d/deprecated": 246,
+    "./cocos2d/deprecated": 237,
     "./cocos2d/particle": void 0,
-    "./cocos2d/particle/CCParticleAsset": 248,
+    "./cocos2d/particle/CCParticleAsset": 239,
     "./cocos2d/tilemap": void 0,
-    "./cocos2d/tilemap/CCTiledMapAsset": 285,
+    "./cocos2d/tilemap/CCTiledMapAsset": 276,
     "./cocos2d/videoplayer/CCVideoPlayer": void 0,
     "./cocos2d/webview/CCWebView": void 0,
     "./extensions/ccpool/CCNodePool": void 0,
     "./extensions/dragonbones": void 0,
     "./extensions/spine": void 0
   } ],
-  287: [ (function(require, module, exports) {
+  278: [ (function(require, module, exports) {
     "use strict";
     (function(global, factory) {
       "object" === typeof exports && "undefined" !== typeof module ? factory(exports) : "function" === typeof define && define.amd ? define([ "exports" ], factory) : factory(global.box2d = {});
@@ -59785,7 +56669,7 @@
       });
     }));
   }), {} ],
-  288: [ (function(require, module, exports) {
+  279: [ (function(require, module, exports) {
     "use strict";
     var _global = "undefined" === typeof window ? global : window;
     _global.cc = _global.cc || {};
@@ -59806,20 +56690,20 @@
     false;
     module.exports = _global.cc;
   }), {
-    "./cocos2d": 247,
-    "./cocos2d/core/predefine": 174,
-    "./extends": 286,
+    "./cocos2d": 238,
+    "./cocos2d/core/predefine": 165,
+    "./extends": 277,
     "./package": void 0,
-    "./polyfill/array": 290,
-    "./polyfill/array-buffer": 289,
-    "./polyfill/misc": 291,
-    "./polyfill/number": 292,
-    "./polyfill/object": 293,
-    "./polyfill/string": 294,
-    "./polyfill/typescript": 295,
-    "./predefine": 296
+    "./polyfill/array": 281,
+    "./polyfill/array-buffer": 280,
+    "./polyfill/misc": 282,
+    "./polyfill/number": 283,
+    "./polyfill/object": 284,
+    "./polyfill/string": 285,
+    "./polyfill/typescript": 286,
+    "./predefine": 287
   } ],
-  289: [ (function(require, module, exports) {
+  280: [ (function(require, module, exports) {
     "use strict";
     if (!ArrayBuffer.isView) {
       var TypedArray = Object.getPrototypeOf(Int8Array);
@@ -59832,7 +56716,7 @@
       };
     }
   }), {} ],
-  290: [ (function(require, module, exports) {
+  281: [ (function(require, module, exports) {
     "use strict";
     Array.isArray || (Array.isArray = function(arg) {
       return "[object Array]" === Object.prototype.toString.call(arg);
@@ -59849,7 +56733,7 @@
       return -1 !== this.indexOf(value);
     });
   }), {} ],
-  291: [ (function(require, module, exports) {
+  282: [ (function(require, module, exports) {
     "use strict";
     Math.sign || (Math.sign = function(x) {
       x = +x;
@@ -59875,12 +56759,12 @@
       };
     }
   }), {} ],
-  292: [ (function(require, module, exports) {
+  283: [ (function(require, module, exports) {
     "use strict";
     Number.parseFloat = Number.parseFloat || parseFloat;
     Number.parseInt = Number.parseInt || parseInt;
   }), {} ],
-  293: [ (function(require, module, exports) {
+  284: [ (function(require, module, exports) {
     "use strict";
     Object.assign || (Object.assign = function(target, source) {
       return cc.js.mixin(target, source);
@@ -59896,7 +56780,7 @@
       return descriptors;
     });
   }), {} ],
-  294: [ (function(require, module, exports) {
+  285: [ (function(require, module, exports) {
     "use strict";
     String.prototype.startsWith || (String.prototype.startsWith = function(searchString, position) {
       position = position || 0;
@@ -59912,7 +56796,7 @@
       return this.replace(/^\s+/, "");
     });
   }), {} ],
-  295: [ (function(require, module, exports) {
+  286: [ (function(require, module, exports) {
     "use strict";
     var extendStatics = Object.setPrototypeOf || {
       __proto__: []
@@ -60239,7 +57123,7 @@
       return value;
     };
   }), {} ],
-  296: [ (function(require, module, exports) {
+  287: [ (function(require, module, exports) {
     "use strict";
     var _global = "undefined" === typeof window ? global : window;
     function defineMacro(name, defaultValue) {
@@ -60283,4 +57167,4 @@
     var engineVersion = "2.4.2";
     _global["CocosEngine"] = cc.ENGINE_VERSION = engineVersion;
   }), {} ]
-}, {}, [ 288 ]);
+}, {}, [ 279 ]);

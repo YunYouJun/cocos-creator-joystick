@@ -96,12 +96,12 @@ window.__require = function e(t, n, r) {
         this.joystickType === JoystickType.FOLLOW && (this.node.opacity = 0);
       };
       Joystick.prototype.onEnable = function() {
-        exports.instance.on("change_joystick_type", this._onChangeJoystickType, this);
+        exports.instance.on("set_joystick_type", this._onSetJoystickType, this);
       };
       Joystick.prototype.onDisable = function() {
-        exports.instance.off("change_joystick_type", this._onChangeJoystickType, this);
+        exports.instance.off("set_joystick_type", this._onSetJoystickType, this);
       };
-      Joystick.prototype._onChangeJoystickType = function(type) {
+      Joystick.prototype._onSetJoystickType = function(type) {
         this.joystickType = type;
         this.node.opacity = type === JoystickType.FIXED ? 255 : 0;
       };
@@ -166,10 +166,12 @@ window.__require = function e(t, n, r) {
         tooltip: "\u6447\u6746\u80cc\u666f\u8282\u70b9"
       }) ], Joystick.prototype, "ring", void 0);
       __decorate([ property({
+        type: cc.Enum(JoystickType),
         displayName: "Touch Type",
         tooltip: "\u89e6\u6478\u7c7b\u578b"
       }) ], Joystick.prototype, "joystickType", void 0);
       __decorate([ property({
+        type: cc.Enum(DirectionType),
         displayName: "Direction Type",
         tooltip: "\u65b9\u5411\u7c7b\u578b"
       }) ], Joystick.prototype, "directionType", void 0);
@@ -190,120 +192,6 @@ window.__require = function e(t, n, r) {
     exports.default = Joystick;
     cc._RF.pop();
   }, {} ],
-  PlayerPhysics: [ function(require, module, exports) {
-    "use strict";
-    cc._RF.push(module, "7d4c0PcHhpH74n/NBlzr5Rz", "PlayerPhysics");
-    "use strict";
-    var __extends = this && this.__extends || function() {
-      var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf || {
-          __proto__: []
-        } instanceof Array && function(d, b) {
-          d.__proto__ = b;
-        } || function(d, b) {
-          for (var p in b) b.hasOwnProperty(p) && (d[p] = b[p]);
-        };
-        return extendStatics(d, b);
-      };
-      return function(d, b) {
-        extendStatics(d, b);
-        function __() {
-          this.constructor = d;
-        }
-        d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
-      };
-    }();
-    var __decorate = this && this.__decorate || function(decorators, target, key, desc) {
-      var c = arguments.length, r = c < 3 ? target : null === desc ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-      if ("object" === typeof Reflect && "function" === typeof Reflect.decorate) r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) (d = decorators[i]) && (r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r);
-      return c > 3 && r && Object.defineProperty(target, key, r), r;
-    };
-    Object.defineProperty(exports, "__esModule", {
-      value: true
-    });
-    var Joystick_1 = require("./Joystick");
-    var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
-    var PlayerPhysics = function(_super) {
-      __extends(PlayerPhysics, _super);
-      function PlayerPhysics() {
-        var _this = null !== _super && _super.apply(this, arguments) || this;
-        _this.moveDir = cc.v3(0, 1, 0);
-        _this._speedType = Joystick_1.SpeedType.STOP;
-        _this._moveSpeed = 0;
-        _this.stopSpeed = 0;
-        _this.normalSpeed = 100;
-        _this.fastSpeed = 200;
-        return _this;
-      }
-      PlayerPhysics.prototype.onLoad = function() {
-        cc.director.getPhysicsManager().enabled = true;
-        this._body = this.node.getComponent(cc.RigidBody);
-        Joystick_1.instance.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
-        Joystick_1.instance.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        Joystick_1.instance.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
-      };
-      PlayerPhysics.prototype.onTouchStart = function() {};
-      PlayerPhysics.prototype.onTouchMove = function(event, data) {
-        this._speedType = data.speedType;
-        this.moveDir = data.moveDistance;
-      };
-      PlayerPhysics.prototype.onTouchEnd = function(event, data) {
-        this._speedType = data.speedType;
-      };
-      PlayerPhysics.prototype.move = function() {
-        this.node.angle = cc.misc.radiansToDegrees(Math.atan2(this.moveDir.y, this.moveDir.x)) - 90;
-        this._body.applyForceToCenter(cc.v2(200 * this.moveDir.x, 200 * this.moveDir.y), true);
-      };
-      PlayerPhysics.prototype.update = function(dt) {
-        switch (this._speedType) {
-         case Joystick_1.SpeedType.STOP:
-          this._body.linearVelocity = cc.v2(0, 0);
-          this._moveSpeed = this.stopSpeed;
-          break;
-
-         case Joystick_1.SpeedType.NORMAL:
-          this._moveSpeed = this.normalSpeed;
-          break;
-
-         case Joystick_1.SpeedType.FAST:
-          this._moveSpeed = this.fastSpeed;
-        }
-        this._speedType !== Joystick_1.SpeedType.STOP && this.move();
-      };
-      __decorate([ property({
-        displayName: "Move Dir",
-        tooltip: "\u79fb\u52a8\u65b9\u5411"
-      }) ], PlayerPhysics.prototype, "moveDir", void 0);
-      __decorate([ property({
-        displayName: "Speed Type",
-        tooltip: "\u901f\u5ea6\u7ea7\u522b"
-      }) ], PlayerPhysics.prototype, "_speedType", void 0);
-      __decorate([ property({
-        type: cc.Integer,
-        displayName: "Move Speed",
-        tooltip: "\u79fb\u52a8\u901f\u5ea6"
-      }) ], PlayerPhysics.prototype, "_moveSpeed", void 0);
-      __decorate([ property({
-        type: cc.Integer,
-        displayName: "Speed When Stop",
-        tooltip: "\u505c\u6b62\u65f6\u901f\u5ea6"
-      }) ], PlayerPhysics.prototype, "stopSpeed", void 0);
-      __decorate([ property({
-        type: cc.Integer,
-        tooltip: "\u6b63\u5e38\u901f\u5ea6"
-      }) ], PlayerPhysics.prototype, "normalSpeed", void 0);
-      __decorate([ property({
-        type: cc.Integer,
-        tooltip: "\u6700\u5feb\u901f\u5ea6"
-      }) ], PlayerPhysics.prototype, "fastSpeed", void 0);
-      PlayerPhysics = __decorate([ ccclass ], PlayerPhysics);
-      return PlayerPhysics;
-    }(cc.Component);
-    exports.default = PlayerPhysics;
-    cc._RF.pop();
-  }, {
-    "./Joystick": "Joystick"
-  } ],
   Player: [ function(require, module, exports) {
     "use strict";
     cc._RF.push(module, "ba452nnVcJMPYIauwJ4Favx", "Player");
@@ -342,6 +230,7 @@ window.__require = function e(t, n, r) {
       __extends(Player, _super);
       function Player() {
         var _this = null !== _super && _super.apply(this, arguments) || this;
+        _this.rigidbody = false;
         _this.moveDir = cc.v2(0, 1);
         _this._speedType = Joystick_1.SpeedType.STOP;
         _this._moveSpeed = 0;
@@ -351,6 +240,10 @@ window.__require = function e(t, n, r) {
         return _this;
       }
       Player.prototype.onLoad = function() {
+        if (this.rigidbody) {
+          cc.director.getPhysicsManager().enabled = true;
+          this._body = this.getComponent(cc.RigidBody);
+        }
         Joystick_2.instance.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
         Joystick_2.instance.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         Joystick_2.instance.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
@@ -365,10 +258,12 @@ window.__require = function e(t, n, r) {
       };
       Player.prototype.move = function() {
         this.node.angle = cc.misc.radiansToDegrees(Math.atan2(this.moveDir.y, this.moveDir.x)) - 90;
-        var oldPos = cc.v2();
-        this.node.getPosition(oldPos);
-        var newPos = oldPos.add(this.moveDir.mul(this._moveSpeed / 120));
-        this.node.setPosition(newPos);
+        if (this.rigidbody) this._body.applyForceToCenter(cc.v2(200 * this.moveDir.x, 200 * this.moveDir.y), true); else {
+          var oldPos = cc.v2();
+          this.node.getPosition(oldPos);
+          var newPos = oldPos.add(this.moveDir.mul(this._moveSpeed / 120));
+          this.node.setPosition(newPos);
+        }
       };
       Player.prototype.update = function(dt) {
         switch (this._speedType) {
@@ -383,8 +278,12 @@ window.__require = function e(t, n, r) {
          case Joystick_1.SpeedType.FAST:
           this._moveSpeed = this.fastSpeed;
         }
-        this.move();
+        this._speedType !== Joystick_1.SpeedType.STOP && this.move();
       };
+      __decorate([ property({
+        displayName: "\u521a\u4f53\u6a21\u5f0f",
+        tooltip: "\u4e0d\u4f1a\u7acb\u5373\u505c\u6b62"
+      }) ], Player.prototype, "rigidbody", void 0);
       __decorate([ property({
         displayName: "Move Dir",
         tooltip: "\u79fb\u52a8\u65b9\u5411"
@@ -400,7 +299,7 @@ window.__require = function e(t, n, r) {
       }) ], Player.prototype, "_moveSpeed", void 0);
       __decorate([ property({
         type: cc.Integer,
-        displayName: "Speed When Stop",
+        displayName: "Stop Speed",
         tooltip: "\u505c\u6b62\u65f6\u901f\u5ea6"
       }) ], Player.prototype, "stopSpeed", void 0);
       __decorate([ property({
@@ -458,10 +357,10 @@ window.__require = function e(t, n, r) {
         return null !== _super && _super.apply(this, arguments) || this;
       }
       UI.prototype.useFixedType = function() {
-        Joystick_1.instance.emit("change_joystick_type", Joystick_1.JoystickType.FIXED);
+        Joystick_1.instance.emit("set_joystick_type", Joystick_1.JoystickType.FIXED);
       };
       UI.prototype.useFollowType = function() {
-        Joystick_1.instance.emit("change_joystick_type", Joystick_1.JoystickType.FOLLOW);
+        Joystick_1.instance.emit("set_joystick_type", Joystick_1.JoystickType.FOLLOW);
       };
       UI = __decorate([ ccclass ], UI);
       return UI;
@@ -520,4 +419,4 @@ window.__require = function e(t, n, r) {
     exports.default = NewClass;
     cc._RF.pop();
   }, {} ]
-}, {}, [ "Joystick", "Player", "PlayerPhysics", "UI", "test" ]);
+}, {}, [ "Joystick", "Player", "UI", "test" ]);
