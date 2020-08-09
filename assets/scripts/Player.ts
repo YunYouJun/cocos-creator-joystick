@@ -5,6 +5,12 @@ import { instance } from "./Joystick";
 
 @ccclass
 export default class Player extends cc.Component {
+  @property({
+    displayName: "刚体模式",
+    tooltip: "不会立即停止",
+  })
+  rigidbody = false;
+
   // from joystick
   @property({
     displayName: "Move Dir",
@@ -28,7 +34,7 @@ export default class Player extends cc.Component {
 
   @property({
     type: cc.Integer,
-    displayName: "Speed When Stop",
+    displayName: "Stop Speed",
     tooltip: "停止时速度",
   })
   stopSpeed = 0;
@@ -45,7 +51,14 @@ export default class Player extends cc.Component {
   })
   fastSpeed = 200;
 
+  _body: cc.RigidBody;
+
   onLoad() {
+    if (this.rigidbody) {
+      cc.director.getPhysicsManager().enabled = true;
+      this._body = this.getComponent(cc.RigidBody);
+    }
+
     instance.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
     instance.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
     instance.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
@@ -53,23 +66,33 @@ export default class Player extends cc.Component {
 
   onTouchStart() {}
 
-  onTouchMove(event, data) {
+  onTouchMove(event: cc.Event.EventTouch, data) {
     this._speedType = data.speedType;
     this.moveDir = data.moveDistance;
   }
 
-  onTouchEnd(event, data) {
+  onTouchEnd(event: cc.Event.EventTouch, data) {
     this._speedType = data.speedType;
   }
 
-  // methods
+  /**
+   * 移动
+   */
   move() {
     this.node.angle =
       cc.misc.radiansToDegrees(Math.atan2(this.moveDir.y, this.moveDir.x)) - 90;
-    const oldPos = cc.v2();
-    this.node.getPosition(oldPos);
-    const newPos = oldPos.add(this.moveDir.mul(this._moveSpeed / 120));
-    this.node.setPosition(newPos);
+
+    if (this.rigidbody) {
+      this._body.applyForceToCenter(
+        cc.v2(this.moveDir.x * 200, this.moveDir.y * 200),
+        true
+      );
+    } else {
+      const oldPos = cc.v2();
+      this.node.getPosition(oldPos);
+      const newPos = oldPos.add(this.moveDir.mul(this._moveSpeed / 120));
+      this.node.setPosition(newPos);
+    }
   }
 
   update(dt) {
@@ -86,6 +109,8 @@ export default class Player extends cc.Component {
       default:
         break;
     }
-    this.move();
+    if (this._speedType !== SpeedType.STOP) {
+      this.move();
+    }
   }
 }

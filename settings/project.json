@@ -10,6 +10,7 @@
   "excluded-modules": [
     "Audio",
     "AudioSource",
+    "Action",
     "Dynamic Atlas",
     "DragonBones",
     "EditBox",
@@ -26,6 +27,7 @@
     "ProgressBar",
     "ParticleSystem",
     "RichText",
+    "Slider",
     "ScrollBar",
     "ScrollView",
     "Spine Skeleton",
@@ -64,5 +66,5 @@
       "enable": false
     }
   },
-  "start-scene": "current"
+  "preview-port": 7456
 }

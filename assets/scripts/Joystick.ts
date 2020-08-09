@@ -51,12 +51,14 @@ export default class Joystick extends cc.Component {
   ring = null;
 
   @property({
+    type: cc.Enum(JoystickType),
     displayName: "Touch Type",
     tooltip: "触摸类型",
   })
   joystickType = JoystickType.FIXED;
 
   @property({
+    type: cc.Enum(DirectionType),
     displayName: "Direction Type",
     tooltip: "方向类型",
   })
@@ -92,21 +94,21 @@ export default class Joystick extends cc.Component {
    * 启用时
    */
   onEnable() {
-    instance.on("change_joystick_type", this._onChangeJoystickType, this);
+    instance.on("set_joystick_type", this._onSetJoystickType, this);
   }
 
   /**
    * 禁用时
    */
   onDisable() {
-    instance.off("change_joystick_type", this._onChangeJoystickType, this);
+    instance.off("set_joystick_type", this._onSetJoystickType, this);
   }
 
   /**
    * 改变摇杆类型
    * @param type
    */
-  _onChangeJoystickType(type: JoystickType) {
+  _onSetJoystickType(type: JoystickType) {
     this.joystickType = type;
     this.node.opacity = type === JoystickType.FIXED ? 255 : 0;
   }

@@ -11,6 +11,8 @@
 
 Online Address: <https://yunyoujun.github.io/cocos-creator-joystick/>
 
+The latest version has been rewritten with TypeScript, with a more friendly structure and comments. If you want to view the pure JavaScript version, please see the old version [v0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2).
+
 ## Usage
 
 ### Downoload
@@ -45,20 +47,21 @@ You can see it in `demo.fire` scene.
 - Touch Place (custom Joystick width and height)
   - [x] Full Screen
   - [x] Half Screen
+- Decoupling between nodes (only need to monitor Touch events, without mounting the Player node to Joystick, can control many Players)
 
 ### Joystick
 
-| Argument     | Type                                     | Default            | Description                      | Customizable |
-| ------------ | ---------------------------------------- | ------------------ | -------------------------------- | ------------ |
-| joystickType | JoystickType.FIXED / JoystickType.FOLLOW | JoystickType.FIXED | types of joystick                | √            |
-| player       | cc.Node                                  | -                  | mount the player node to control | √            |
-| ring         | cc.Node                                  | -                  | joystick background node         | √            |
-| dot          | cc.Node                                  | -                  | joystick control node            | √            |
+| Argument     | Type                                     | Default            | Description              | Customizable |
+| ------------ | ---------------------------------------- | ------------------ | ------------------------ | ------------ |
+| joystickType | JoystickType.FIXED / JoystickType.FOLLOW | JoystickType.FIXED | types of joystick        | √            |
+| ring         | cc.Node                                  | -                  | joystick background node | √            |
+| dot          | cc.Node                                  | -                  | joystick control node    | √            |
 
 ### Player
 
 | Argument    | Type                                               | Default                    | Description                   | Controled by Joystick | Customizable |
 | ----------- | -------------------------------------------------- | -------------------------- | ----------------------------- | --------------------- | ------------ |
+| rigidbody   | boolean                                            | false                      | Rigidbody (Physics) mode      | ×                     | x            |
 | moveDir     | Vec2                                               | cc.v2(0, 1) // straight up | initial direction of movement | √                     | √            |
 | \_speedType | SpeedType.STOP / SpeedType.NORMAL / SpeedType.FAST | SpeedType.NORMAL           | speed type                    | √                     | ×            |
 | \_moveSpeed | cc.Integer                                         | 0                          | speed of movement             | ×                     | ×            |
@@ -70,14 +73,11 @@ You can see it in `demo.fire` scene.
 
 > assets/script
 
-| Filename         | Description           | Function                                                                                                     |
-| ---------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Joystick.js      | Joystick Script       | store joystick main logic                                                                                    |
-| JoystickEnum.js  | Joystick Enum Script  | store joystick type and event                                                                                |
-| JoystickEvent.js | Joystick Event Class  | store joystick event                                                                                         |
-| Player.js        | Player Script         | use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.)                     |
-| PlayerPhysics.js | Physics Player Script | use JoystickEvent watch JoystickEnum.JoystickEventType on demand (You can customize it.)                     |
-| UI.js            | UI                    | provide switch joystick type function for online preview（You can delete it directly if you don't need it.） |
+| Filename    | Description     | Function                                                                                                     |
+| ----------- | --------------- | ------------------------------------------------------------------------------------------------------------ |
+| Joystick.js | Joystick Script | store joystick main logic (include some type definitions and global events listen)                           |
+| Player.js   | Player Script   | listen events emitted by Joystick (You can customize it.)                                                    |
+| UI.js       | UI              | provide switch joystick type function for online preview（You can delete it directly if you don't need it.） |
 
 ## Other
 

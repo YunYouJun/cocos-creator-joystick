@@ -1,12 +1,12 @@
 {
   "name": "cocos-creator-joystick",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Cocos Creator Joystick Demo.",
   "author": "YunYouJun",
   "main": "main.js",
   "scripts": {
     "build": "npm run build:mac || npm run build:win",
-    "build:mac": "/Applications/CocosCreator.app/Contents/MacOS/CocosCreator --path ./ --build 'platform=web-mobile;debug=true'",
+    "build:mac": "/Applications/CocosCreator/Creator/2.4.2/CocosCreator.app/Contents/MacOS/CocosCreator --path ./ --build 'platform=web-mobile;debug=true'",
     "build:win": "C:/CocosCreator/CocosCreator.exe --path ./ --build 'platform=web-mobile;debug=true'",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build/web-mobile"
