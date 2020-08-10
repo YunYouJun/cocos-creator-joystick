@@ -9,7 +9,7 @@
 
 中文文档 | [English Docs](./README.en.md)
 
-在线预览: <https://yunyoujun.github.io/cocos-creator-joystick/>
+在线预览: [cocos-creator-joystick](https://yunyoujun.github.io/cocos-creator-joystick)
 
 最新版本已使用 TypeScript 重写，更友好的结构与注释。如果您想要查看纯 JavaScript 版本，请见旧版本 [v0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2)。
 
