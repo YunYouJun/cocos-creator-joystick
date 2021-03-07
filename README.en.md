@@ -6,8 +6,8 @@
 - [Version 0.1.0](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.1.0) for TypeScript (Cocos Creator 2.x)
 - [Version 0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2) for JavaScript (Cocos Creator 2.x)
 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/YunYouJun/cocos-creator-joystick.svg?style=social)
-[![Cocos Creator version](https://img.shields.io/badge/Cocos_Creator-v3.x-blue.svg?style=social)](https://www.cocos.com/creator)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/YunYouJun/cocos-creator-joystick?style=social)](https://github.com/YunYouJun/cocos-creator-joystick/releases)
+[![Cocos Creator version](https://img.shields.io/badge/Cocos_Creator-v3.x-blue.svg?style=social&logo=cocos)](https://www.cocos.com/creator)
 ![GitHub top language](https://img.shields.io/github/languages/top/YunYouJun/cocos-creator-joystick.svg?style=social&logo=typescript)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/YunYouJun/cocos-creator-joystick.svg?style=social&logo=visual-studio-code)
 
