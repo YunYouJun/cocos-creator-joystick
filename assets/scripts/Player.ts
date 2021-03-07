@@ -1,10 +1,24 @@
-import { SpeedType } from "./Joystick";
-const { ccclass, property } = cc._decorator;
+import {
+  _decorator,
+  Component,
+  CCInteger,
+  RigidBody2D,
+  PhysicsSystem2D,
+  EventTouch,
+  SystemEventType,
+  misc,
+  Vec3,
+  Vec2,
+} from "cc";
+const { ccclass, property } = _decorator;
 
-import { instance } from "./Joystick";
+import { instance, SpeedType } from "./Joystick";
+import type { JoystickDataType } from "./Joystick";
 
-@ccclass
-export default class Player extends cc.Component {
+PhysicsSystem2D.instance.enable = true;
+
+@ccclass("Player")
+export default class Player extends Component {
   @property({
     displayName: "刚体模式",
     tooltip: "不会立即停止",
@@ -16,87 +30,71 @@ export default class Player extends cc.Component {
     displayName: "Move Dir",
     tooltip: "移动方向",
   })
-  moveDir = cc.v2(0, 1);
+  moveDir = new Vec3(0, 1, 0);
 
   @property({
-    displayName: "Speed Type",
     tooltip: "速度级别",
   })
   _speedType: SpeedType = SpeedType.STOP;
 
   // from self
   @property({
-    type: cc.Integer,
-    displayName: "Move Speed",
+    type: CCInteger,
     tooltip: "移动速度",
   })
   _moveSpeed = 0;
 
   @property({
-    type: cc.Integer,
-    displayName: "Stop Speed",
+    type: CCInteger,
     tooltip: "停止时速度",
   })
   stopSpeed = 0;
 
   @property({
-    type: cc.Integer,
+    type: CCInteger,
     tooltip: "正常速度",
   })
   normalSpeed = 100;
 
   @property({
-    type: cc.Integer,
+    type: CCInteger,
     tooltip: "最快速度",
   })
   fastSpeed = 200;
 
-  _body: cc.RigidBody;
+  _body: RigidBody2D | null = null;
 
   onLoad() {
     if (this.rigidbody) {
-      cc.director.getPhysicsManager().enabled = true;
-      this._body = this.getComponent(cc.RigidBody);
+      this._body = this.node.getComponent(RigidBody2D);
     }
 
-    instance.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
-    instance.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-    instance.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
+    instance.on(SystemEventType.TOUCH_START, this.onTouchStart, this);
+    instance.on(SystemEventType.TOUCH_MOVE, this.onTouchMove, this);
+    instance.on(SystemEventType.TOUCH_END, this.onTouchEnd, this);
   }
 
   onTouchStart() {}
 
-  onTouchMove(event: cc.Event.EventTouch, data) {
+  onTouchMove(event: EventTouch, data: JoystickDataType) {
     this._speedType = data.speedType;
-    this.moveDir = data.moveDistance;
+    this.moveDir = data.moveVec;
+
+    this.onSetMoveSpeed(this._speedType);
   }
 
-  onTouchEnd(event: cc.Event.EventTouch, data) {
+  onTouchEnd(event: EventTouch, data: JoystickDataType) {
     this._speedType = data.speedType;
+
+    this.onSetMoveSpeed(this._speedType);
   }
 
   /**
-   * 移动
+   * set moveSpeed by SpeedType
+   * @param speedType
    */
-  move() {
-    this.node.angle =
-      cc.misc.radiansToDegrees(Math.atan2(this.moveDir.y, this.moveDir.x)) - 90;
-
-    if (this.rigidbody) {
-      this._body.applyForceToCenter(
-        cc.v2(this.moveDir.x * 200, this.moveDir.y * 200),
-        true
-      );
-    } else {
-      const oldPos = cc.v2();
-      this.node.getPosition(oldPos);
-      const newPos = oldPos.add(this.moveDir.mul(this._moveSpeed / 120));
-      this.node.setPosition(newPos);
-    }
-  }
-
-  update(dt) {
-    switch (this._speedType) {
+  onSetMoveSpeed(speedType: SpeedType) {
+    switch (speedType) {
       case SpeedType.STOP:
         this._moveSpeed = this.stopSpeed;
         break;
@@ -109,6 +107,33 @@ export default class Player extends cc.Component {
       default:
         break;
     }
+  }
+
+  /**
+   * 移动
+   */
+  move() {
+    this.node.angle =
+      misc.radiansToDegrees(Math.atan2(this.moveDir.y, this.moveDir.x)) - 90;
+
+    if (this.rigidbody && this._body) {
+      const moveVec = this.moveDir.clone().multiplyScalar(this._moveSpeed / 20);
+      const force = new Vec2(moveVec.x, moveVec.y);
+      this._body.applyForceToCenter(force, true);
+    } else {
+      const oldPos = this.node.getPosition();
+      const newPos = oldPos.add(
+        // fps: 60
+        this.moveDir.clone().multiplyScalar(this._moveSpeed / 60)
+      );
+      console.log(this._moveSpeed / 60);
+      this.node.setPosition(newPos);
+
+      console.log(newPos);
+    }
+  }
+
+  update(deltaTime: number) {
     if (this._speedType !== SpeedType.STOP) {
       this.move();
     }

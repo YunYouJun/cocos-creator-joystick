@@ -2,6 +2,10 @@
 
 > Cocos Creator Joystick Demo
 
+- [Version 0.2.0](<(https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.2.0)>) for Cocos Creator 3.0
+- [Version 0.1.0](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.1.0) for TypeScript (Cocos Creator 2.x)
+- [Version 0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2) for JavaScript (Cocos Creator 2.x)
+
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/YunYouJun/cocos-creator-joystick.svg?style=social)
 [![Cocos Creator version](https://img.shields.io/badge/Cocos_Creator-v2.x-blue.svg?style=social)](https://www.cocos.com/creator)
 ![GitHub top language](https://img.shields.io/github/languages/top/YunYouJun/cocos-creator-joystick.svg?style=social&logo=typescript)
@@ -10,8 +14,6 @@
 [中文文档](./README.md) | English Docs
 
 Online Preview: [cocos-creator-joystick](https://yunyoujun.github.io/cocos-creator-joystick)
-
-The latest version has been rewritten with TypeScript, with a more friendly structure and comments. If you want to view the pure JavaScript version, please see the old version [v0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2).
 
 ## Usage
 

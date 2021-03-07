@@ -1,0 +1,49 @@
+{
+  "__version__": "3.0.0",
+  "game": {
+    "app_id": "651316827",
+    "name": "cocos-creator-joystick",
+    "c_id": "0"
+  },
+  "appConfigMaps": [
+    {
+      "app_id": "UNKNOW",
+      "config_id": "e09129"
+    },
+    {
+      "app_id": "651316827",
+      "config_id": "f95cba"
+    }
+  ],
+  "configs": [
+    {
+      "app_id": "UNKNOW",
+      "config_id": "e09129",
+      "config_name": "Default",
+      "config_remarks": "",
+      "services": [
+        {
+          "service_id": "235",
+          "enable": false,
+          "param": {}
+        }
+      ]
+    },
+    {
+      "app_id": "651316827",
+      "config_id": "f95cba",
+      "config_name": "Default",
+      "config_remarks": "",
+      "services": [
+        {
+          "service_id": "235",
+          "enable": true,
+          "param": {
+            "app_id": "651316827",
+            "store_id": "H5"
+          }
+        }
+      ]
+    }
+  ]
+}

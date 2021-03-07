@@ -1,9 +1,26 @@
-const { ccclass, property } = cc._decorator;
+import {
+  _decorator,
+  EventTarget,
+  Component,
+  Node,
+  Enum,
+  UIOpacity,
+  UITransform,
+  EventTouch,
+  SystemEventType,
+  Vec3,
+  Vec2,
+  Size,
+  CCInteger,
+} from "cc";
+const { ccclass, property } = _decorator;
 
 /**
  * 全局事件监听实例
  */
-export const instance = new cc.EventTarget();
+export const instance = new EventTarget();
+
+export const SET_JOYSTICK_TYPE = "SET_JOYSTICK_TYPE";
 
 /**
  * 方向类型
@@ -31,62 +48,91 @@ export enum JoystickType {
   FOLLOW,
 }
 
+export interface JoystickDataType {
+  speedType: SpeedType;
+  /**
+   * 移动向量
+   */
+  moveVec: Vec3;
+}
+
 /**
  * 摇杆类
  */
-@ccclass
-export default class Joystick extends cc.Component {
+@ccclass("Joystick")
+export class Joystick extends Component {
   @property({
-    type: cc.Node,
+    type: Node,
     displayName: "Dot",
     tooltip: "摇杆操纵点",
   })
-  dot = null;
+  dot: Node | null = null;
 
   @property({
-    type: cc.Node,
+    type: Node,
     displayName: "Ring",
     tooltip: "摇杆背景节点",
   })
-  ring = null;
+  ring: Node | null = null;
 
   @property({
-    type: cc.Enum(JoystickType),
+    type: Enum(JoystickType),
     displayName: "Touch Type",
     tooltip: "触摸类型",
   })
   joystickType = JoystickType.FIXED;
 
   @property({
-    type: cc.Enum(DirectionType),
+    type: Enum(DirectionType),
     displayName: "Direction Type",
     tooltip: "方向类型",
   })
   directionType = DirectionType.ALL;
 
   @property({
-    type: cc.Node,
+    type: Vec3,
     tooltip: "摇杆所在位置",
   })
-  _stickPos = null;
+  _stickPos = new Vec3();
 
   @property({
-    type: cc.Node,
+    type: Vec2,
     tooltip: "触摸位置",
   })
-  _touchLocation = null;
+  _touchLocation = new Vec2();
 
   @property({
+    type: CCInteger,
+    displayName: "Ring Radius",
     tooltip: "半径",
   })
-  _radius = 0;
+  radius = 50;
 
   onLoad() {
-    this._radius = this.ring.width / 2;
+    if (!this.dot) {
+      console.warn("Joystick Dot is null!");
+      return;
+    }
+
+    if (!this.ring) {
+      console.warn("Joystick Ring is null!");
+      return;
+    }
+
+    const uiTransform = this.ring.getComponent(UITransform);
+    const size = this.radius * 2;
+    const ringSize = new Size(size, size);
+    uiTransform?.setContentSize(ringSize);
+    this.ring
+      .getChildByName("bg")!
+      .getComponent(UITransform)
+      ?.setContentSize(ringSize);
+
     this._initTouchEvent();
     // hide joystick when follow
-    if (this.joystickType === JoystickType.FOLLOW) {
-      this.node.opacity = 0;
+    const uiOpacity = this.node.getComponent(UIOpacity);
+    if (this.joystickType === JoystickType.FOLLOW && uiOpacity) {
+      uiOpacity.opacity = 0;
     }
   }
 
@@ -94,14 +140,14 @@ export default class Joystick extends cc.Component {
    * 启用时
    */
   onEnable() {
-    instance.on("set_joystick_type", this._onSetJoystickType, this);
+    instance.on(SET_JOYSTICK_TYPE, this._onSetJoystickType, this);
   }
 
   /**
    * 禁用时
    */
   onDisable() {
-    instance.off("set_joystick_type", this._onSetJoystickType, this);
+    instance.off(SET_JOYSTICK_TYPE, this._onSetJoystickType, this);
   }
 
   /**
@@ -110,7 +156,10 @@ export default class Joystick extends cc.Component {
    */
   _onSetJoystickType(type: JoystickType) {
     this.joystickType = type;
-    this.node.opacity = type === JoystickType.FIXED ? 255 : 0;
+    const uiOpacity = this.node.getComponent(UIOpacity);
+    if (uiOpacity) {
+      uiOpacity.opacity = type === JoystickType.FIXED ? 255 : 0;
+    }
   }
 
   /**
@@ -118,38 +167,44 @@ export default class Joystick extends cc.Component {
    */
   _initTouchEvent() {
     // set the size of joystick node to control scale
-    this.node.on(cc.Node.EventType.TOUCH_START, this._touchStartEvent, this);
-    this.node.on(cc.Node.EventType.TOUCH_MOVE, this._touchMoveEvent, this);
-    this.node.on(cc.Node.EventType.TOUCH_END, this._touchEndEvent, this);
-    this.node.on(cc.Node.EventType.TOUCH_CANCEL, this._touchEndEvent, this);
+    this.node.on(SystemEventType.TOUCH_START, this._touchStartEvent, this);
+    this.node.on(SystemEventType.TOUCH_MOVE, this._touchMoveEvent, this);
+    this.node.on(SystemEventType.TOUCH_END, this._touchEndEvent, this);
+    this.node.on(SystemEventType.TOUCH_CANCEL, this._touchEndEvent, this);
   }
 
   /**
    * 触摸开始回调函数
    * @param event
    */
-  _touchStartEvent(event: cc.Event.EventTouch) {
-    instance.emit(cc.Node.EventType.TOUCH_START, event);
+  _touchStartEvent(event: EventTouch) {
+    if (!this.ring || !this.dot) return;
 
-    const touchPos = this.node.convertToNodeSpaceAR(event.getLocation());
+    instance.emit(SystemEventType.TOUCH_START, event);
+
+    const location = event.getUILocation();
+    const touchPos = new Vec3(location.x, location.y);
 
     if (this.joystickType === JoystickType.FIXED) {
       this._stickPos = this.ring.getPosition();
 
+      // 相对中心的向量
+      const moveVec = touchPos.subtract(this.ring.getPosition());
       // 触摸点与圆圈中心的距离
-      const distance = touchPos.sub(this.ring.getPosition()).mag();
+      const distance = moveVec.length();
 
       // 手指在圆圈内触摸,控杆跟随触摸点
-      this._radius > distance && this.dot.setPosition(touchPos);
+      if (this.radius > distance) {
+        this.dot.setPosition(moveVec);
+      }
     } else if (this.joystickType === JoystickType.FOLLOW) {
       // 记录摇杆位置，给 touch move 使用
       this._stickPos = touchPos;
-      this.node.opacity = 255;
-      this._touchLocation = event.getLocation();
-
+      this.node.getComponent(UIOpacity)!.opacity = 255;
+      this._touchLocation = event.getUILocation();
       // 更改摇杆的位置
       this.ring.setPosition(touchPos);
-      this.dot.setPosition(touchPos);
+      this.dot.setPosition(new Vec3());
     }
   }
 
@@ -157,44 +212,37 @@ export default class Joystick extends cc.Component {
    * 触摸移动回调函数
    * @param event
    */
-  _touchMoveEvent(event: cc.Event.EventTouch) {
+  _touchMoveEvent(event: EventTouch) {
+    if (!this.dot || !this.ring) return;
+
     // 如果 touch start 位置和 touch move 相同，禁止移动
     if (
       this.joystickType === JoystickType.FOLLOW &&
-      this._touchLocation === event.getLocation()
+      this._touchLocation === event.getUILocation()
     ) {
       return false;
     }
 
     // 以圆圈为锚点获取触摸坐标
-    const touchPos = this.ring.convertToNodeSpaceAR(event.getLocation());
-    const distance = touchPos.mag();
+    const location = event.getUILocation();
+    const touchPos = new Vec3(location.x, location.y);
+    // move vector
+    const moveVec = touchPos.subtract(this.ring.getPosition());
+    const distance = moveVec.length();
 
-    // 由于摇杆的 postion 是以父节点为锚点，所以定位要加上 touch start 时的位置
-    const posX = this._stickPos.x + touchPos.x;
-    const posY = this._stickPos.y + touchPos.y;
-
-    // 归一化
-    const p = cc.v2(posX, posY).sub(this.ring.getPosition()).normalize();
-
-    let speedType;
-
-    if (this._radius > distance) {
-      this.dot.setPosition(cc.v2(posX, posY));
-
+    let speedType = SpeedType.NORMAL;
+    if (this.radius > distance) {
+      this.dot.setPosition(moveVec);
       speedType = SpeedType.NORMAL;
     } else {
       // 控杆永远保持在圈内，并在圈内跟随触摸更新角度
-      const x = this._stickPos.x + p.x * this._radius;
-      const y = this._stickPos.y + p.y * this._radius;
-      this.dot.setPosition(cc.v2(x, y));
-
+      this.dot.setPosition(moveVec.normalize().multiplyScalar(this.radius));
       speedType = SpeedType.FAST;
     }
 
-    instance.emit(cc.Node.EventType.TOUCH_MOVE, event, {
-      speedType: speedType,
-      moveDistance: p,
+    instance.emit(SystemEventType.TOUCH_MOVE, event, {
+      speedType,
+      moveVec: moveVec.normalize(),
     });
   }
 
@@ -202,13 +250,15 @@ export default class Joystick extends cc.Component {
    * 触摸结束回调函数
    * @param event
    */
-  _touchEndEvent(event: cc.Event.EventTouch) {
-    this.dot.setPosition(this.ring.getPosition());
+  _touchEndEvent(event: EventTouch) {
+    if (!this.dot || !this.ring) return;
+
+    this.dot.setPosition(new Vec3());
     if (this.joystickType === JoystickType.FOLLOW) {
-      this.node.opacity = 0;
+      this.node.getComponent(UIOpacity)!.opacity = 0;
     }
 
-    instance.emit(cc.Node.EventType.TOUCH_END, event, {
+    instance.emit(SystemEventType.TOUCH_END, event, {
       speedType: SpeedType.STOP,
     });
   }

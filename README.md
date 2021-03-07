@@ -2,6 +2,10 @@
 
 > Cocos Creator 虚拟摇杆样例
 
+- [Version 0.2.0](<(https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.2.0)>) for Cocos Creator 3.0
+- [Version 0.1.0](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.1.0) for TypeScript (Cocos Creator 2.x)
+- [Version 0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2) for JavaScript (Cocos Creator 2.x)
+
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/YunYouJun/cocos-creator-joystick.svg?style=social)
 [![Cocos Creator version](https://img.shields.io/badge/Cocos_Creator-v2.4.x-blue.svg?style=social)](https://www.cocos.com/creator)
 ![GitHub top language](https://img.shields.io/github/languages/top/YunYouJun/cocos-creator-joystick.svg?style=social&logo=typescript)
@@ -10,8 +14,6 @@
 中文文档 | [English Docs](./README.en.md)
 
 在线预览: [cocos-creator-joystick](https://yunyoujun.github.io/cocos-creator-joystick)
-
-最新版本已使用 TypeScript 重写，更友好的结构与注释。如果您想要查看纯 JavaScript 版本，请见旧版本 [v0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2)。
 
 ## 使用
 
@@ -102,4 +104,3 @@ npm run deploy
 ### Todo
 
 - [ ] Keep half screen layout (now is fixed width)
-- [ ] How about set dot as a child of ring?
