@@ -2,12 +2,12 @@
 
 > Cocos Creator 虚拟摇杆样例
 
-- [Version 0.2.0](<(https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.2.0)>) for Cocos Creator 3.0
+- [Version 0.2.0](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.2.0) for Cocos Creator 3.0
 - [Version 0.1.0](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.1.0) for TypeScript (Cocos Creator 2.x)
 - [Version 0.0.2](https://github.com/YunYouJun/cocos-creator-joystick/releases/tag/v0.0.2) for JavaScript (Cocos Creator 2.x)
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/YunYouJun/cocos-creator-joystick.svg?style=social)
-[![Cocos Creator version](https://img.shields.io/badge/Cocos_Creator-v2.4.x-blue.svg?style=social)](https://www.cocos.com/creator)
+[![Cocos Creator version](https://img.shields.io/badge/Cocos_Creator-v3.x-blue.svg?style=social)](https://www.cocos.com/creator)
 ![GitHub top language](https://img.shields.io/github/languages/top/YunYouJun/cocos-creator-joystick.svg?style=social&logo=typescript)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/YunYouJun/cocos-creator-joystick.svg?style=social&logo=visual-studio-code)
 
@@ -23,8 +23,8 @@
 
 ### 通过文件导入
 
-> Cocos Creator v2.x -> 文件 -> 资源导出... -> 选择 -> assets/demo.fire
-> Cocos Creator v2.x -> 文件 -> 资源导入...
+> Cocos Creator v3.x -> 文件 -> 资源导出... -> 选择 -> assets/demo.fire
+> Cocos Creator v3.x -> 文件 -> 资源导入...
 
 ### 通过 Git
 
@@ -32,7 +32,7 @@
 git clone https://github.com/YunYouJun/cocos-creator-joystick.git
 ```
 
-将其作为项目，通过 `Cocos Creator v2.4.x` 打开。
+将其作为项目，通过 `Cocos Creator v3.x` 打开。
 
 你可以在 `demo` 场景中查看样例。
 
